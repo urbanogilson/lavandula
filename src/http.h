@@ -15,9 +15,9 @@ typedef enum {
 } HttpMethod;
 
 typedef enum {
-    HTTP_OK,          // 200
-    HTTP_NOT_FOUND,   // 404
-    HTTP_BAD_REQUEST, // 401
+    HTTP_OK,
+    HTTP_NOT_FOUND,
+    HTTP_BAD_REQUEST,
 } HttpStatus;
 
 typedef struct {

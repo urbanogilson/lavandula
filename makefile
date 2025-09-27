@@ -1,7 +1,5 @@
-CC = gcc
-EXEC = a
-CFLAGS = -Wextra -Wall
 SRCS = $(wildcard src/*.c)
+CFLAGS = -Wall -Wextra
 
 all:
-	$(CC) $(CFLAGS) $(SRCS) -o $(EXEC)
+	gcc $(SRCS) $(CFLAGS) -o a

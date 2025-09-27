@@ -13,8 +13,8 @@ HttpResponse response(char *content, HttpStatus);
 typedef struct {
     HttpMethod method;
     char      *path;
+
     Controller controller;
-    
 } Route;
 
 typedef struct {

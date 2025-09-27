@@ -15,4 +15,5 @@ void runApp(App *app) {
 void cleanupApp(App *app) {
     if (!app) return;
     
+    freeServer(&app->server);
 }

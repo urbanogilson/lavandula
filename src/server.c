@@ -22,10 +22,13 @@ Server initServer(int port) {
 
 void freeServer(Server *server) {
     if (!server) return;
+
     if (server->fileDescriptor >= 0) {
         close(server->fileDescriptor);
         server->fileDescriptor = -1;
     }
+
+    freeRouter(&server->router);
 }
 
 void runServer(Server *server) {

@@ -7,7 +7,7 @@
 
 Page page(char *title) {
     Page page;
-    page.title = title;
+    page.title = strdup(title);
     page.bodyCount = 0;
     page.bodyCapacity = 1;
     page.body = malloc(sizeof(UIElement));

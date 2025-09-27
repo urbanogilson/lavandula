@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -25,8 +26,7 @@ HttpResponse response(char *content, HttpStatus status) {
     };
 }
 
-Router initRouter()
-{
+Router initRouter() {
     Router router = {
         .routeCapacity = 1,
         .routeCount = 0,
@@ -36,12 +36,45 @@ Router initRouter()
     return router;
 }
 
+void freeUIElement(UIElement *element) {
+    switch (element->type) {
+        case ELEMENT_TEXT: {
+            Text *t = (Text *)element->data;
+            free(t->text);
+            break;
+        }
+        case ELEMENT_BOX: {
+            break;
+        }
+        case ELEMENT_LINK_TO: {
+            break;
+        }
+        default: {
+            printf("unknown element in freeUIElement");
+        }
+    }
+}
+
 void freeRouter(Router *router) {
     if (!router) return;
 
     for (int i = 0; i < router->routeCount; i++) {
-        free(router->routes[i].path);
+        Route route = router->routes[i];
+        free(route.path);
+
+        Page p = route.controller();
+        free(p.title);
+
+
+        for (int j = 0; j < p.bodyCount; j++) {
+            UIElement element = p.body[j];
+            freeUIElement(&element);
+        }
+
+        free(p.body);
     }
+
+    free(router->routes);
 }
 
 void route(Router *router, HttpMethod method, char *path, Controller controller) {
