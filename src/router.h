@@ -2,16 +2,19 @@
 #define router_h
 
 #include "http.h"
+#include "ui.h"
 
-typedef HttpResponse (*Controller)();
+typedef Page (*Controller)();
 
 HttpResponse ok(char *content);
 HttpResponse badRequest(char *content);
+HttpResponse response(char *content, HttpStatus);
 
 typedef struct {
     HttpMethod method;
     char      *path;
     Controller controller;
+    
 } Route;
 
 typedef struct {
@@ -24,5 +27,6 @@ Router initRouter();
 void   freeRouter(Router *router);
 
 void   route(Router *router, HttpMethod method, char *path, Controller controller);
+void   routeNotFound(Router *router,  Controller controller);
 
 #endif

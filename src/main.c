@@ -1,25 +1,40 @@
-#include <stdio.h>
-
 #include "lavandula.h"
 
-HttpResponse test() {
-    return ok("Ok from test!");
+Page home() {
+    Page p = page("Home");
+
+    Text *t = text(&p, "Hello, World!");
+    setTextSize(t, TEXT_XXL);
+    setTextColour(t, COLOUR_RED);
+
+    Box *b = box(&p, 80, 80);
+
+    UIElement e = textRaw("Hello inside the box");
+    putInBox(b, e);
+
+    linkTo(&p, "Go to: Help", "http://127.0.0.1:3002/help");
+
+    return p;
 }
 
+Page help() {
+    Page p = page("Help");
+    Text *t = text(&p, "This is the help page!");
+    setTextSize(t, TEXT_XXL);
 
-HttpResponse idx() {
-    return ok("Ok from index!");
+    linkTo(&p, "Back", "http://127.0.0.1:3002/");
+
+    return p;
 }
 
-HttpResponse notFound() {
-
+void registerRoutes(App *app) {
+    route(&app->server.router, HTTP_GET, "/", home);
+    route(&app->server.router, HTTP_GET, "/help", help);
 }
 
 int main() {
-    App app = init(3000);
-
-    route(&app.server.router, HTTP_GET, "/", idx);
-    route(&app.server.router, HTTP_GET, "/test", test);
+    App app = init(3002);
+    registerRoutes(&app);
 
     runApp(&app);
     cleanupApp(&app);

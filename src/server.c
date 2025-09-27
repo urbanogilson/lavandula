@@ -86,12 +86,50 @@ void runServer(Server *server) {
 
             if (strcmp(r.path, parser.request.resource) == 0) {
                 route = &r;
+                break;
             }
         }
 
-        HttpResponse response = route->controller();
+        if (!route) {
+            const char *notFound = "404 not found";
+            write(clientSocket, notFound, strlen(notFound));
+            close(clientSocket);
+            continue;
+        }
 
-        write(clientSocket, response.content, strlen(response.content));
+        Page page = route->controller();
+
+        int totalLength = 0;
+        char *bodyContent = malloc(1);
+        bodyContent[0] = '\0';
+
+        for (int i = 0; i < page.bodyCount; i++) {
+            char *html = page.body[i].render(&page.body[i]);
+            totalLength += strlen(html);
+            bodyContent = realloc(bodyContent, totalLength + 1);
+            strcat(bodyContent, html);
+
+            free(html);
+        }
+
+        char fullPage[BUFFER_SIZE];
+        snprintf(fullPage, sizeof(fullPage),
+            "<!DOCTYPE html><html><head><title>%s</title></head><body>%s</body></html>",
+            page.title, bodyContent
+        );
+
+        free(bodyContent);
+
+        char header[256];
+        snprintf(header, sizeof(header),
+                 "HTTP/1.1 200 OK\r\n"
+                 "Content-Type: text/html; charset=UTF-8\r\n"
+                 "Content-Length: %zu\r\n\r\n",
+                 strlen(fullPage));
+
+        write(clientSocket, header, strlen(header));
+        write(clientSocket, fullPage, strlen(fullPage));
+        
         close(clientSocket);
     }
 }

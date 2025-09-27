@@ -122,7 +122,6 @@ static void parseHeaders(HttpParser *parser) {
     }
 }
 
-
 void printHeaders(HttpParser *parser) {
     printf("\nRequest:\n");
     printf("  Method: %s\n", httpMethodToStr(parser->request.method));

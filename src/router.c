@@ -18,6 +18,13 @@ HttpResponse badRequest(char *content) {
     };
 }
 
+HttpResponse response(char *content, HttpStatus status) {
+    return (HttpResponse) {
+        .content = content,
+        .status = status
+    };
+}
+
 Router initRouter()
 {
     Router router = {
@@ -49,4 +56,8 @@ void route(Router *router, HttpMethod method, char *path, Controller controller)
         router->routes = realloc(router->routes, sizeof(Route) * router->routeCapacity);
     }
     router->routes[router->routeCount++] = route;
+}
+
+void routeNotFound(Router *router, Controller controller) {
+    route(router, HTTP_GET, "", controller);
 }

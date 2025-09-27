@@ -2,6 +2,7 @@
 #define lavandula_h
 
 #include "server.h"
+#include "ui.h"
 
 typedef struct {
     Server server;
