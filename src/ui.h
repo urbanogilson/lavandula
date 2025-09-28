@@ -5,6 +5,8 @@ typedef enum {
     ELEMENT_TEXT,
     ELEMENT_LINK_TO,
     ELEMENT_BOX,
+    ELEMENT_ROW,
+    ELEMENT_COLUMN,
 } ElementType;
 
 typedef enum {
@@ -47,6 +49,8 @@ typedef struct {
     char  *text;
     Colour colour;
     int    size;
+
+    UIElement element;
 } Text;
 
 typedef struct {
@@ -56,22 +60,45 @@ typedef struct {
     UIElement *children;
     int childCount;
     int childCapacity;
+
+    UIElement element;
 } Box;
+
+typedef struct {
+    UIElement *children;
+    int childCount;
+    int childCapacity;
+
+    UIElement element;
+} Row;
+
+typedef struct {
+    UIElement *children;
+    int childCount;
+    int childCapacity;
+
+    UIElement element;
+} Column;
 
 typedef struct {
     Page *page;
     char *text;
     char *href;
+
+    UIElement element;
 } Link;
 
 Page page(char *title);
-Text *text(Page *page, char *text);
-UIElement textRaw(char *text);
+Text *text(char *text);
+Link *linkTo(char *href, char *text);
+Row *row();
+Column *column();
+Box *box(int height, int width);
 
-Link *linkTo(Page *page, char *text, char *href);
-
-Box *box(Page *page, int height, int width);
 void putInBox(Box *box, UIElement element);
+void putInRow(Row *row, UIElement element);
+void putInColumn(Column *column, UIElement element);
+void putInPage(Page *Page, UIElement element);
 
 void setTextSize(Text *text, TextSize size);
 void setTextColour(Text *text, Colour colour);

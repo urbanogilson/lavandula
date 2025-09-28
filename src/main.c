@@ -8,29 +8,27 @@
 Page home() {
     Page p = page("Home");
 
-    Text *t = text(&p, "Hello, World!");
-    setTextSize(t, TEXT_XXL);
-    setTextColour(t, COLOUR_RED);
+    Text *name = text("Ashton James");
+    setTextSize(name, TEXT_XL);
+    putInPage(&p, name->element);
 
-    Box *b = box(&p, 80, 80);
-
-    UIElement e = textRaw("Hello inside the box");
-    putInBox(b, e);
-
-    linkTo(&p, "Go to: Help", "http://127.0.0.1:3002/help");
+    Link *l = linkTo("http://127.0.0.1:3002/help", "Go to About");
+    putInPage(&p, l->element);
 
     return p;
 }
 
-// Page help() {
-//     Page p = page("Help");
-//     Text *t = text(&p, "This is the help page!");
-//     setTextSize(t, TEXT_XXL);
+Page help() {
+    Page p = page("Help");
 
-//     linkTo(&p, "Back", "http://127.0.0.1:3002/");
+    Text *t = text("This is the help page!");
+    putInPage(&p, t->element);
 
-//     return p;
-// }
+    Link *l = linkTo("http://127.0.0.1:3002/", "Back to Home");
+    putInPage(&p, l->element);
+
+    return p;
+}
 
 int main(int argc, char *argv[]) {
     if (argc >= 2) {
@@ -51,7 +49,7 @@ int main(int argc, char *argv[]) {
     App app = init(3002);
 
     route(&app.server.router, HTTP_GET, "/", home);
-    // route(&app.server.router, HTTP_GET, "/help", help);
+    route(&app.server.router, HTTP_GET, "/help", help);
 
     runApp(&app);
     cleanupApp(&app);

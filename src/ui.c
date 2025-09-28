@@ -154,6 +154,51 @@ char *renderBox(struct UIElement *element) {
     return finalHtml;
 }
 
+char *renderRow(UIElement *element) {
+    Row *r = (Row *)element->data;
+
+    char *html = strdup("<div style=\"display:flex; flex-direction:row; gap:4px;\">");
+
+    for (int i = 0; i < r->childCount; i++) {
+        char *childHtml = r->children[i].render(&r->children[i]);
+        char *newHtml = malloc(strlen(html) + strlen(childHtml) + 1);
+        strcpy(newHtml, html);
+        strcat(newHtml, childHtml);
+        free(html);
+        free(childHtml);
+        html = newHtml;
+    }
+
+    char *finalHtml = malloc(strlen(html) + strlen("</div>") + 1);
+    strcpy(finalHtml, html);
+    strcat(finalHtml, "</div>");
+    free(html);
+
+    return finalHtml;
+}
+
+char *renderColumn(struct UIElement *element) {
+    Column *c = (Column *)element->data;
+
+    char *html = strdup("<div style=\"display:flex; flex-direction:column; gap:4px;\">");
+
+    for (int i = 0; i < c->childCount; i++) {
+        char *childHtml = c->children[i].render(&c->children[i]);
+        char *newHtml = malloc(strlen(html) + strlen(childHtml) + 1);
+        strcpy(newHtml, html);
+        strcat(newHtml, childHtml);
+        free(html);
+        free(childHtml);
+        html = newHtml;
+    }
+
+    char *finalHtml = malloc(strlen(html) + strlen("</div>") + 1);
+    strcpy(finalHtml, html);
+    strcat(finalHtml, "</div>");
+    free(html);
+
+    return finalHtml;}
+
 void putInBox(Box *box, UIElement element) {
     if (box->childCount >= box->childCapacity) {
         box->childCapacity *= 2;
@@ -162,42 +207,54 @@ void putInBox(Box *box, UIElement element) {
     box->children[box->childCount++] = element;
 }
 
-Text *text(Page *page, char *text) {
+void putInRow(Row *row, UIElement element) {
+    if (row->childCount >= row->childCapacity) {
+        row->childCapacity *= 2;
+        row->children = realloc(row->children, sizeof(UIElement) * row->childCapacity);
+    }
+    row->children[row->childCount++] = element;
+}
+
+void putInColumn(Column *column, UIElement element) {
+    if (column->childCount >= column->childCapacity) {
+        column->childCapacity *= 2;
+        column->children = realloc(column->children, sizeof(UIElement) * column->childCapacity);
+    }
+    column->children[column->childCount++] = element;
+}
+
+void putInPage(Page *page, UIElement element) {
+    addElement(page, element);
+}
+
+Text *text(char *text) {
     Text *t = malloc(sizeof(Text));
-    t->text = text;
+
+    t->text = strdup(text);
     t->colour = COLOUR_BLACK;
     t->size = 12;
 
     UIElement element = newElement(ELEMENT_TEXT, t, renderText);
-    addElement(page, element);
-
+    t->element = element;
+    
     return t;
 }
 
-UIElement textRaw(char *text) {
-    Text *t = malloc(sizeof(Text));
-    t->text = text;
-    t->colour = COLOUR_BLACK;
-    t->size = 12;
-
-    UIElement element = newElement(ELEMENT_TEXT, t, renderText);
-    return element;
-}
-
-Link *linkTo(Page *page, char *text, char *href) {
+Link *linkTo(char *href, char *text) {
     Link *l = malloc(sizeof(Link));
-    l->page = page;
+
     l->href = href;
     l->text = text;
 
     UIElement element = newElement(ELEMENT_LINK_TO, l, renderLink);
-    addElement(page, element);
+    l->element = element;
 
     return l;
 }
 
-Box *box(Page *page, int height, int width) {
+Box *box(int height, int width) {
     Box *b = malloc(sizeof(Box));
+
     b->height = height;
     b->width = width;
 
@@ -206,7 +263,33 @@ Box *box(Page *page, int height, int width) {
     b->children = malloc(sizeof(UIElement));
 
     UIElement element = newElement(ELEMENT_BOX, b, renderBox);
-    addElement(page, element);
+    b->element = element;
 
     return b;
+}
+
+Row *row() {
+    Row *r = malloc(sizeof(Row));
+
+    r->childCount = 0;
+    r->childCapacity = 1;
+    r->children = malloc(sizeof(UIElement));
+
+    UIElement element = newElement(ELEMENT_ROW, r, renderRow);
+    r->element = element;
+
+    return r;
+}
+
+Column *column() {
+    Column *c = malloc(sizeof(Column));
+
+    c->childCount = 0;
+    c->childCapacity = 1;
+    c->children = malloc(sizeof(UIElement));
+
+    UIElement element = newElement(ELEMENT_COLUMN, c, renderColumn);
+    c->element = element;
+
+    return c;
 }
