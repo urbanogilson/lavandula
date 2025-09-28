@@ -71,7 +71,7 @@ static char *colourToStr(Colour colour) {
     }
 }
 
-void setTextSize(Text *text, TextSize size) {
+void textSize(Text *text, TextSize size) {
     switch (size) {
         case TEXT_XS: {
             text->size = 12;
@@ -104,8 +104,52 @@ void setTextSize(Text *text, TextSize size) {
     }
 }
 
-void setTextColour(Text *text, Colour colour) {
+void textColour(Text *text, Colour colour) {
     text->colour = colour;
+}
+
+void textWeight(Text *text, FontWeight weight) {
+    text->weight = weight;
+}
+
+void textItalic(Text *text) {
+    text->weight = FONT_ITALIC;
+}
+
+void textUnderline(Text *text) {
+    text->underline = true;
+}
+
+void textStrikethrough(Text *text) {
+    text->strikethrough = true;
+}
+
+void textBold(Text *text) {
+    text->weight = FONT_BOLD;
+}
+
+void boxBorder(Box *box, Colour colour, int width) {
+    box->hasBorder = true;
+    box->borderColour = colour;
+    box->borderWidth = width;
+}
+
+void boxPadding(Box *box, Padding *padding) {
+    box->padding = padding;
+}
+
+void boxMargin(Box *box, Margin *margin) {
+    box->margin = margin;
+}
+
+char *renderPadding(struct UIElement *element) {
+    if (!element) return strdup("");
+    return strdup("");
+}
+
+char *renderMargin(struct UIElement *element) {
+    if (!element) return strdup("");
+    return strdup("");
 }
 
 char *renderText(struct UIElement *element) {
@@ -113,10 +157,19 @@ char *renderText(struct UIElement *element) {
 
     char *colourStr = colourToStr(t->colour);
 
+    char *weightStr = (t->weight == FONT_BOLD || t->weight == FONT_BOLD_ITALIC) 
+        ? "bold" : "normal";
+
+    char *styleStr = (t->weight == FONT_ITALIC || t->weight == FONT_BOLD_ITALIC) 
+        ? "italic" : "normal";
+
+
     char *html = htmlFormat(
-        "<p style=\"color: %s; font-size: %dpx\">%s</p>",
+        "<p style=\"color: %s; font-size: %dpx; font-weight:%s; font-style:%s;\">%s</p>",
         colourStr,
         t->size,
+        weightStr,
+        styleStr,
         t->text
     );
 
@@ -138,7 +191,41 @@ char *renderLink(struct UIElement *element) {
 char *renderBox(struct UIElement *element) {
     Box *b = (Box *)element->data;
 
-    char *html = htmlFormat("<div style=\"height:%dpx; width:%dpx; border:1px solid black;\">", b->height, b->width);
+    int topPadding = 0;
+    int bottomPadding = 0;
+    int leftPadding = 0;
+    int rightPadding = 0;
+    if (b->padding) {
+        topPadding = b->padding->top;
+        bottomPadding = b->padding->bottom;
+        leftPadding = b->padding->left;
+        rightPadding = b->padding->right;
+    }
+
+    int topMargin = 0;
+    int bottomMargin = 0;
+    int leftMargin = 0;
+    int rightMargin = 0;
+    if (b->padding) {
+        topMargin = b->margin->top;
+        bottomMargin = b->margin->bottom;
+        leftMargin = b->margin->left;
+        rightMargin = b->margin->right;
+    }
+
+    char *html = htmlFormat(
+        "<div style=\""
+        "height:%dpx; width:%dpx; border:%dpx solid %s; "
+        "padding:%dpx %dpx %dpx %dpx; "
+        "margin:%dpx %dpx %dpx %dpx; "
+        "\">",
+        b->height,
+        b->width,
+        b->hasBorder ? b->borderWidth : 0,
+        colourToStr(b->borderColour),
+        topPadding, rightPadding, bottomPadding, leftPadding,
+        topMargin, rightMargin, bottomMargin, leftMargin
+    );
 
     for (int i = 0; i < b->childCount; i++) {
         char *childHtml = b->children[i].render(&b->children[i]);
@@ -152,6 +239,11 @@ char *renderBox(struct UIElement *element) {
     free(html);
 
     return finalHtml;
+}
+
+char *renderRawHtml(UIElement *element) {
+    RawHtml *html = (RawHtml *)element->data;
+    return html->html;
 }
 
 char *renderRow(UIElement *element) {
@@ -197,9 +289,11 @@ char *renderColumn(struct UIElement *element) {
     strcat(finalHtml, "</div>");
     free(html);
 
-    return finalHtml;}
+    return finalHtml;
+}
 
-void putInBox(Box *box, UIElement element) {
+void putInBox(Box *box, UIElement element)
+{
     if (box->childCount >= box->childCapacity) {
         box->childCapacity *= 2;
         box->children = realloc(box->children, sizeof(UIElement) * box->childCapacity);
@@ -257,6 +351,10 @@ Box *box(int height, int width) {
 
     b->height = height;
     b->width = width;
+    b->borderColour = COLOUR_BLACK;
+    b->hasBorder = false;
+    b->borderWidth = 2;
+    b->padding = NULL;
 
     b->childCount = 0;
     b->childCapacity = 1;
@@ -266,6 +364,73 @@ Box *box(int height, int width) {
     b->element = element;
 
     return b;
+}
+
+RawHtml *html(char *html) {
+    RawHtml *r = malloc(sizeof(RawHtml));
+
+    r->html = strdup(html);
+
+    UIElement element = newElement(ELEMENT_RAW_HTML, r, renderRawHtml);
+    r->element = element;
+
+    return r;
+}
+
+Padding *padding(int padding) {
+    Padding *p = malloc(sizeof(Padding));
+
+    p->top = padding;
+    p->bottom = padding;
+    p->left = padding;
+    p->right = padding;    
+
+    UIElement element = newElement(ELEMENT_PADDING, p, renderPadding);
+    p->element = element;
+
+    return p;
+}
+
+Margin *margin(int margin) {
+    Margin *m = malloc(sizeof(Margin));
+
+    m->top = margin;
+    m->bottom = margin;
+    m->left = margin;
+    m->right = margin;    
+
+    UIElement element = newElement(ELEMENT_MARGIN, m, renderMargin);
+    m->element = element;
+
+    return m;
+}
+
+Padding *paddingFrom(int top, int bottom, int left, int right) {
+    Padding *p = malloc(sizeof(Padding));
+
+    p->top = top;
+    p->bottom = bottom;
+    p->left = left;
+    p->right = right;    
+
+    UIElement element = newElement(ELEMENT_PADDING, p, renderPadding);
+    p->element = element;
+
+    return p;
+}
+
+Margin *marginFrom(int top, int bottom, int left, int right) {
+    Margin *p = malloc(sizeof(Margin));
+
+    p->top = top;
+    p->bottom = bottom;
+    p->left = left;
+    p->right = right;    
+
+    UIElement element = newElement(ELEMENT_MARGIN, p, renderMargin);
+    p->element = element;
+
+    return p;
 }
 
 Row *row() {

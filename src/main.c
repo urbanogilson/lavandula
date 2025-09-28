@@ -8,9 +8,24 @@
 Page home() {
     Page p = page("Home");
 
+    Box *b = box(140, 200);
+    putInPage(&p, b->element);
+    boxBorder(b, COLOUR_BLACK, 2);
+
+    boxPadding(b, paddingFrom(20, 10, 10, 40));
+    boxMargin(b, margin(20, 20, 20, 20));
+
+    Column *mainColumn = column();
+    putInBox(b, mainColumn->element);
+
     Text *name = text("Ashton James");
-    setTextSize(name, TEXT_XL);
-    putInPage(&p, name->element);
+    textSize(name, TEXT_XL);
+    textBold(name);
+    putInColumn(mainColumn, name->element);
+
+    Text *info = text("I am a Software Developer");
+    textSize(info, TEXT_S);
+    putInColumn(mainColumn, info->element);
 
     Link *l = linkTo("http://127.0.0.1:3002/help", "Go to About");
     putInPage(&p, l->element);
