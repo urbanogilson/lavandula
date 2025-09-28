@@ -117,7 +117,11 @@ void runServer(Server *server) {
 
         char fullPage[BUFFER_SIZE];
         snprintf(fullPage, sizeof(fullPage),
-            "<!DOCTYPE html><html><head><title>%s</title></head><body>%s</body></html>",
+            "<!DOCTYPE html>"
+            "<html><head>"
+                "<title>%s</title></head>"
+            "<body>%s</body>"
+            "</html>",
             page.title, bodyContent
         );
 

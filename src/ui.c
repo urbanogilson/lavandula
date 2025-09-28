@@ -142,6 +142,27 @@ void boxMargin(Box *box, Margin *margin) {
     box->margin = margin;
 }
 
+void buttonColour(Button *button, Colour colour) {
+    button->background = colour;
+}
+
+void buttonTextColour(Button *button, Colour colour) {
+    button->textColour = colour;
+}
+
+void check(Checkbox *checkbox) {
+    checkbox->checked = true;
+}
+
+void uncheck(Checkbox *checkbox) {
+    checkbox->checked = false;
+}
+
+void imageSize(Image *image, int width, int height) {
+    image->width = width;
+    image->height = height;
+}
+
 char *renderPadding(struct UIElement *element) {
     if (!element) return strdup("");
     return strdup("");
@@ -165,7 +186,8 @@ char *renderText(struct UIElement *element) {
 
 
     char *html = htmlFormat(
-        "<p style=\"color: %s; font-size: %dpx; font-weight:%s; font-style:%s;\">%s</p>",
+        "<p id=\"%p\" style=\"color: %s; font-size: %dpx; font-weight:%s; font-style:%s;\">%s</p>",
+        t,
         colourStr,
         t->size,
         weightStr,
@@ -185,6 +207,18 @@ char *renderLink(struct UIElement *element) {
         l->text
     );
 
+    return html;
+}
+
+char *renderImage(UIElement *element) {
+    Image *img = (Image *)element->data;
+    char *html = htmlFormat(
+        "<img src=\"%s\" alt=\"%s\" %s %s>",
+        img->src,
+        img->alt,
+        img->width > 0 ? htmlFormat("width=\"%d\"", img->width) : "",
+        img->height > 0 ? htmlFormat("height=\"%d\"", img->height) : ""
+    );
     return html;
 }
 
@@ -244,6 +278,38 @@ char *renderBox(struct UIElement *element) {
 char *renderRawHtml(UIElement *element) {
     RawHtml *html = (RawHtml *)element->data;
     return html->html;
+}
+
+char *renderButton(UIElement *element) {
+    Button *button = (Button *)element->data;
+
+    char *html = htmlFormat(
+        "<button id=\"btn_%p\">%s</button>",
+        button,
+        button->label
+    );
+    return html;
+}
+
+
+char *renderCheckbox(UIElement *element) {
+    Checkbox *c = (Checkbox *)element->data;
+    char *html = htmlFormat(
+        "<label><input type=\"checkbox\" %s> %s</label>",
+        c->checked ? "checked" : "",
+        c->label
+    );
+    return html;
+}
+
+char *renderTextInput(UIElement *element) {
+    TextInput *t = (TextInput *)element->data;
+    char *html = htmlFormat(
+        "<input type=\"text\" placeholder=\"%s\" value=\"%s\">",
+        t->placeholder,
+        t->value
+    );
+    return html;
 }
 
 char *renderRow(UIElement *element) {
@@ -377,6 +443,52 @@ RawHtml *html(char *html) {
     return r;
 }
 
+Button *button(char *label) {
+    Button *b = malloc(sizeof(Button));
+
+    b->background = COLOUR_WHITE;
+    b->textColour = COLOUR_BLACK;
+    b->enabled = true;
+    b->label = strdup(label);
+
+    b->element = newElement(ELEMENT_BUTTON, b, renderButton);
+
+    return b;
+}
+
+TextInput *textInput(char *placeholder) {
+    TextInput *t = malloc(sizeof(TextInput));
+    t->placeholder = placeholder;
+    t->value = "";
+
+    t->element = newElement(ELEMENT_TEXT_INPUT, t, renderTextInput);
+
+    return t;
+}
+
+Checkbox *checkbox(char *label) {
+    Checkbox *c = malloc(sizeof(Checkbox));
+    c->checked = false;
+    c->label = strdup(label);
+
+    c->element = newElement(ELEMENT_CHECKBOX, c, renderCheckbox);
+
+    return c;
+}
+
+Image *image(char *src, char *alt) {
+    Image *img = malloc(sizeof(Image));
+    img->src = strdup(src);
+    img->alt = alt ? strdup(alt) : strdup("");
+    img->width = -1;
+    img->height = -1;
+
+    UIElement element = newElement(ELEMENT_IMAGE, img, renderImage);
+    img->element = element;
+
+    return img;
+}
+
 Padding *padding(int padding) {
     Padding *p = malloc(sizeof(Padding));
 
@@ -457,4 +569,20 @@ Column *column() {
     c->element = element;
 
     return c;
+}
+
+void buttonOnClick(Button *b, void (*callback)()) {
+    b->onClick = callback;
+}
+
+State *newState(void *initialValue, void (*onChange)(struct State *state)) {
+    State *s = malloc(sizeof(State));
+    s->data = initialValue;
+    s->onChange = onChange;
+    return s;
+}
+
+void setState(State *s, void *newValue) {
+    s->data = newValue;
+    if (s->onChange) s->onChange(s);
 }

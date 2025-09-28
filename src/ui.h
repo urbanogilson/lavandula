@@ -11,7 +11,11 @@ typedef enum {
     ELEMENT_COLUMN,
     ELEMENT_RAW_HTML,
     ELEMENT_PADDING,
-    ELEMENT_MARGIN
+    ELEMENT_MARGIN,
+    ELEMENT_BUTTON,
+    ELEMENT_TEXT_INPUT,
+    ELEMENT_CHECKBOX,
+    ELEMENT_IMAGE,
 } ElementType;
 
 typedef enum {
@@ -40,6 +44,7 @@ typedef enum {
 
 struct Page;
 struct UIElement;
+struct State;
 
 typedef char *(*RenderFunction)(struct UIElement *element);
 
@@ -47,6 +52,7 @@ typedef struct UIElement {
     ElementType type;
     void *data;
     RenderFunction render;
+    struct State *state;
 } UIElement;
 
 typedef struct {
@@ -130,6 +136,45 @@ typedef struct {
     UIElement element;
 } RawHtml;
 
+typedef struct {
+    char *label;
+    Colour background;
+    Colour textColour;
+    bool enabled;
+    void (*onClick)();
+
+    UIElement element;
+} Button;
+
+typedef struct {
+    char *placeholder;
+    char *value;
+
+    UIElement element;
+} TextInput;
+
+typedef struct {
+    bool checked;
+    char *label;
+    UIElement element;
+} Checkbox;
+
+typedef struct {
+    char *src;
+    char *alt;
+    int width;
+    int height;
+    UIElement element;
+} Image;
+
+typedef struct State {
+    void *data;
+    UIElement *element;
+    void (*onChange)(struct State *state);
+} State;
+
+void setState(State *s, void *newValue);
+State *newState(void *initialValue, void (*onChange)(struct State *state));
 
 Page page(char *title);
 Text *text(char *text);
@@ -138,6 +183,10 @@ Row *row();
 Column *column();
 Box *box(int height, int width);
 RawHtml *html(char *html);
+Button *button(char *label);
+TextInput *textInput(char *placeholder);
+Checkbox *checkbox(char *label);
+Image *image(char *src, char *alt);
 
 Padding *paddingFrom(int top, int bottom, int left, int right);
 Padding *padding(int padding);
@@ -162,5 +211,15 @@ void textStrikethrough(Text *text);
 void boxBorder(Box *box, Colour colour, int width);
 void boxPadding(Box *box, Padding *padding);
 void boxMargin(Box *box, Margin *margin);
+
+void buttonColour(Button *button, Colour colour);
+void buttonTextColour(Button *button, Colour colour);
+
+void check(Checkbox *checkbox);
+void uncheck(Checkbox *checkbox);
+
+void imageSize(Image *image, int width, int height);
+
+void buttonOnClick(Button *b, void (*callback)());
 
 #endif
