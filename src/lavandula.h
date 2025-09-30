@@ -2,13 +2,25 @@
 #define lavandula_h
 
 #include "server.h"
-#include "ui.h"
+
+typedef HttpResponse (*Middleware)(HttpRequest, Controller);
 
 typedef struct {
     Server server;
+    Middleware m;
+    int port;
 } App;
 
-App init(int port);
+typedef struct {
+    App app;
+} AppBuilder;
+
+
+AppBuilder createBuilder();
+void usePort(AppBuilder *builder, int port);
+void useMiddleware(AppBuilder *builder, Middleware);
+
+App build(AppBuilder builder);
 
 void runApp(App *app);
 void cleanupApp(App *app);

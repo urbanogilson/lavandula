@@ -2,9 +2,8 @@
 #define router_h
 
 #include "http.h"
-#include "ui.h"
 
-typedef Page (*Controller)();
+typedef HttpResponse (*Controller)(HttpRequest);
 
 HttpResponse ok(char *content);
 HttpResponse badRequest(char *content);

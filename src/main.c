@@ -5,20 +5,24 @@
 #include "lavandula.h"
 #include "cli.h"
 
+typedef struct {
+    char *title;
+} TodoItem;
 
-Page home() {
-    Page p = page("Home");
+HttpResponse getTodos(HttpRequest request) {
+    return ok(request.resource);
+}
 
-    Text *name = text("The state has not changed!");
-    textSize(name, TEXT_XL);
-    textBold(name);
+HttpResponse createTodo(HttpRequest request) {
+    return ok(request.resource);
+}
 
-    putInPage(&p, name->element);
+HttpResponse someMiddleware(HttpRequest request, Controller controller) {
+    if (true) {
+        return badRequest("bad request");
+    }
 
-    State *state = newState(name, NULL);
-    setState(state, "The state has changed!");
-    
-    return p;
+    return controller(request);
 }
 
 int main(int argc, char *argv[]) {
@@ -37,9 +41,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    App app = init(3003);
+    AppBuilder builder = createBuilder();
+    usePort(&builder, 3005);
+    useMiddleware(&builder, someMiddleware);
 
-    route(&app.server.router, HTTP_GET, "/", home);
+    App app = build(builder);
+
+    get(&app.server.router, "/getTodos", getTodos);
+    post(&app.server.router, "/createTodo", createTodo);
 
     runApp(&app);
     cleanupApp(&app);

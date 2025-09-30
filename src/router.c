@@ -36,42 +36,12 @@ Router initRouter() {
     return router;
 }
 
-void freeUIElement(UIElement *element) {
-    switch (element->type) {
-        case ELEMENT_TEXT: {
-            Text *t = (Text *)element->data;
-            free(t->text);
-            break;
-        }
-        case ELEMENT_BOX: {
-            break;
-        }
-        case ELEMENT_LINK_TO: {
-            break;
-        }
-        default: {
-            printf("unknown element in freeUIElement");
-        }
-    }
-}
-
 void freeRouter(Router *router) {
     if (!router) return;
 
     for (int i = 0; i < router->routeCount; i++) {
         Route route = router->routes[i];
         free(route.path);
-
-        Page p = route.controller();
-        free(p.title);
-
-
-        for (int j = 0; j < p.bodyCount; j++) {
-            UIElement element = p.body[j];
-            freeUIElement(&element);
-        }
-
-        free(p.body);
     }
 
     free(router->routes);
@@ -89,6 +59,14 @@ void route(Router *router, HttpMethod method, char *path, Controller controller)
         router->routes = realloc(router->routes, sizeof(Route) * router->routeCapacity);
     }
     router->routes[router->routeCount++] = route;
+}
+
+void get(Router *router, char *path, Controller controller) {
+    route(router, HTTP_GET, path, controller);
+}
+
+void post(Router *router, char *path, Controller controller) {
+    route(router, HTTP_POST, path, controller);
 }
 
 void routeNotFound(Router *router, Controller controller) {
