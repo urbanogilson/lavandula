@@ -61,14 +61,6 @@ void route(Router *router, HttpMethod method, char *path, Controller controller)
     router->routes[router->routeCount++] = route;
 }
 
-void get(Router *router, char *path, Controller controller) {
-    route(router, HTTP_GET, path, controller);
-}
-
-void post(Router *router, char *path, Controller controller) {
-    route(router, HTTP_POST, path, controller);
-}
-
 void routeNotFound(Router *router, Controller controller) {
     route(router, HTTP_GET, "", controller);
 }

@@ -2,6 +2,7 @@
 #define server_h
 
 #include "router.h"
+#include "middleware.h"
 
 typedef struct {
     Router router;
@@ -13,6 +14,6 @@ typedef struct {
 Server initServer(int port);
 void freeServer(Server *server);
 
-void runServer(Server *Server);
+void runServer(Server *server, MiddlewarePipeline middleware);
 
 #endif

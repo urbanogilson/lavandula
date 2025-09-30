@@ -143,7 +143,7 @@ HttpParser parseRequest(char *request) {
 
     char method[16];
     int methodIndex = 0;
-    while (!isEnd(parser) && currentChar(&parser) != ' ' && methodIndex < sizeof(method) - 1) {
+    while (!isEnd(parser) && currentChar(&parser) != ' ' && methodIndex < (int)sizeof(method) - 1) {
         method[methodIndex++] = currentChar(&parser);
         advance(&parser);
     }

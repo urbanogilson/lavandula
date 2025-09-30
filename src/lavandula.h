@@ -2,19 +2,19 @@
 #define lavandula_h
 
 #include "server.h"
-
-typedef HttpResponse (*Middleware)(HttpRequest, Controller);
+#include "dotenv.h"
+#include "logger.h"
+#include "middleware.h"
 
 typedef struct {
-    Server server;
-    Middleware m;
-    int port;
+    Server             server;
+    MiddlewarePipeline middleware;
+    int                port;
 } App;
 
 typedef struct {
     App app;
 } AppBuilder;
-
 
 AppBuilder createBuilder();
 void usePort(AppBuilder *builder, int port);
@@ -24,5 +24,8 @@ App build(AppBuilder builder);
 
 void runApp(App *app);
 void cleanupApp(App *app);
+
+void get(App *app, char *path, Controller controller);
+void post(App *app, char *path, Controller controller);
 
 #endif

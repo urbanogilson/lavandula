@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include "http.h"
+#include "middleware.h"
 
 #define BUFFER_SIZE 4096
 
@@ -31,7 +32,7 @@ void freeServer(Server *server) {
     freeRouter(&server->router);
 }
 
-void runServer(Server *server) {
+void runServer(Server *server, MiddlewarePipeline middleware) {
     if (!server) return;
     
     server->fileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -88,7 +89,7 @@ void runServer(Server *server) {
             Route r = server->router.routes[i];
 
             if (strcmp(r.path, parser.request.resource) == 0) {
-                route = &r;
+                route = &server->router.routes[i];
                 break;
             }
         }
@@ -100,11 +101,15 @@ void runServer(Server *server) {
             continue;
         }
 
-        // need App here for middleware
+        if (middleware.this) {
+            HttpResponse res = (*middleware.this)(parser.request, route->controller);
+            printf("calling middleware\n");
+        }
 
-        HttpResponse response = route->controller(parser.request);
+        // HttpResponse res = route->controller(parser.request);
 
-        write(clientSocket, response.content, strlen(response.content));
+        // write(clientSocket, res.content, strlen(res.content));
+        write(clientSocket, "a", 1);
         close(clientSocket);
     }
 }

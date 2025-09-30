@@ -5,16 +5,8 @@
 #include "lavandula.h"
 #include "cli.h"
 
-typedef struct {
-    char *title;
-} TodoItem;
-
-HttpResponse getTodos(HttpRequest request) {
-    return ok(request.resource);
-}
-
-HttpResponse createTodo(HttpRequest request) {
-    return ok(request.resource);
+HttpResponse home(HttpRequest _) {
+    return ok("Hello, World!");
 }
 
 HttpResponse someMiddleware(HttpRequest request, Controller controller) {
@@ -43,14 +35,20 @@ int main(int argc, char *argv[]) {
 
     AppBuilder builder = createBuilder();
     usePort(&builder, 3005);
-    useMiddleware(&builder, someMiddleware);
+    useMiddleware(&builder, logger);
+
+    dotenv();
+
+    // char *dbUser = env("DB_USER");
+    // char *dbPass = env("DB_PASS");
 
     App app = build(builder);
 
-    get(&app.server.router, "/getTodos", getTodos);
-    post(&app.server.router, "/createTodo", createTodo);
+    get(&app, "/", home);
 
     runApp(&app);
+
+    dotenvClean();
     cleanupApp(&app);
 
     return 0;

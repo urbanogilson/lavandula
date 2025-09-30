@@ -1,18 +1,32 @@
 #include "../src/lavandula.h"
 
-Page home() {
-    Page p = page("Home");
-    text(&p, "Hello, World!");
+HttpResponse logger(HttpRequest request, Controller controller) {
+    printf("requesting: %s", request.resource);
 
-    return p;
+    return controller(request);
+}
+
+HttpResponse index(HttpRequest request) {
+    return ok("Hello, World!");
 }
 
 int main() {
-    App app = init(3000);
+    AppBuilder builder = createBuilder();
+    usePort(&builder, 3001);
+    useMiddleware(&builder, logger);
 
-    route(&app.server.router, HTTP_GET, "/", home);
+    dotenv();
+
+    char *dbUser = env("DB_USER");
+    char *dbPass = env("DB_PASS");
+
+    App app = build(builder);
+
+    get(&app, "/get", index);
 
     runApp(&app);
+
+    dotenvClean();
     cleanupApp(&app);
 
     return 0;

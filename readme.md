@@ -1,41 +1,38 @@
 # Lavandula
 
-**Lavandula** is a lightweight, minimalist C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes, render pages, and run a HTTP server without the complexity of heavier frameworks.
+**Lavandula** is a lightweight, minimalist C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes and run a HTTP server without the complexity of heavier frameworks.
 
 <br/>
 
-*Lavandula 'Hello, World!' minimal example:*
-
 ```c
-Page home() {
-    Page p = page("Home");
-    text(&p, "Hello, World!");
-
-    return p;
-}
-
 int main() {
-    App app = init(3000);
+    AppBuilder builder = createBuilder();
+    usePort(&builder, 3001);
+    useMiddleware(&builder, logger);
 
-    route(&app.server.router, HTTP_GET, "/", home);
+    dotenv();
+
+    char *dbUser = env("DB_USER");
+    char *dbPass = env("DB_PASS");
+
+    App app = build(builder);
+
+    get(&app, "/get", index);
 
     runApp(&app);
+
+    dotenvClean();
     cleanupApp(&app);
 
     return 0;
 }
 ```
 
-## What is it, Really?
-
-Lavandula is a web server, router, renderer, and framework toolkit for building readable and performant full-stack web applications. Using the Lavandula API, HTML, CSS, and JS are automatically generated from your C code, allowing you to write interactive web pages without manually writing frontend files.
-
 
 ## Features
 
 - Intuitive routing system
 - HTTP endpoint support (GET, POST, etc)
-- Simple page rendering
 - Minimal dependencies (pure C)
 - Quick project scaffolding via the CLI
 
