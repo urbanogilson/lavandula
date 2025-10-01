@@ -51,3 +51,25 @@ void get(App *app, char *path, Controller controller) {
 void post(App *app, char *path, Controller controller) {
     route(&app->server.router, HTTP_POST, path, controller);
 }
+
+// defines a route for 404 not found
+void routeNotFound(Router *router, Controller controller) {
+    route(router, HTTP_GET, "/404", controller);
+}
+
+// defines a route for GET /
+void root(Router *router, Controller controller) {
+    route(router, HTTP_GET, "/", controller);
+}
+
+void put(App *app, char *path, Controller controller) {
+    route(&app->server.router, HTTP_PUT, path, controller);
+}
+
+void delete(App *app, char *path, Controller controller) {
+    route(&app->server.router, HTTP_DELETE, path, controller);
+}
+
+void patch(App *app, char *path, Controller controller) {
+    route(&app->server.router, HTTP_PATCH, path, controller);
+}

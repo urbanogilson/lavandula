@@ -6,6 +6,7 @@
 #include "dotenv.h"
 #include "middleware.h"
 #include "logger.h"
+#include "lavandula_test.h"
 
 typedef struct {
     Server              server;
@@ -29,5 +30,15 @@ void cleanupApp(App *app);
 
 void get(App *app, char *path, Controller controller);
 void post(App *app, char *path, Controller controller);
+void put(App *app, char *path, Controller controller);
+void delete(App *app, char *path, Controller controller);
+void patch(App *app, char *path, Controller controller);
+
+// defines a special route for handling 404s
+void   routeNotFound(Router *router,  Controller controller);
+
+// defines a special route for handling the root path
+void   root(Router *router, Controller controller);
+
 
 #endif

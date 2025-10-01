@@ -83,7 +83,7 @@ Next steps:
 It automatically generates:
 - `app.c`
 - `routes.c`
-- `controllers/home_controller.c`
+- makefile
 
 
 ## Compile and Run

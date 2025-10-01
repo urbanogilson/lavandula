@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "lavandula.h"
-#include "lavandula_test.h"
 
 HttpResponse home(HttpRequest _) {
     return ok("Hello, World!");
@@ -27,13 +26,18 @@ bool authenticator(HttpRequest req, MiddlewareHandler *n) {
 void testOne() {
     int x = 10;
     expect(x, toBe(10));
+    expect(x, toBe(10));
+    expect(x, toBe(10));
+}
+
+void testTwo() {
+    int x = 10;
+    expect(x, toBe(12));
 }
 
 void runTests() {
     runTest(testOne);
-    runTest(testOne);
-    runTest(testOne);
-    runTest(testOne);
+    runTest(testTwo);
 
     testResults();
 }
