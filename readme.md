@@ -5,23 +5,24 @@
 <br/>
 
 ```c
+HttpResponse home(HttpRequest _) {
+    return ok("Hello, World!");
+}
+
 int main() {
+    // Initialize the application builder
     AppBuilder builder = createBuilder();
-    usePort(&builder, 3001);
-    useMiddleware(&builder, logger);
-
-    dotenv();
-
-    char *dbUser = env("DB_USER");
-    char *dbPass = env("DB_PASS");
-
+    
+    // Build the application
     App app = build(builder);
 
-    get(&app, "/get", index);
+    // Define routes
+    get(&app, "/home", home);
 
+    // Run the application
     runApp(&app);
 
-    dotenvClean();
+    // Cleanup leftover resources
     cleanupApp(&app);
 
     return 0;
@@ -33,8 +34,11 @@ int main() {
 
 - Intuitive routing system
 - HTTP endpoint support (GET, POST, etc)
+- Controller middleware
 - Minimal dependencies (pure C)
 - Quick project scaffolding via the CLI
+- Route and model generation via the CLI
+- Built-in testing framework
 
 
 ## Installation

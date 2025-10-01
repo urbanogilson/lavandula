@@ -3,18 +3,39 @@
 #include <string.h>
 
 #include "lavandula.h"
-#include "cli.h"
+#include "lavandula_test.h"
 
 HttpResponse home(HttpRequest _) {
     return ok("Hello, World!");
 }
 
-HttpResponse someMiddleware(HttpRequest request, Controller controller) {
-    if (true) {
-        return badRequest("bad request");
+HttpResponse notFound(HttpRequest _) {
+    return response("Not Found", HTTP_NOT_FOUND);
+}
+
+bool authenticator(HttpRequest req, MiddlewareHandler *n) {
+    printf("Authenticating: %s\n", req.resource);
+
+    bool authed = true; // auth logic
+    if (!authed) {
+        return false;
     }
 
-    return controller(request);
+    return next(req, n);
+}
+
+void testOne() {
+    int x = 10;
+    expect(x, toBe(10));
+}
+
+void runTests() {
+    runTest(testOne);
+    runTest(testOne);
+    runTest(testOne);
+    runTest(testOne);
+
+    testResults();
 }
 
 int main(int argc, char *argv[]) {
@@ -33,22 +54,28 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    runTests();
+
     AppBuilder builder = createBuilder();
     usePort(&builder, 3005);
+
     useMiddleware(&builder, logger);
+    useMiddleware(&builder, authenticator);
 
-    dotenv();
-
-    // char *dbUser = env("DB_USER");
-    // char *dbPass = env("DB_PASS");
+    // 1. PostgreSL, MySQL, SQLite integrations, etc
+    //    - build an actual mini backend with it
+    // 2. Look at Dependency Injection containers
+    // 3. CORS, Rate Limiting, etc
+    // 4. Testing framework
+    // 5. More HTTP features (file serving, etc)
 
     App app = build(builder);
 
-    get(&app, "/", home);
+    root(&app.server.router, home);
+    routeNotFound(&app.server.router, notFound);
 
     runApp(&app);
 
-    dotenvClean();
     cleanupApp(&app);
 
     return 0;

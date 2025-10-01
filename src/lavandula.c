@@ -1,10 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "lavandula.h"
 
 AppBuilder createBuilder() {
     AppBuilder builder = {};
     usePort(&builder, 3000);
+
+    builder.app.middleware = (MiddlewareHandler) {
+        .handlers = malloc(sizeof(MiddlewareHandler) * 1),
+        .count = 0,
+        .capacity = 1,
+    };
 
     return builder;
 }
@@ -13,22 +20,16 @@ void usePort(AppBuilder *builder, int port) {
     builder->app.port = port;
 }
 
-void useMiddleware(AppBuilder *builder, Middleware middleware) {
-    if (!builder->app.middleware.this) {
-        builder->app.middleware.this = &middleware; // solution probably here
-        builder->app.middleware.next = NULL;
-    } else {
-        builder->app.middleware.next = &(MiddlewarePipeline){
-            .this = &middleware,
-            .next = NULL,
-        };
+void useMiddleware(AppBuilder *builder, MiddlewareFunc middleware) {
+    if (builder->app.middleware.count >= builder->app.middleware.capacity) {
+        builder->app.middleware.capacity *= 2;
+        builder->app.middleware.handlers = realloc(builder->app.middleware.handlers, sizeof(MiddlewareFunc) * builder->app.middleware.capacity);
     }
+    builder->app.middleware.handlers[builder->app.middleware.count++] = middleware;
 }
 
 App build(AppBuilder builder) {
-    builder.app = (App){
-        .server = initServer(builder.app.port)
-    };
+    builder.app.server = initServer(builder.app.port);
 
     return builder.app;
 }

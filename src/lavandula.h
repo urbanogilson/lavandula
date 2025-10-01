@@ -1,15 +1,17 @@
 #ifndef lavandula_h
 #define lavandula_h
 
+#include "cli.h"
 #include "server.h"
 #include "dotenv.h"
-#include "logger.h"
 #include "middleware.h"
+#include "logger.h"
 
 typedef struct {
-    Server             server;
-    MiddlewarePipeline middleware;
-    int                port;
+    Server              server;
+    int                 port;
+
+    MiddlewareHandler  middleware;
 } App;
 
 typedef struct {
@@ -18,7 +20,7 @@ typedef struct {
 
 AppBuilder createBuilder();
 void usePort(AppBuilder *builder, int port);
-void useMiddleware(AppBuilder *builder, Middleware);
+void useMiddleware(AppBuilder *builder, MiddlewareFunc);
 
 App build(AppBuilder builder);
 

@@ -3,7 +3,9 @@
 
 #include "http.h"
 #include "router.h"
+#include "middleware.h"
 
-HttpResponse logger(HttpRequest request, Controller controller);
+bool logger(HttpRequest request, MiddlewareHandler *n);
+bool fileLogger(HttpRequest request, MiddlewareHandler *n);
 
 #endif

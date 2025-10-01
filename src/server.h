@@ -14,6 +14,6 @@ typedef struct {
 Server initServer(int port);
 void freeServer(Server *server);
 
-void runServer(Server *server, MiddlewarePipeline middleware);
+void runServer(Server *server, MiddlewareHandler middleware);
 
 #endif

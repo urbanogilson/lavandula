@@ -1,11 +1,22 @@
 #ifndef middleware_h
 #define middleware_h
 
-typedef HttpResponse (*Middleware)(HttpRequest, Controller);
+#include "http.h"
+#include "router.h"
 
-typedef struct MiddlewarePipeline {
-    Middleware                *this;
-    struct MiddlewarePipeline *next;
-} MiddlewarePipeline;
+typedef struct MiddlewareHandler MiddlewareHandler;
+
+// A middleware function takes in a HttpRequest and a pointer to the next middleware handler.
+typedef bool (* MiddlewareFunc)(HttpRequest, MiddlewareHandler *);
+
+struct MiddlewareHandler {
+    MiddlewareFunc *handlers;
+    int count;
+    int capacity;
+    int current;
+    Controller finalHandler;
+};
+
+bool next(HttpRequest request, MiddlewareHandler *middleware);
 
 #endif

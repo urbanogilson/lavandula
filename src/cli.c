@@ -26,14 +26,6 @@ void newProject(char *name) {
         return;
     }
 
-    char controllersDir[256];
-    snprintf(controllersDir, sizeof(controllersDir), "%s/controllers", tempDir);
-    if (mkdir(controllersDir, 0755) != 0) {
-        perror("Failed to create controllers directory");
-        return;
-    }
-    printf(GREEN "-> Setup directories created successfully!\n" RESET);
-
     char appFile[256];
     snprintf(appFile, sizeof(appFile), "%s/app.c", tempDir);
     FILE *fp = fopen(appFile, "w");
@@ -54,24 +46,6 @@ void newProject(char *name) {
     );
     fclose(fp);
     printf(GREEN "-> Created app.c\n" RESET);
-
-    char homeControllerFile[256];
-    snprintf(homeControllerFile, sizeof(homeControllerFile), "%s/controllers/home_controller.c", tempDir);
-    FILE *hcFp = fopen(homeControllerFile, "w");
-    if (!hcFp) {
-        perror("Error creating home_controller.c");
-        return;
-    }
-    fprintf(hcFp, 
-        "#include \"../src/lavandula.h\"\n\n"
-        "Page home() {\n"
-        "    Page p = page(\"Home\");\n"
-        "    text(&p, \"Hello, World!\");\n\n"
-        "    return p;\n"
-        "}\n"
-    );
-    fclose(hcFp);
-    printf(GREEN "-> Created controllers/home_controller.c\n" RESET);
 
     char routesFile[256];
     snprintf(routesFile, sizeof(routesFile), "%s/routes.c", tempDir);

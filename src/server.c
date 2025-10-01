@@ -32,7 +32,7 @@ void freeServer(Server *server) {
     freeRouter(&server->router);
 }
 
-void runServer(Server *server, MiddlewarePipeline middleware) {
+void runServer(Server *server, MiddlewareHandler middleware) {
     if (!server) return;
     
     server->fileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -95,21 +95,38 @@ void runServer(Server *server, MiddlewarePipeline middleware) {
         }
 
         if (!route) {
-            const char *notFound = "404 not found";
-            write(clientSocket, notFound, strlen(notFound));
+            Route *notFoundRoute = NULL;
+            for (int i = 0; i < server->router.routeCount; i++) {
+                Route r = server->router.routes[i];
+
+                if (strcmp(r.path, "/404") == 0) {
+                    notFoundRoute = &server->router.routes[i];
+                    break;
+                }
+            }
+
+            if (notFoundRoute) {
+                route = notFoundRoute;
+            } else {
+                const char *notFound = "404 not found";
+                write(clientSocket, notFound, strlen(notFound));
+                close(clientSocket);
+                continue;
+            }
+        }
+
+        bool x = next(parser.request, &middleware);
+
+        if (!x) {
+            const char *forbidden = "403 forbidden";
+            write(clientSocket, forbidden, strlen(forbidden));
             close(clientSocket);
             continue;
         }
 
-        if (middleware.this) {
-            HttpResponse res = (*middleware.this)(parser.request, route->controller);
-            printf("calling middleware\n");
-        }
+        HttpResponse res = route->controller(parser.request);
 
-        // HttpResponse res = route->controller(parser.request);
-
-        // write(clientSocket, res.content, strlen(res.content));
-        write(clientSocket, "a", 1);
+        write(clientSocket, res.content, strlen(res.content));
         close(clientSocket);
     }
 }

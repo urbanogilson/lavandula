@@ -37,7 +37,7 @@ static HttpMethod toHttpMethod(char *s) {
     return HTTP_GET;
 }
 
-static char* httpMethodToStr(HttpMethod method) {
+char* httpMethodToStr(HttpMethod method) {
     switch (method) {
         case HTTP_GET: {
             return "GET";

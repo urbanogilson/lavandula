@@ -190,7 +190,6 @@ void parse(DotenvParser *p) {
 char *readFile() {
     FILE *fptr = fopen(".env", "r");
     if (!fptr) {
-        printf("file failed");
         return NULL;
     }
 

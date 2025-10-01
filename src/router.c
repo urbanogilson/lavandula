@@ -19,7 +19,7 @@ HttpResponse badRequest(char *content) {
     };
 }
 
-HttpResponse response(char *content, HttpStatus status) {
+HttpResponse response(char *content, HttpStatusCode status) {
     return (HttpResponse) {
         .content = content,
         .status = status
@@ -61,6 +61,12 @@ void route(Router *router, HttpMethod method, char *path, Controller controller)
     router->routes[router->routeCount++] = route;
 }
 
+// defines a route for 404 not found
 void routeNotFound(Router *router, Controller controller) {
-    route(router, HTTP_GET, "", controller);
+    route(router, HTTP_GET, "/404", controller);
+}
+
+// defines a route for GET /
+void root(Router *router, Controller controller) {
+    route(router, HTTP_GET, "/", controller);
 }
