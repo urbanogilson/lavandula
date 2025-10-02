@@ -47,6 +47,17 @@ check_dependencies() {
     fi
 }
 
+download_source() {
+    log_info "Downloading source code..."
+
+    rm -rf "$TMP_DIR"
+    mkdir -p "$TMP_DIR"
+    cd "$TMP_DIR"
+
+    git clone "https://github.com/${REPO}.git" .
+    log_success "Source code downloaded"
+}
+
 build_project() {
     log_info "Building Lavandula..."
     make
@@ -56,7 +67,7 @@ build_project() {
 install_project() {
     log_info "Installing Lavandula to ${INSTALL_DIR}..."
 
-    if [ ! -f lavu ]; then
+    if [ ! -f build/lavu ]; then
         log_error "Built binary 'lavu' not found. Build may have failed."
         exit 1
     fi
@@ -65,8 +76,8 @@ install_project() {
         mkdir -p "${INSTALL_DIR}/bin"
     fi
 
-    cp lavu "${INSTALL_DIR}/bin/"
-    chmod +x "${INSTALL_DIR}/bin/lavu"
+    sudo cp build/lavu "${INSTALL_DIR}/bin/"
+    sudo chmod +x "${INSTALL_DIR}/bin/lavu"
 
     log_success "Installation completed"
 }
