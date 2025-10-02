@@ -1,6 +1,6 @@
 # Lavandula API
 
-Lavandula is a backend web framework designed to be minimal and provide an intuitive developer experience. The framework is entirely C-based and requires no external dependencies.
+This document provides information on how to use the Lavandula API for web application development.
 
 
 ## Overview
@@ -29,7 +29,7 @@ int main() {
 
 Let's break down each part of the program.
 
-This line creates an instance of the application builder. From here, you can call various builder functions that are part of the Lavandula API to customise your application behaviour. More on this later.
+This line creates an instance of the application builder. From here, you can call various builder functions that are part of the API to customise your application behaviour. More on this later.
 
 ```c
 AppBuilder builder = createBuilder();
@@ -49,7 +49,7 @@ The function must return a `HttpResponse` and take in a `HttpRequest`.
 get(&app, "/home", home);
 ```
 
-This line starts the web server. Most the application runtime is spent inside this function.
+This line starts the web server. Most of the application runtime is spent inside this function.
 
 ```c
 runApp(&app);
@@ -70,7 +70,7 @@ Hello, World!
 
 ## Application Builder
 
-The application builder methods are how you configure your web application. This involves things like CORS, the application port, rate limiting, etc.
+The application builder methods are how you configure your web application. This involves things like CORS, the application port, middleware, etc.
 
 ```c
 // configures the port the application runs on
@@ -80,7 +80,7 @@ void usePort(AppBuilder *builder, int port);
 void useMiddleware(AppBuilder *builder, MiddlewareFunc);
 ```
 
-Once the application configuration is complete, call the `build` method to create an instance of your web application.
+Once you have finished configuring your application, call the `build` method to create an instance of your web application.
 
 ```c
 AppBuilder builder = createBuilder();
@@ -126,7 +126,7 @@ HttpResponse error(HttpRequest _) {
 
 ## Routing
 
-The Lavandula API provides five routing functions, each corresponding to a HTTP method. These functions register the controllers you have created to your web application.
+The Lavandula API provides six routing functions, each corresponding to a HTTP method. These functions register the controllers you have created to your web application.
 
 ```c
 void get(App *app, char *path, Controller controller);
@@ -189,27 +189,21 @@ HttpResponse myMiddleware(HttpRequest req, Controller next) {
 
 You can inject environment variables into your application using a .env file.
 
-Call the `dotenv` function to parse a .env file in the current directory. Then, you can call the `env` function to retrieve a specific environment variable.
-
-Note that currently, only a `.env` file is supported, and files like `dev.env` will not be parsed.
+Call the `useDotenv` function to parse an environment variable file in the current directory. Then, you can call the `env` function to retrieve a specific environment variable.
 
 ```c
-dotenv();
+useDotenv(".env");
 
 char *dbUser = env("DB_USER");
 char *dbPass = env("DB_PASS");
 
 // ..
-
-dotenvClean();
 ```
-
-It is recommended that you call `dotenvClean` when you are finished using the variables to free them from memory.
 
 
 ## CORS policy configuration
 
-Lavandula provides CORS policy configuration for your web application.
+Lavandula provides an API to configure the CORS policy for your web application.
 
 An example CORS policy configuration can be seen below.
 
@@ -262,7 +256,7 @@ runTest(testOne);
 testResults();
 ```
 
-Call `testResults` to see the outcome of all of your tests.
+Call `runTest` with a function pointer argument to run a test. Call `testResults` to see the outcome of all of your tests.
 
 
 ## JSON
@@ -272,27 +266,27 @@ Lavandula provides a built-in JSON API for manipulating JSON objects within your
 Create a json builder object to start.
 
 ```c
-JsonBuilder builder = jsonBuilder();
+JsonBuilder jsonBuilder = jsonBuilder();
 ```
 
 You can construct the JSON object calling various `jsonAdd...` methods. The following example adds a json pair with the key 'greeting' and the value 'Hello, World!'.
 
 ```c
-jsonAddString(&builder, "greeting", "Hello, World!");
+jsonAddString(&jsonBuilder, "greeting", "Hello, World!");
 ```
 
 These are all the valid methods you can use to add values into the JSON object.
 
 ```c
-void jsonAddString(JsonBuilder *builder, char *key, char *value);
-void jsonAddBool(JsonBuilder *builder, char *key, bool value);
-void jsonAddNumber(JsonBuilder *builder, char *key, double value);
-void jsonAddNull(JsonBuilder *builder, char *key);
-void jsonAddObject(JsonBuilder *builder, char *key, JsonBuilder *object);
-void jsonAddArray(JsonBuilder *builder, char *key, JsonBuilder *array);
+void jsonAddString(JsonBuilder *jsonBuilder, char *key, char *value);
+void jsonAddBool(JsonBuilder *jsonBuilder, char *key, bool value);
+void jsonAddNumber(JsonBuilder *jsonBuilder, char *key, double value);
+void jsonAddNull(JsonBuilder *jsonBuilder, char *key);
+void jsonAddObject(JsonBuilder *jsonBuilder, char *key, JsonBuilder *object);
+void jsonAddArray(JsonBuilder *jsonBuilder, char *key, JsonBuilder *array);
 ```
 
-Let's construct an example JSON object.
+This example constructs a 'todo' JSON object.
 
 ```c
 JsonBuilder jBuilder = jsonBuilder();
@@ -317,7 +311,7 @@ You can set the environment of your application with the following:
 useEnvironment(&builder, ENV_DEVELOPMENT);
 ```
 
-Macros defined in `environment.h` evaluate to strings. So, you could just pass "DEVELOPMENT" into `useEnvironment`. They are just there for convenience. Feel free to use your own custom environments, "STAGING", etc.
+Macros defined in `environment.h` evaluate to strings. So, you could just pass the raw string "DEVELOPMENT" into `useEnvironment`. They are just there for convenience. Feel free to use your own custom environments, such as "STAGING", etc.
 
 ```
 #define ENV_DEVELOPMENT "DEVELOPMENT"

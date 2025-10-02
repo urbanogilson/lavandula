@@ -44,6 +44,9 @@ int main() {
 - Built-in logging
 - CORS policy configuration
 
+
+## Future
+
 - PostgreSL, MySQL, SQLite integrations, etc
 - Potential dependency injection framework
 - Templating engine

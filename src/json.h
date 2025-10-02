@@ -36,17 +36,17 @@ struct JsonBuilder {
 };
 
 JsonBuilder jsonBuilder();
-void freeJsonBuilder(JsonBuilder *builder);
+void freeJsonBuilder(JsonBuilder *jsonBuilder);
 
-void jsonAddString(JsonBuilder *builder, char *key, char *value);
-void jsonAddBool(JsonBuilder *builder, char *key, bool value);
-void jsonAddInteger(JsonBuilder *builder, char *key, int value);
-void jsonAddNull(JsonBuilder *builder, char *key);
-void jsonAddObject(JsonBuilder *builder, char *key, JsonBuilder *object);
-void jsonAddArray(JsonBuilder *builder, char *key, JsonBuilder *array);
+void jsonAddString(JsonBuilder *jsonBuilder, char *key, char *value);
+void jsonAddBool(JsonBuilder *jsonBuilder, char *key, bool value);
+void jsonAddInteger(JsonBuilder *jsonBuilder, char *key, int value);
+void jsonAddNull(JsonBuilder *jsonBuilder, char *key);
+void jsonAddObject(JsonBuilder *jsonBuilder, char *key, JsonBuilder *object);
+void jsonAddArray(JsonBuilder *jsonBuilder, char *key, JsonBuilder *array);
 
-char *jsonStringify(JsonBuilder *builder);
+char *jsonStringify(JsonBuilder *jsonBuilder);
 
-void jsonPrint(JsonBuilder *builder);
+void jsonPrint(JsonBuilder *jsonBuilder);
 
 #endif

@@ -5,9 +5,7 @@
 #include "cors.h"
 
 CorsConfig corsPolicy() {
-    return (CorsConfig){
-        
-    };
+    return (CorsConfig){};
 }
 
 void allowOrigin(CorsConfig *config, char *origin) {
