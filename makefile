@@ -2,8 +2,7 @@ SRCS = $(wildcard src/*.c)
 CFLAGS = -Wall -Wextra
 
 all:
-	gcc $(SRCS) $(CFLAGS) -o build/a
+	gcc $(SRCS) $(CFLAGS) -o build/lavu
 
 install:
-	cp build/a /usr/local/bin/lavandula
-	
+	cp build/lavu /usr/local/bin/lavandula

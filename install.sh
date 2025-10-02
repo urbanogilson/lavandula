@@ -66,24 +66,77 @@ build_project() {
 
 install_project() {
     log_info "Installing Lavandula to ${INSTALL_DIR}..."
-    sudo make PREFIX="$INSTALL_DIR"
+
+    if [ ! -f lavu ]; then
+        log_error "Built binary 'lavu' not found. Build may have failed."
+        exit 1
+    fi
+
+    if [ ! -d "${INSTALL_DIR}/bin" ]; then
+        mkdir -p "${INSTALL_DIR}/bin"
+    fi
+
+    cp lavu "${INSTALL_DIR}/bin/"
+    chmod +x "${INSTALL_DIR}/bin/lavu"
+
     log_success "Installation completed"
 }
 
+verify_installation() {
+    if command_exists lavu; then
+        log_success "Lavandula installed successfully!"
+    else
+        log_error "Lavandula installation failed."
+        exit 1
+    fi
+}
+
+cleanup() {
+    log_info "Cleaning up temporary files..."
+    rm -rf "$TMP_DIR"
+    log_success "Cleanup completed"
+}
+
+show_usage() {
+    echo ""
+    log_success "🎉 Lavandula installation completed!"
+    echo ""
+
+    echo -e "${BLUE}Quick Start:${NC}"
+    echo " lavu new my-project # Create a new project"
+    echo " cd my-project"
+    echo " lavu run # Run your project"
+    echo ""
+
+    echo -e "${BLUE}Documentation:${NC}"
+    echo " GitHub: https://github.com/$REPO"
+    echo ""
+}
+
 main() {
+    echo -e "${BLUE}"
+    echo "  _                                _       _       "
+    echo " | |                              | |     | |      "
+    echo " | |     __ ___   ____ _ _ __   __| |_   _| | __ _ "
+    echo " | |    / _\` \ \ / / _\` | '_ \ / _\` | | | | |/ _\` |"
+    echo " | |___| (_| |\ V / (_| | | | | (_| | |_| | | (_| |"
+    echo " |______\__,_| \_/ \__,_|_| |_|\__,_|\__,_|_|\__,_|"
+    echo -e "${NC}"
+
     echo "Installing Lavandula Web Framework..."
+    echo ""
+
+    sleep 1s
+
     check_dependencies
     download_source
     build_project
     install_project
+    cleanup
 
+    sleep 0.5s
 
-
-    log_info "Cleaning up temporary files..."
-    rm -rf "$TMP_DIR"
-    log_success "Cleanup completed"
-
-    log_info "Installation complete"
+    show_usage
 }
 
 main "$@"
