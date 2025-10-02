@@ -187,8 +187,8 @@ void parse(DotenvParser *p) {
     }
 }
 
-char *readFile() {
-    FILE *fptr = fopen(".env", "r");
+char *readFile(char *path) {
+    FILE *fptr = fopen(path, "r");
     if (!fptr) {
         return NULL;
     }
@@ -219,8 +219,8 @@ void dotenvClean() {
     free(map.entries);
 }
 
-void dotenv() {
-    char *source = readFile();
+void dotenv(char *path) {
+    char *source = readFile(path);
     if (!source) return;
 
     map = (Map){

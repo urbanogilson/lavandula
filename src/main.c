@@ -5,6 +5,10 @@
 #include "lavandula.h"
 #include "version.h"
 
+HttpResponse home(HttpRequest _) {
+    return ok("Welcome to Lavandula!");
+}
+
 int main(int argc, char *argv[]) {
     if (argc >= 2) {
         char *option = argv[1];
@@ -33,7 +37,7 @@ int main(int argc, char *argv[]) {
         } else {
             printf("error: unknown option '%s'\n", option);
             printf("Use 'lavu help' to see available commands.\n");
-            return 1;
+            // return 1;
 
         }
     }
@@ -44,48 +48,34 @@ int main(int argc, char *argv[]) {
 
     // jsonPrint(&jBuilder);
 
-    // // char *x = jsonStringify(&jBuilder);
+    // char *x = jsonStringify(&jBuilder);
 
     // freeJsonBuilder(&jBuilder);
 
-    // return 0;
+    AppBuilder builder = createBuilder();
+    usePort(&builder, 8080);
+    useCorsPolicy(&builder, corsAllowAll());
 
-    // AppBuilder builder = createBuilder();
-    // usePort(&builder, 8080);
+    useEnvironment(&builder, ENV_DEVELOPMENT);
 
-    // // - PostgreSL, MySQL, SQLite integrations, etc
-    // //    - build an actual mini backend with it
-    // // - Look at Dependency Injection containers
-    // // - CORS, Rate Limiting, etc
-    // // - Static file serving
-    // // - Session cookiess
-    // // - ORM with JSON serialization and code generation
-    // // - JSON scaffolding from CLI
-    // //   - lavu model User name:string age:int
-    // //   - generates User struct, JSON serialization, CRUD endpoints in user_controller.c
+    if (isDevelopment(&builder)) {
+        useVerboseLogging(&builder);
+        useHttpsRedirect(&builder);
+    }
+
+    // CorsConfig policy = corsPolicy();
+    // allowAnyMethod(&policy);
+    // allowAnyOrigin(&policy);
+
+    // useCorsPolicy(&builder, policy);
 
 
-    // App app = build(builder);
+    App app = build(builder);
 
-    // root(&app, getTodos);
-    // get(&app, "/todos", getTodos);
+    root(&app, home);
 
-    // // printf("\nAvailable endpoints:\n");
-    // // printf("  GET  /                    - API documentation\n");
-    // // printf("  GET  /todos               - Get all todos\n");
-    // // printf("  GET  /todos/summary       - Get todo statistics\n");
-    // // printf("  POST /todos               - Create new todo\n");
-    // // // printf("  GET  /health              - Health check\n");
-    // // printf("\nTry these commands:\n");
-    // // printf("  curl http://localhost:3000/\n");
-    // // printf("  curl http://localhost:3000/todos\n");
-    // // printf("  curl http://localhost:3000/demo\n");
-    // // printf("  curl -X POST http://localhost:3000/todos\n");
-    // // printf("\n");
-
-    // runApp(&app);
-
-    // cleanupApp(&app);
+    runApp(&app);
+    cleanupApp(&app);
 
     return 0;
 }

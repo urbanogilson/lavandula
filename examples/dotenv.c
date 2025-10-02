@@ -4,7 +4,7 @@ int main() {
     AppBuilder builder = createBuilder();
 
     // Parse .env file and load environment variables
-    dotenv();
+    useDotenv(".env");
 
     // Get environment variables
     char *dbUser = env("DB_USER");

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "lavandula.h"
 
@@ -34,7 +35,70 @@ void useVerboseLogging(AppBuilder *builder) {
     builder->app.verboseLogging = true;
 }
 
-App build(AppBuilder builder) {
+void useCorsPolicy(AppBuilder *builder, CorsConfig corsPolicy) {
+    builder->app.corsPolicy = corsPolicy;
+}
+
+void useDefaultCorsPolicy(AppBuilder *builder) {
+    builder->app.corsPolicy = corsPolicy();
+
+    allowOrigin(&builder->app.corsPolicy, "*");
+
+    allowMethod(&builder->app.corsPolicy, HTTP_GET);
+    allowMethod(&builder->app.corsPolicy, HTTP_POST);
+    allowMethod(&builder->app.corsPolicy, HTTP_PUT);
+    allowMethod(&builder->app.corsPolicy, HTTP_PATCH);
+    allowMethod(&builder->app.corsPolicy, HTTP_DELETE);
+    allowMethod(&builder->app.corsPolicy, HTTP_OPTIONS);
+}
+
+void useHttpsRedirect(AppBuilder *builder) {
+    builder->app.useHttpsRedirect = true;
+}
+
+void useEnvironment(AppBuilder *builder, char *env) {
+    builder->app.environment = env;
+}
+
+bool isDevelopment(AppBuilder *builder) {
+    char *env = builder->app.environment;
+    if (!env) return false;
+
+    if (strcmp(env, "DEVELOPMENT") == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+bool isProduction(AppBuilder *builder) {
+    char *env = builder->app.environment;
+    if (!env) return false;
+
+    if (strcmp(env, "PRODUCTION") == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+bool isTesting(AppBuilder *builder) {
+    char *env = builder->app.environment;
+    if (!env) return false;
+
+    if (strcmp(env, "TESTING") == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+void useDotenv(char *path) {
+    dotenv(path);
+}
+
+App build(AppBuilder builder)
+{
     builder.app.server = initServer(builder.app.port);
 
     return builder.app;
@@ -48,6 +112,8 @@ void cleanupApp(App *app) {
     if (!app) return;
     
     freeServer(&app->server);
+    dotenvClean();
+    freeCorsConfiguration(&app->corsPolicy);
 }
 
 void get(App *app, char *path, Controller controller) {
@@ -68,6 +134,10 @@ void delete(App *app, char *path, Controller controller) {
 
 void patch(App *app, char *path, Controller controller) {
     route(&app->server.router, HTTP_PATCH, path, controller);
+}
+
+void options(App *app, char *path, Controller controller) {
+    route(&app->server.router, HTTP_OPTIONS, path, controller);
 }
 
 // defines a route for 404 not found

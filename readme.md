@@ -42,17 +42,15 @@ int main() {
 - Built-in JSON library
 - Environment variable support
 - Built-in logging
-
-
-### Future Features
+- CORS policy configuration
 
 - PostgreSL, MySQL, SQLite integrations, etc
 - Potential dependency injection framework
-- CORS policy configuration
 - Templating engine
 - Rate Limiting
 - Static file serving
 - Session cookies
+- Route/Available endpoint listing
 - Potential ORM framework
 - JSON model and function scaffolding
   - lavu model User name:string age:int

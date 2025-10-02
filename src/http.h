@@ -11,7 +11,8 @@ typedef enum {
     HTTP_POST,
     HTTP_PUT,
     HTTP_PATCH,
-    HTTP_DELETE
+    HTTP_DELETE,
+    HTTP_OPTIONS,
 } HttpMethod;
 
 typedef enum {

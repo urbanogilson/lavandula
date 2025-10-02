@@ -2,7 +2,7 @@
 #define dotenv_h
 
 char *env(char *variable);
-void  dotenv();
+void  dotenv(char *path);
 
 void dotenvClean();
 
