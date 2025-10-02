@@ -1,6 +1,6 @@
 # Lavandula
 
-**Lavandula** is a lightweight, minimalist C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes and run a HTTP server without the complexity of heavier frameworks. The framework is subtly inspired by .NET and Ruby on Rails.
+**Lavandula** is a lightweight C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes and run a HTTP server without the complexity of heavier frameworks. The framework is subtly inspired by .NET and Ruby on Rails.
 
 <br/>
 
@@ -32,25 +32,69 @@ int main() {
 
 ## Features
 
-- Intuitive routing system
+- Controller and routing system
 - HTTP endpoint support (GET, POST, etc)
 - Controller middleware
 - Minimal dependencies (pure C)
 - Quick project scaffolding via the CLI
 - Route and model generation via the CLI
-- Built-in testing framework
+- Built-in unit testing framework
+- Built-in JSON library
+- Environment variable support
+- Built-in logging
+
+
+### Future Features
+
+- PostgreSL, MySQL, SQLite integrations, etc
+- Potential dependency injection framework
+- CORS policy configuration
+- Templating engine
+- Rate Limiting
+- Static file serving
+- Session cookies
+- Potential ORM framework
+- JSON model and function scaffolding
+  - lavu model User name:string age:int
+  - generates User struct, JSON serialization, CRUD endpoints in user_controller.c
 
 
 ## Installation
 
-1. Clone the repository:
+To install Lavandula, follow these setps.
+
+1. Clone the repository
 
 ```bash
 git clone https://github.com/ashtonjamesd/lavandula.git
 cd lavandula
 ```
 
-... todo
+
+2. Run the install script
+
+```bash
+./install.sh
+```
+
+You should see the following:
+
+```bash
+[SUCCESS] 🎉 Lavandula installation completed!
+
+Quick Start:
+ lavu new my-project # Create a new project
+ cd my-project
+ lavu run # Run your project
+
+Documentation:
+ GitHub: https://github.com/ashtonjamesd/lavandula
+```
+
+
+3. Finish
+
+You should now be able to run the Lavu CLI tool. Refer to `api.md` for how to use Lavu.
 
 
 ## Quick Start
@@ -66,19 +110,18 @@ You should see the following output once run.
 ```
 Setting up Lavandula project 'myProject'...
 
--> Created t/lavandula.yml
--> Created t/app/app.c
--> Created t/app/controllers/home.c
--> Created t/app/routes.c
--> Created t/makefile
--> Created t/tests/tests.c
+-> Created myProject/lavandula.yml
+-> Created myProject/app/app.c
+-> Created myProject/app/controllers/home.c
+-> Created myProject/app/routes.c
+-> Created myProject/makefile
+-> Created myProject/tests/tests.c
 
 🎉 Lavandula project 'myProject' setup finished successfully!
 
 Next steps:
   1. cd myProject
-  2. Compile your project (e.g., gcc app.c -o app)
-  3. Run your app: ./app
+  2. lavu run
 ```
 
 It automatically generates the following project structure:

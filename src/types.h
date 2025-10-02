@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+// literally isnt used, just put it here as an idea, please remove it eventually
+
 typedef signed char    i8;
 typedef signed short   i16;
 typedef signed int     i32;

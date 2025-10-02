@@ -33,4 +33,4 @@ Documentation:
 
 3. Finish
 
-You should now be able to run the Lavu CLI tool.
+You should now be able to run the Lavu CLI tool. Refer to `api.md` for how to use Lavu.

@@ -1,0 +1,10 @@
+# Lavandula Development Guide
+
+This file provides a detailed guide on development practices for Lavandula.
+
+Before reading, ensure you have:
+
+1. Cloned the repository
+2. Ran the install script
+
+...

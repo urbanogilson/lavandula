@@ -3,20 +3,7 @@
 #include <string.h>
 
 #include "lavandula.h"
-
-typedef struct {
-    char *name;
-    int age;
-} Todo;
-
-HttpResponse getTodos(HttpRequest _) {
-    return ok("Hello, World!");
-}
-
-void todoToJson(Todo todo, JsonBuilder *builder) {
-    jsonAddString(builder, "name", todo.name);
-    jsonAddInteger(builder, "age", todo.age);
-}
+#include "version.h"
 
 int main(int argc, char *argv[]) {
     if (argc >= 2) {
@@ -39,6 +26,9 @@ int main(int argc, char *argv[]) {
             printf("  lavu new <project_name>   Create a new Lavandula project\n");
             printf("  lavu run                  Run the Lavandula project\n");
             printf("  lavu help                 Show this help message\n");
+            return 0;
+        } else if (strcmp(option, "--version") == 0 || strcmp(option, "-v") == 0) {
+            printf("Lavandula version %d.%d.%d\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
             return 0;
         } else {
             printf("error: unknown option '%s'\n", option);
