@@ -30,17 +30,6 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-download_source() {
-    log_info "Downloading source code..."
-
-    rm -rf "$TMP_DIR"
-    mkdir -p "$TMP_DIR"
-    cd "$TMP_DIR"
-
-    git clone "https://github.com/${REPO}.git" .
-    log_success "Source code downloaded"
-}
-
 check_dependencies() {
     if ! command_exists gcc; then
         log_error "GCC is required but not installed. Please install GCC first."
