@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
     jsonPrint(&jBuilder);
 
-    char *x = jsonStringify(&jBuilder);
+    // char *x = jsonStringify(&jBuilder);
 
     freeJsonBuilder(&jBuilder);
 
