@@ -33,6 +33,18 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(option, "run") == 0) {
             runProject();
             return 0;
+        } else if (strcmp(option, "help") == 0) {
+            printf("Lavandula CLI\n");
+            printf("Usage:\n");
+            printf("  lavu new <project_name>   Create a new Lavandula project\n");
+            printf("  lavu run                  Run the Lavandula project\n");
+            printf("  lavu help                 Show this help message\n");
+            return 0;
+        } else {
+            printf("error: unknown option '%s'\n", option);
+            printf("Use 'lavu help' to see available commands.\n");
+            return 1;
+
         }
     }
 
