@@ -7,10 +7,12 @@
 #include "middleware.h"
 #include "logger.h"
 #include "lavandula_test.h"
+#include "json.h"
 
 typedef struct {
     Server              server;
     int                 port;
+    bool                verboseLogging; 
 
     MiddlewareHandler  middleware;
 } App;
@@ -22,6 +24,10 @@ typedef struct {
 AppBuilder createBuilder();
 void usePort(AppBuilder *builder, int port);
 void useMiddleware(AppBuilder *builder, MiddlewareFunc);
+void useVerboseLogging(AppBuilder *builder);
+
+// consider this
+// void useDotenv(AppBuilder *builder, char *path);
 
 App build(AppBuilder builder);
 
@@ -35,10 +41,10 @@ void delete(App *app, char *path, Controller controller);
 void patch(App *app, char *path, Controller controller);
 
 // defines a special route for handling 404s
-void   routeNotFound(Router *router,  Controller controller);
+void   routeNotFound(App *app,  Controller controller);
 
 // defines a special route for handling the root path
-void   root(Router *router, Controller controller);
+void   root(App *app, Controller controller);
 
 
 #endif

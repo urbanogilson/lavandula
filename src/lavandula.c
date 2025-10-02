@@ -4,8 +4,10 @@
 #include "lavandula.h"
 
 AppBuilder createBuilder() {
-    AppBuilder builder = {};
-    usePort(&builder, 3000);
+    AppBuilder builder = {
+        .app.port = 3000,
+        .app.verboseLogging = false,
+    };
 
     builder.app.middleware = (MiddlewareHandler) {
         .handlers = malloc(sizeof(MiddlewareHandler) * 1),
@@ -26,6 +28,10 @@ void useMiddleware(AppBuilder *builder, MiddlewareFunc middleware) {
         builder->app.middleware.handlers = realloc(builder->app.middleware.handlers, sizeof(MiddlewareFunc) * builder->app.middleware.capacity);
     }
     builder->app.middleware.handlers[builder->app.middleware.count++] = middleware;
+}
+
+void useVerboseLogging(AppBuilder *builder) {
+    builder->app.verboseLogging = true;
 }
 
 App build(AppBuilder builder) {
@@ -52,16 +58,6 @@ void post(App *app, char *path, Controller controller) {
     route(&app->server.router, HTTP_POST, path, controller);
 }
 
-// defines a route for 404 not found
-void routeNotFound(Router *router, Controller controller) {
-    route(router, HTTP_GET, "/404", controller);
-}
-
-// defines a route for GET /
-void root(Router *router, Controller controller) {
-    route(router, HTTP_GET, "/", controller);
-}
-
 void put(App *app, char *path, Controller controller) {
     route(&app->server.router, HTTP_PUT, path, controller);
 }
@@ -72,4 +68,14 @@ void delete(App *app, char *path, Controller controller) {
 
 void patch(App *app, char *path, Controller controller) {
     route(&app->server.router, HTTP_PATCH, path, controller);
+}
+
+// defines a route for 404 not found
+void routeNotFound(App *app, Controller controller) {
+    route(&app->server.router, HTTP_GET, "/404", controller);
+}
+
+// defines a route for GET /
+void root(App *app, Controller controller) {
+    route(&app->server.router, HTTP_GET, "/", controller);
 }

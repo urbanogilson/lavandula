@@ -4,42 +4,18 @@
 
 #include "lavandula.h"
 
-HttpResponse home(HttpRequest _) {
+typedef struct {
+    char *name;
+    int age;
+} Todo;
+
+HttpResponse getTodos(HttpRequest _) {
     return ok("Hello, World!");
 }
 
-HttpResponse notFound(HttpRequest _) {
-    return response("Not Found", HTTP_NOT_FOUND);
-}
-
-bool authenticator(HttpRequest req, MiddlewareHandler *n) {
-    printf("Authenticating: %s\n", req.resource);
-
-    bool authed = true; // auth logic
-    if (!authed) {
-        return false;
-    }
-
-    return next(req, n);
-}
-
-void testOne() {
-    int x = 10;
-    expect(x, toBe(10));
-    expect(x, toBe(10));
-    expect(x, toBe(10));
-}
-
-void testTwo() {
-    int x = 10;
-    expect(x, toBe(12));
-}
-
-void runTests() {
-    runTest(testOne);
-    runTest(testTwo);
-
-    testResults();
+void todoToJson(Todo todo, JsonBuilder *builder) {
+    jsonAddString(builder, "name", todo.name);
+    jsonAddInteger(builder, "age", todo.age);
 }
 
 int main(int argc, char *argv[]) {
@@ -51,32 +27,59 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
 
-            char *projectName = argv[2];
-            newProject(projectName);
+            newProject(argv[2]);
 
+            return 0;
+        } else if (strcmp(option, "run") == 0) {
+            runProject();
             return 0;
         }
     }
 
-    runTests();
+    JsonBuilder jBuilder = jsonBuilder();
+    jsonAddString(&jBuilder, "name", "This is a task!");
+    jsonAddInteger(&jBuilder, "age", 30);
+
+    jsonPrint(&jBuilder);
+
+    char *x = jsonStringify(&jBuilder);
+
+    freeJsonBuilder(&jBuilder);
+
+    return 0;
 
     AppBuilder builder = createBuilder();
-    usePort(&builder, 3005);
+    usePort(&builder, 8080);
 
-    useMiddleware(&builder, logger);
-    useMiddleware(&builder, authenticator);
-
-    // 1. PostgreSL, MySQL, SQLite integrations, etc
+    // - PostgreSL, MySQL, SQLite integrations, etc
     //    - build an actual mini backend with it
-    // 2. Look at Dependency Injection containers
-    // 3. CORS, Rate Limiting, etc
-    // 4. Testing framework
-    // 5. More HTTP features (file serving, etc)
+    // - Look at Dependency Injection containers
+    // - CORS, Rate Limiting, etc
+    // - Static file serving
+    // - Session cookiess
+    // - ORM with JSON serialization and code generation
+    // - JSON scaffolding from CLI
+    //   - lavu model User name:string age:int
+    //   - generates User struct, JSON serialization, CRUD endpoints in user_controller.c
+
 
     App app = build(builder);
 
-    root(&app.server.router, home);
-    routeNotFound(&app.server.router, notFound);
+    root(&app, getTodos);
+    get(&app, "/todos", getTodos);
+
+    // printf("\nAvailable endpoints:\n");
+    // printf("  GET  /                    - API documentation\n");
+    // printf("  GET  /todos               - Get all todos\n");
+    // printf("  GET  /todos/summary       - Get todo statistics\n");
+    // printf("  POST /todos               - Create new todo\n");
+    // // printf("  GET  /health              - Health check\n");
+    // printf("\nTry these commands:\n");
+    // printf("  curl http://localhost:3000/\n");
+    // printf("  curl http://localhost:3000/todos\n");
+    // printf("  curl http://localhost:3000/demo\n");
+    // printf("  curl -X POST http://localhost:3000/todos\n");
+    // printf("\n");
 
     runApp(&app);
 

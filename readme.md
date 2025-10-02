@@ -1,6 +1,6 @@
 # Lavandula
 
-**Lavandula** is a lightweight, minimalist C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes and run a HTTP server without the complexity of heavier frameworks.
+**Lavandula** is a lightweight, minimalist C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes and run a HTTP server without the complexity of heavier frameworks. The framework is subtly inspired by .NET and Ruby on Rails.
 
 <br/>
 
@@ -58,7 +58,7 @@ cd lavandula
 Use the Lavandula CLI with the following command to create a new project.
 
 ```
-lavandula new myProject
+lavu new myProject
 ```
 
 You should see the following output once run.
@@ -66,11 +66,12 @@ You should see the following output once run.
 ```
 Setting up Lavandula project 'myProject'...
 
--> Setup directories created successfully!
--> Created app.c
--> Created controllers/home_controller.c
--> Created routes.c
--> Created makefile
+-> Created t/lavandula.yml
+-> Created t/app/app.c
+-> Created t/app/controllers/home.c
+-> Created t/app/routes.c
+-> Created t/makefile
+-> Created t/tests/tests.c
 
 🎉 Lavandula project 'myProject' setup finished successfully!
 
@@ -80,32 +81,28 @@ Next steps:
   3. Run your app: ./app
 ```
 
-It automatically generates:
-- `app.c`
-- `routes.c`
-- makefile
+It automatically generates the following project structure:
+```
+.
+├── app
+│   ├── app.c
+│   ├── controllers
+│   │   └── home.c
+│   └── routes.c
+├── tests
+│   └── tests.c
+├── lavandula.yml
+└── makefile
+```
 
 
 ## Compile and Run
 
 ```
-make
-./<exe>
+lavu run
 ```
 
 Your app will start on port 3000, and visiting http://localhost:3000/ will display your application.
-
-
-## Project Structure
-
-```
-myproject/
-├── app.c                  # Main application file
-├── routes.c               # Route registration
-├── controllers/
-│   └── home_controller.c  # Example page controller
-└── makefile               # Project makefile
-```
 
 
 ## Contributing

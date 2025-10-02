@@ -70,7 +70,6 @@ Hello, World!
 
 ## Application Builder
 
-
 The application builder methods are how you configure your web application. This involves things like CORS, the application port, rate limiting, etc.
 
 ```
@@ -79,6 +78,16 @@ void usePort(AppBuilder *builder, int port);
 
 // adds a layer of middleware into the controller pipeline
 void useMiddleware(AppBuilder *builder, MiddlewareFunc);
+```
+
+Once the application configuration is complete, call the `build` method to create an instance of your web application.
+
+```
+AppBuilder builder = createBuilder();
+
+// ..
+
+App app = build(builder);
 ```
 
 
@@ -117,7 +126,7 @@ HttpResponse error(HttpRequest _) {
 
 ## Routing
 
-The Lavandula API provides five routing functions, each corresponding to a HTTP method.
+The Lavandula API provides five routing functions, each corresponding to a HTTP method. These functions register the controllers you have created to your web application.
 
 ```
 void get(App *app, char *path, Controller controller);
@@ -174,8 +183,112 @@ HttpResponse myMiddleware(HttpRequest req, Controller next) {
 }
 ```
 
-## Lavender
 
-Lavender is the name of the Lavandula CLI, and can help you to quickly scaffold and setup your project.
+## Environment Variables
 
-- todo
+You can inject environment variables into your application using a .env file.
+
+Call the `dotenv` function to parse a .env file in the current directory. Then, you can call the `env` function to retrieve a specific environment variable.
+
+Note that currently, only a `.env` file is supported, and files like `dev.env` will not be parsed.
+
+```
+dotenv();
+
+char *dbUser = env("DB_USER");
+char *dbPass = env("DB_PASS");
+
+// ..
+
+dotenvClean();
+```
+
+It is recommended that you call `dotenvClean` when you are finished using the variables to free them from memory.
+
+
+## Testing your App
+
+Lavandula provides a built-in testing framework for writing unit tests for your application.
+
+The following example defines a new test that is being run.
+
+```
+void testOne() {
+    int x = 10;
+    expect(x, toBe(10));
+}
+
+runTest(testOne);
+testResults();
+```
+
+Call `testResults` to see the outcome of all of your tests.
+
+
+## JSON
+
+Lavandula provides a built-in JSON API for manipulating JSON objects within your web application.
+
+Create a json builder object to start.
+
+```
+JsonBuilder builder = jsonBuilder();
+```
+
+You can construct the JSON object calling various `jsonAdd...` methods. The following example adds a json pair with the key 'greeting' and the value 'Hello, World!'.
+
+```
+jsonAddString(&builder, "greeting", "Hello, World!");
+```
+
+These are all the valid methods you can use to add values into the JSON object.
+
+```
+void jsonAddString(JsonBuilder *builder, char *key, char *value);
+void jsonAddBool(JsonBuilder *builder, char *key, bool value);
+void jsonAddNumber(JsonBuilder *builder, char *key, double value);
+void jsonAddNull(JsonBuilder *builder, char *key);
+void jsonAddObject(JsonBuilder *builder, char *key, JsonBuilder *object);
+void jsonAddArray(JsonBuilder *builder, char *key, JsonBuilder *array);
+```
+
+Let's construct an example JSON object.
+
+```
+JsonBuilder jBuilder = jsonBuilder();
+jsonAddString(&jBuilder, "name", "This is a task!");
+jsonAddNumber(&jBuilder, "age", 30);
+
+jsonPrint(&jBuilder);
+```
+
+If we run this, we should see the following output.
+
+```
+{"name": "This is a task!", "age": 30.000000}
+```
+
+
+## Lavu
+
+Lavu (lah-voo), the Lavandula CLI, can help you to quickly scaffold and setup your project.
+
+Run the following command to create a new project.
+
+```
+lavu new <project_name>
+```
+
+Run the application.
+
+```
+lavu run
+```
+
+Note that `lavu run` will only work if the current working directory is the same as `lavandula.yml`.
+
+You should see:
+
+```
+Lavandula Server is running! -> http://127.0.0.1:3000
+```
