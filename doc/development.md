@@ -6,5 +6,6 @@ Before reading, ensure you have:
 
 1. Cloned the repository
 2. Ran the install script
+3. Read CONTRIBUTING.md
 
 ...

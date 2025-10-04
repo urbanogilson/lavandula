@@ -1,8 +1,8 @@
 #ifndef environment_h
 #define environment_h
 
-#define ENV_DEVELOPMENT "DEVELOPMENT"
-#define ENV_PRODUCTION "PRODUCTION"
-#define ENV_TESTING "TESTING"
+#define DEVELOPMENT "DEVELOPMENT"
+#define PRODUCTION "PRODUCTION"
+#define TESTING "TESTING"
 
 #endif

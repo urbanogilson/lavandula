@@ -3,5 +3,6 @@
 
 void newProject(char *name);
 void runProject();
+void scaffoldController();
 
 #endif

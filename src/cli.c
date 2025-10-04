@@ -20,6 +20,10 @@ void runProject() {
 
 }
 
+void scaffoldController() {
+    
+}
+
 int createDir(const char *path) {
     if (mkdir(path, 0755) != 0) {
         perror(path);

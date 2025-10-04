@@ -42,21 +42,22 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // JsonBuilder jBuilder = jsonBuilder();
-    // jsonAddString(&jBuilder, "name", "This is a task!");
-    // jsonAddInteger(&jBuilder, "age", 30);
+    JsonBuilder jBuilder = jsonBuilder();
+    jsonAddString(&jBuilder, "name", "This is a task!");
+    jsonAddInteger(&jBuilder, "age", 30);
 
-    // jsonPrint(&jBuilder);
+    char *x = jsonStringify(&jBuilder);
+    printf("JSON: %s", x);
 
-    // char *x = jsonStringify(&jBuilder);
+    return 0;
 
-    // freeJsonBuilder(&jBuilder);
+    freeJsonBuilder(&jBuilder);
 
     AppBuilder builder = createBuilder();
     usePort(&builder, 8080);
     useCorsPolicy(&builder, corsAllowAll());
 
-    useEnvironment(&builder, ENV_DEVELOPMENT);
+    useEnvironment(&builder, DEVELOPMENT);
 
     if (isDevelopment(&builder)) {
         useVerboseLogging(&builder);

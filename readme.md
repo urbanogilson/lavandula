@@ -37,12 +37,14 @@ int main() {
 - Controller middleware
 - Minimal dependencies (pure C)
 - Quick project scaffolding via the CLI
-- Route and model generation via the CLI
 - Built-in unit testing framework
-- Built-in JSON library
 - Environment variable support
 - Built-in logging
+
+## In Progress
+
 - CORS policy configuration
+- Built-in JSON library
 
 
 ## Future

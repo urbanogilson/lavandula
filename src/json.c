@@ -115,7 +115,6 @@ char *jsonStringify(JsonBuilder *builder) {
                 snprintf(buffer, sizeof(buffer), "\"%s\": null", node.key);
                 break;
             case JSON_ARRAY:
-                // For simplicity, arrays are not implemented in this example
                 snprintf(buffer, sizeof(buffer), "\"%s\": []", node.key);
                 break;
             case JSON_OBJECT: {
