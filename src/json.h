@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 typedef struct JsonBuilder JsonBuilder;
+typedef struct JsonArray JsonArray;
 
 typedef enum {
     JSON_NULL,
@@ -24,9 +25,15 @@ typedef struct {
         bool boolean;
         int integer;
         JsonBuilder *object;
-        JsonBuilder *array;
+        JsonArray   *array;
     };
 } Json;
+
+struct JsonArray {
+    Json *items;
+    int   count;
+    int   capacity;
+};
 
 struct JsonBuilder {
     Json *json;
@@ -36,14 +43,24 @@ struct JsonBuilder {
 };
 
 JsonBuilder jsonBuilder();
+JsonArray jsonArray();
+void freeJsonArray(JsonArray *jsonArray);
 void freeJsonBuilder(JsonBuilder *jsonBuilder);
 
-void jsonAddString(JsonBuilder *jsonBuilder, char *key, char *value);
-void jsonAddBool(JsonBuilder *jsonBuilder, char *key, bool value);
-void jsonAddInteger(JsonBuilder *jsonBuilder, char *key, int value);
-void jsonAddNull(JsonBuilder *jsonBuilder, char *key);
-void jsonAddObject(JsonBuilder *jsonBuilder, char *key, JsonBuilder *object);
-void jsonAddArray(JsonBuilder *jsonBuilder, char *key, JsonBuilder *array);
+void jsonPutString(JsonBuilder *jsonBuilder, char *key, char *value);
+void jsonPutBool(JsonBuilder *jsonBuilder, char *key, bool value);
+void jsonPutInteger(JsonBuilder *jsonBuilder, char *key, int value);
+void jsonPutNull(JsonBuilder *jsonBuilder, char *key);
+void jsonPutObject(JsonBuilder *jsonBuilder, char *key, JsonBuilder *object);
+void jsonPutArray(JsonBuilder *jsonBuilder, char *key, JsonArray *array);
+
+void jsonArrayAppend(JsonArray *array, Json value);
+
+Json jsonString(char *value);
+Json jsonBool(bool value);
+Json jsonInteger(int value);
+Json jsonObject(JsonBuilder *builder);
+Json jsonArrayJson(JsonArray *array);
 
 char *jsonStringify(JsonBuilder *jsonBuilder);
 

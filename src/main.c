@@ -5,9 +5,9 @@
 #include "lavandula.h"
 #include "version.h"
 
-HttpResponse home(HttpRequest _) {
-    return ok("Welcome to Lavandula!");
-}
+// HttpResponse getTodos(HttpRequest _) {
+//     return ok("");
+// }
 
 int main(int argc, char *argv[]) {
     if (argc >= 2) {
@@ -42,16 +42,23 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    JsonBuilder jBuilder = jsonBuilder();
-    jsonAddString(&jBuilder, "name", "This is a task!");
-    jsonAddInteger(&jBuilder, "age", 30);
+    JsonBuilder root = jsonBuilder();
 
-    char *x = jsonStringify(&jBuilder);
-    printf("JSON: %s", x);
+    JsonArray todos = jsonArray();
+    jsonPutArray(&root, "todos", &todos);
 
-    return 0;
+    JsonBuilder todo = jsonBuilder();
+    jsonPutString(&todo, "name", "This is a task!");
+    jsonPutInteger(&todo, "id", 30);
 
-    freeJsonBuilder(&jBuilder);
+    jsonArrayAppend(&todos, jsonObject(&todo));
+
+    char *x = jsonStringify(&root);
+    printf("%s\n", x);
+    
+    freeJsonBuilder(&root);
+    freeJsonBuilder(&todo);
+    free(x);
 
     AppBuilder builder = createBuilder();
     usePort(&builder, 8080);
@@ -73,9 +80,9 @@ int main(int argc, char *argv[]) {
 
     App app = build(builder);
 
-    root(&app, home);
+    // get(&app, "/todos", getTodos);
 
-    runApp(&app);
+    // runApp(&app);
     cleanupApp(&app);
 
     return 0;

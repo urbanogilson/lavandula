@@ -10,15 +10,32 @@ JsonBuilder jsonBuilder() {
     return builder;
 }
 
-void freeJsonBuilder(JsonBuilder *builder) {
+JsonArray jsonArray() {
+    JsonArray array = {};
+    array.items = NULL;
+    array.count = 0;
+    array.capacity = 0;
+
+    return array;
+}
+
+void freeJsonArray(JsonArray *jsonArray) {
+    free(jsonArray->items);
+}
+
+void freeJsonBuilder(JsonBuilder *builder)
+{
     for (int i = 0; i < builder->jsonCount; i++) {
         Json json = builder->json[i];
 
-        if (json.type == JSON_STRING && json.value != NULL) {
+        if (json.type == JSON_STRING && json.value) {
             free(json.value);
-        } else if ((json.type == JSON_OBJECT || json.type == JSON_ARRAY) && json.object != NULL) {
+        } else if (json.type == JSON_OBJECT && json.object) {
             freeJsonBuilder(json.object);
-            free(json.object);
+            // free(json.object);
+        } else if (json.type == JSON_ARRAY && json.array) {
+            // freeJsonBuilder(json.array);
+            free(json.array->items);
         }
 
         if (json.key != NULL) {
@@ -27,6 +44,7 @@ void freeJsonBuilder(JsonBuilder *builder) {
     }
 
     free(builder->json);
+
     builder->json = NULL;
     builder->jsonCount = 0;
     builder->jsonCapacity = 0;
@@ -47,53 +65,110 @@ Json makeJson(char *key, JsonType type) {
     };
 }
 
-void jsonAddString(JsonBuilder *builder, char *key, char *value) {
+void jsonPutString(JsonBuilder *builder, char *key, char *value) {
     Json json = makeJson(key, JSON_STRING);
     json.value = strdup(value);
 
     addJson(builder, json);
 }
 
-void jsonAddBool(JsonBuilder *builder, char *key, bool value) {
+void jsonPutBool(JsonBuilder *builder, char *key, bool value) {
     Json json = makeJson(key, value ? JSON_TRUE : JSON_FALSE);
     json.boolean = value;
 
     addJson(builder, json);
 }
 
-void jsonAddInteger(JsonBuilder *builder, char *key, int value) {
+void jsonPutInteger(JsonBuilder *builder, char *key, int value) {
     Json json = makeJson(key, JSON_NUMBER);
     json.integer = value;
 
     addJson(builder, json);
 }
 
-void jsonAddNull(JsonBuilder *builder, char *key) {
+void jsonPutNull(JsonBuilder *builder, char *key) {
     Json json = makeJson(key, JSON_NULL);
 
     addJson(builder, json);
 }
 
-void jsonAddObject(JsonBuilder *builder, char *key, JsonBuilder *object) {
+void jsonPutObject(JsonBuilder *builder, char *key, JsonBuilder *object) {
     Json json = makeJson(key, JSON_OBJECT);
     json.object = object;
 
     addJson(builder, json);
 }
 
-void jsonAddArray(JsonBuilder *builder, char *key, JsonBuilder *array) {
+void jsonPutArray(JsonBuilder *builder, char *key, JsonArray *array) {
     Json json = makeJson(key, JSON_ARRAY);
-    json.object = array;
+    json.array = array;
 
     addJson(builder, json);
 }
 
+Json jsonInteger(int value) {
+    Json json = {
+        .type = JSON_NUMBER,
+        .key = NULL,
+        .integer = value,
+    };
+
+    return json;
+}
+
+Json jsonBool(bool value) {
+    Json json = {
+        .type = value ? JSON_TRUE : JSON_FALSE,
+        .key = NULL,
+        .boolean = value,
+    };
+    return json;
+}
+
+Json jsonString(char *value) {
+    Json json = {
+        .type = JSON_STRING,
+        .key = NULL,
+        .value = strdup(value),
+    };
+    return json;
+}
+
+Json jsonObject(JsonBuilder *builder) {
+    Json json = {
+        .type = JSON_OBJECT,
+        .key = NULL,
+        .object = builder,
+    };
+
+    return json;
+}
+
+Json jsonArrayJson(JsonArray *array) {
+    Json json = {
+        .type = JSON_ARRAY,
+        .key = NULL,
+        .array = array,
+    };
+
+    return json;
+}
+
+void jsonArrayAppend(JsonArray *array, Json value) {
+    if (array->count >= array->capacity) {
+        array->capacity = array->capacity == 0 ? 1 : array->capacity * 2;
+        array->items = realloc(array->items, sizeof(Json) * array->capacity);
+    }
+    array->items[array->count++] = value;
+}
+
 char *jsonStringify(JsonBuilder *builder) {
-    int capacity = 2;
+    int capacity = 16;
     int length = 0;
     char *json = malloc(capacity);
 
     json[length++] = '{';
+
     for (int i = 0; i < builder->jsonCount; i++) {
         Json node = builder->json[i];
         char buffer[256];
@@ -114,9 +189,65 @@ char *jsonStringify(JsonBuilder *builder) {
             case JSON_NULL:
                 snprintf(buffer, sizeof(buffer), "\"%s\": null", node.key);
                 break;
-            case JSON_ARRAY:
-                snprintf(buffer, sizeof(buffer), "\"%s\": []", node.key);
+            case JSON_ARRAY: {
+                int arrCap = 64;
+                int arrLen = 0;
+                char *arrStr = malloc(arrCap);
+                arrStr[arrLen++] = '[';
+
+                for (int j = 0; j < node.array->count; j++) {
+                    Json arrItem = node.array->items[j];
+                    char arrBuf[256];
+                    switch (arrItem.type) {
+                        case JSON_STRING:
+                            snprintf(arrBuf, sizeof(arrBuf), "\"%s\"", arrItem.value);
+                            break;
+                        case JSON_NUMBER:
+                            snprintf(arrBuf, sizeof(arrBuf), "%d", arrItem.integer);
+                            break;
+                        case JSON_TRUE:
+                            snprintf(arrBuf, sizeof(arrBuf), "true");
+                            break;
+                        case JSON_FALSE:
+                            snprintf(arrBuf, sizeof(arrBuf), "false");
+                            break;
+                        case JSON_NULL:
+                            snprintf(arrBuf, sizeof(arrBuf), "null");
+                            break;
+                        case JSON_OBJECT: {
+                            char *nested = jsonStringify(arrItem.object);
+                            snprintf(arrBuf, sizeof(arrBuf), "%s", nested);
+                            free(nested);
+                            break;
+                        }
+                        case JSON_ARRAY: {
+                            char *nested = jsonStringify(arrItem.array);
+                            snprintf(arrBuf, sizeof(arrBuf), "%s", nested);
+                            free(nested);
+                            break;
+                        }
+                        default:
+                            arrBuf[0] = '\0';
+                            break;
+                    }
+                    int arrBufLen = strlen(arrBuf);
+                    if (arrLen + arrBufLen + 3 > arrCap) {
+                        arrCap = (arrLen + arrBufLen + 3) * 2;
+                        arrStr = realloc(arrStr, arrCap);
+                    }
+                    memcpy(arrStr + arrLen, arrBuf, arrBufLen);
+                    arrLen += arrBufLen;
+                    if (j < node.array->count - 1) {
+                        arrStr[arrLen++] = ',';
+                        arrStr[arrLen++] = ' ';
+                    }
+                }
+                arrStr[arrLen++] = ']';
+                arrStr[arrLen] = '\0';
+                snprintf(buffer, sizeof(buffer), "\"%s\": %s", node.key, arrStr);
+                free(arrStr);
                 break;
+            }
             case JSON_OBJECT: {
                 char *nestedJson = jsonStringify(node.object);
                 snprintf(buffer, sizeof(buffer), "\"%s\": %s", node.key, nestedJson);
@@ -129,8 +260,8 @@ char *jsonStringify(JsonBuilder *builder) {
         }
 
         int bufferLength = strlen(buffer);
-        if (length + bufferLength + 2 > capacity) {
-            capacity = (length + bufferLength + 2) * 2;
+        if (length + bufferLength + 3 > capacity) {
+            capacity = (length + bufferLength + 3) * 2;
             json = realloc(json, capacity);
         }
 
@@ -143,7 +274,10 @@ char *jsonStringify(JsonBuilder *builder) {
         }
     }
 
-    return "{}";
+    json[length++] = '}';
+    json[length] = '\0';
+
+    return json;
 }
 
 void jsonPrintNode(Json json) {

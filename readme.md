@@ -154,3 +154,7 @@ Your app will start on port 3000, and visiting http://localhost:3000/ will displ
 ## Contributing
 
 Contributions are welcome. Feel free to submit pull requests or open issues for feature requests or bugs.
+
+Some things that probably need looking at are:
+- memory leaks
+- outdated documentation (API changes warrant a docs update)

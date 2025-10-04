@@ -126,7 +126,21 @@ void runServer(Server *server, MiddlewareHandler middleware) {
 
         HttpResponse res = route->controller(parser.request);
 
-        write(clientSocket, res.content, strlen(res.content));
+        const char *contentType = "application/json";
+        int contentLength = strlen(res.content);
+
+        char header[512];
+        snprintf(header, sizeof(header),
+                "HTTP/1.1 200 OK\r\n"
+                "Content-Type: %s\r\n"
+                "Content-Length: %d\r\n"
+                "Connection: close\r\n"
+                "\r\n",
+                contentType, contentLength);
+
+        write(clientSocket, header, strlen(header));
+        write(clientSocket, res.content, contentLength);
+
         close(clientSocket);
     }
 }
