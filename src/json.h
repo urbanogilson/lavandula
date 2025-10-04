@@ -42,7 +42,7 @@ struct JsonBuilder {
     int jsonCapacity;
 };
 
-JsonBuilder jsonBuilder();
+JsonBuilder *jsonBuilder();
 JsonArray jsonArray();
 void freeJsonArray(JsonArray *jsonArray);
 void freeJsonBuilder(JsonBuilder *jsonBuilder);

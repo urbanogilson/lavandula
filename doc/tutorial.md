@@ -1,13 +1,6 @@
 # Lavandula Tutorial
 
-This document will walk you through creating a sample application with Lavandula, following conventions and best practices.
-
-
-## Prerequisites
-
-Ensure you have:
-  - Make
-  - A C Compiler
+This document will walk you through creating a sample application with Lavandula, following conventions and best practices. We will create a simple web application that connects to a Sqlite3 database and serves JSON content.
 
 
 ## Project Setup
@@ -23,11 +16,19 @@ cd sampleApp
 ```
 
 You should see the following structure:
-  - app.c
-  - home.c
-  - lavandula.yml
-  - makefile
-  - routes.c
+
+```
+.
+├── app
+│   ├── app.c
+│   ├── controllers
+│   │   └── home.c
+│   └── routes.c
+├── tests
+│   └── tests.c
+├── lavandula.yml
+└── makefile
+```
 
 Run the application.
 
@@ -35,6 +36,11 @@ Run the application.
 lavu run
 ```
 
+You should see
+
+```
+Lavandula Server is running! -> http://127.0.0.1:8080
+```
 
 ## Integrating PostgreSQL
 

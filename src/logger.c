@@ -15,15 +15,15 @@ void logError(char *msg) {
     printf("[error]: %s", msg);
 }
 
-bool logger(HttpRequest request, MiddlewareHandler *n) {
-    printf("%s: '%s'\n", httpMethodToStr(request.method), request.resource);
+bool logger(AppContext context, MiddlewareHandler *n) {
+    printf("%s: '%s'\n", httpMethodToStr(context.request.method), context.request.resource);
 
-    return next(request, n);
+    return next(context, n);
 }
 
-bool fileLogger(HttpRequest request, MiddlewareHandler *n) {
+bool fileLogger(AppContext context, MiddlewareHandler *n) {
     if (!n) return false;
-    if (!request.body) return false;
+    if (!context.request.body) return false;
 
     return false;
 }

@@ -19,6 +19,4 @@ void allowAnyMethod(CorsConfig *config);
 
 CorsConfig corsAllowAll();
 
-void freeCorsConfiguration(CorsConfig *config);
-
 #endif

@@ -40,23 +40,24 @@ int main() {
 - Built-in unit testing framework
 - Environment variable support
 - Built-in logging
+- SQLite integration
+- Built-in JSON library
 
 ## In Progress
 
 - CORS policy configuration
-- Built-in JSON library
+- Potential ORM framework
 
 
 ## Future
 
-- PostgreSL, MySQL, SQLite integrations, etc
+- PostgreSL, MySQL integrations, etc
 - Potential dependency injection framework
 - Templating engine
 - Rate Limiting
 - Static file serving
 - Session cookies
 - Route/Available endpoint listing
-- Potential ORM framework
 - JSON model and function scaffolding
   - lavu model User name:string age:int
   - generates User struct, JSON serialization, CRUD endpoints in user_controller.c
@@ -158,3 +159,4 @@ Contributions are welcome. Feel free to submit pull requests or open issues for 
 Some things that probably need looking at are:
 - memory leaks
 - outdated documentation (API changes warrant a docs update)
+- The JSON library does not currently support nested lists

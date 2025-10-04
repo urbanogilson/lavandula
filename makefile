@@ -1,5 +1,5 @@
 SRCS = $(wildcard src/*.c)
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -lsqlite3
 
 all:
 	mkdir -p build

@@ -8,6 +8,8 @@
 #include "server.h"
 #include "http.h"
 #include "middleware.h"
+#include "context.h"
+#include "sql.h"
 
 #define BUFFER_SIZE 4096
 
@@ -32,7 +34,7 @@ void freeServer(Server *server) {
     freeRouter(&server->router);
 }
 
-void runServer(Server *server, MiddlewareHandler middleware) {
+void runServer(Server *server, MiddlewareHandler middleware, DbContext *dbContext) {
     if (!server) return;
     
     server->fileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -115,19 +117,22 @@ void runServer(Server *server, MiddlewareHandler middleware) {
             }
         }
 
-        bool x = next(parser.request, &middleware);
+        AppContext context = appContext(parser.request);
+        context.dbContext = dbContext;
 
-        if (!x) {
+        bool nextThing = next(context, &middleware);
+
+        if (!nextThing) {
             const char *forbidden = "403 forbidden";
             write(clientSocket, forbidden, strlen(forbidden));
             close(clientSocket);
             continue;
         }
 
-        HttpResponse res = route->controller(parser.request);
+        HttpResponse response = route->controller(context);
 
         const char *contentType = "application/json";
-        int contentLength = strlen(res.content);
+        int contentLength = strlen(response.content);
 
         char header[512];
         snprintf(header, sizeof(header),
@@ -139,8 +144,10 @@ void runServer(Server *server, MiddlewareHandler middleware) {
                 contentType, contentLength);
 
         write(clientSocket, header, strlen(header));
-        write(clientSocket, res.content, contentLength);
+        write(clientSocket, response.content, contentLength);
 
         close(clientSocket);
+
+        // break;
     }
 }

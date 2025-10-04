@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "cli.h"
+#include "version.h"
 
 #define GREEN "\x1b[32m"
 #define YELLOW "\x1b[33m"
@@ -16,12 +17,30 @@ typedef struct {
     char path[256];
 } Project;
 
-void runProject() {
-
+int runProject() {
+    return 1;
 }
 
-void scaffoldController() {
+int help() {
+    printf("Lavandula CLI\n");
+    printf("Usage:\n");
+    printf("  lavu new <project_name>   Create a new Lavandula project\n");
+    printf("  lavu run                  Run the Lavandula project\n");
+    printf("  lavu help                 Show this help message\n");
     
+    return 0;
+}
+
+int version() {
+    printf("Lavandula version %d.%d.%d\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+    return 0;
+}
+
+int unknownCommand(char *option) {
+    printf(RED "Error: unknown option '%s'\n" RESET, option);
+    printf("Use 'lavu help' to see available commands.\n");
+
+    return 1;
 }
 
 int createDir(const char *path) {
@@ -127,10 +146,10 @@ int createTestsFile(Project *project) {
     return createFileWithContent(filepath, content);
 }
 
-void newProject(char *name) {
+int newProject(char *name) {
     if (!name || strlen(name) == 0) {
         printf(RED "Error: Project name cannot be empty.\n" RESET);
-        return;
+        return 1;
     }
 
     Project project;
@@ -146,19 +165,21 @@ void newProject(char *name) {
     snprintf(controllersDir, sizeof(controllersDir), "%s/app/controllers", project.path);
     snprintf(testsDir, sizeof(testsDir), "%s/tests", project.path);
 
-    if (!createDir(appDir)) return;
-    if (!createDir(controllersDir)) return;
-    if (!createDir(testsDir)) return;
+    if (!createDir(appDir)) return 1;
+    if (!createDir(controllersDir)) return 1;
+    if (!createDir(testsDir)) return 1;
 
-    if (!createYamlFile(&project)) return;
-    if (!createAppFile(&project)) return;
-    if (!createHomeFile(&project)) return;
-    if (!createRoutesFile(&project)) return;
-    if (!createMakefile(&project)) return;
-    if (!createTestsFile(&project)) return;
+    if (!createYamlFile(&project)) return 1;
+    if (!createAppFile(&project)) return 1;
+    if (!createHomeFile(&project)) return 1;
+    if (!createRoutesFile(&project)) return 1;
+    if (!createMakefile(&project)) return 1;
+    if (!createTestsFile(&project)) return 1;
 
     printf(GREEN "\n🎉 Lavandula project '%s' setup finished successfully!\n" RESET, project.name);
     printf(YELLOW "\nNext steps:\n" RESET);
     printf("  1. cd %s\n", project.path);
     printf("  2. lavu run\n\n");
+
+    return 0;
 }

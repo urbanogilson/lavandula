@@ -60,6 +60,10 @@ void useEnvironment(AppBuilder *builder, char *env) {
     builder->app.environment = env;
 }
 
+void useSqlLite3(AppBuilder *builder, char *dbPath) {
+    builder->app.dbContext = createSqlLite3DbContext(dbPath);
+}
+
 bool isDevelopment(AppBuilder *builder) {
     char *env = builder->app.environment;
     if (!env) return false;
@@ -97,15 +101,14 @@ void useDotenv(char *path) {
     dotenv(path);
 }
 
-App build(AppBuilder builder)
-{
+App build(AppBuilder builder) {
     builder.app.server = initServer(builder.app.port);
 
     return builder.app;
 }
 
 void runApp(App *app) {
-    runServer(&app->server, app->middleware);
+    runServer(&app->server, app->middleware, app->dbContext);
 }
 
 void cleanupApp(App *app) {
@@ -113,7 +116,11 @@ void cleanupApp(App *app) {
     
     freeServer(&app->server);
     dotenvClean();
-    freeCorsConfiguration(&app->corsPolicy);
+    free(app->middleware.handlers);
+
+    if (app->dbContext->type == SQLITE) {
+        free((char *)app->dbContext->connection);
+    }
 }
 
 void get(App *app, char *path, Controller controller) {

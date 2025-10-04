@@ -4,8 +4,11 @@
 
 #include "json.h"
 
-JsonBuilder jsonBuilder() {
-    JsonBuilder builder = {};
+JsonBuilder *jsonBuilder() {
+    JsonBuilder *builder = malloc(sizeof(JsonBuilder));
+    builder->json = NULL;
+    builder->jsonCount = 0;
+    builder->jsonCapacity = 0;
 
     return builder;
 }
@@ -221,9 +224,9 @@ char *jsonStringify(JsonBuilder *builder) {
                             break;
                         }
                         case JSON_ARRAY: {
-                            char *nested = jsonStringify(arrItem.array);
-                            snprintf(arrBuf, sizeof(arrBuf), "%s", nested);
-                            free(nested);
+                            // char *nested = jsonStringify(arrItem.array);
+                            // snprintf(arrBuf, sizeof(arrBuf), "%s", nested);
+                            // free(nested);
                             break;
                         }
                         default:

@@ -7,7 +7,7 @@
 typedef struct MiddlewareHandler MiddlewareHandler;
 
 // A middleware function takes in a HttpRequest and a pointer to the next middleware handler.
-typedef bool (* MiddlewareFunc)(HttpRequest, MiddlewareHandler *);
+typedef bool (* MiddlewareFunc)(AppContext, MiddlewareHandler *);
 
 struct MiddlewareHandler {
     MiddlewareFunc *handlers;
@@ -17,6 +17,6 @@ struct MiddlewareHandler {
     Controller finalHandler;
 };
 
-bool next(HttpRequest request, MiddlewareHandler *middleware);
+bool next(AppContext context, MiddlewareHandler *middleware);
 
 #endif

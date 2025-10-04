@@ -9,10 +9,7 @@ CorsConfig corsPolicy() {
 }
 
 void allowOrigin(CorsConfig *config, char *origin) {
-    if (config->allowOrigin) {
-        free(config->allowOrigin);
-    }
-    config->allowOrigin = strdup(origin);
+    config->allowOrigin = origin;
 }
 
 void allowMethod(CorsConfig *config, HttpMethod method) {
@@ -37,11 +34,4 @@ CorsConfig corsAllowAll() {
     allowAnyMethod(&config);
 
     return config;
-}
-
-void freeCorsConfiguration(CorsConfig *config) {
-    if (!config) return;
-
-    free(config->allowOrigin);
-    config->allowOrigin = NULL;
 }

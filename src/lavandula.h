@@ -1,6 +1,12 @@
 #ifndef lavandula_h
 #define lavandula_h
 
+// common headers
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
 #include "cli.h"
 #include "server.h"
 #include "dotenv.h"
@@ -10,16 +16,21 @@
 #include "json.h"
 #include "cors.h"
 #include "environment.h"
+#include "sql.h"
+
+#include "version.h"
 
 typedef struct {
-    Server             server;
-    int                port;
-    bool               verboseLogging; 
-    bool               useHttpsRedirect;
-    char              *environment;
+    Server            server;
+    int               port;
+    bool              verboseLogging; 
+    bool              useHttpsRedirect;
+    char             *environment;
 
     MiddlewareHandler middleware;
-    CorsConfig         corsPolicy;
+    CorsConfig        corsPolicy;
+
+    DbContext        *dbContext;
 } App;
 
 typedef struct {
@@ -28,14 +39,32 @@ typedef struct {
 
 AppBuilder createBuilder();
 
+// sets the port for the application (default is 3000)
 void usePort(AppBuilder *builder, int port);
+
+// adds a middleware function to the application pipeline
 void useMiddleware(AppBuilder *builder, MiddlewareFunc);
+
+// enables verbose logging for requests and responses
 void useVerboseLogging(AppBuilder *builder);
+
+// loads environment variables from a .env file
 void useDotenv(char *path);
+
+// adds CORS policy to the application
 void useCorsPolicy(AppBuilder *builder, CorsConfig);
+
+// adds a default permissive CORS policy to the application
 void useDefaultCorsPolicy(AppBuilder *builder);
+
+// enables HTTPS redirection for all incoming HTTP requests
 void useHttpsRedirect(AppBuilder *builder);
+
+// sets the application environment (development, production, testing)
 void useEnvironment(AppBuilder *builder, char *env);
+
+// integrates SQLite3 database with the application
+void useSqlLite3(AppBuilder *builder, char *dbPath);
 
 bool isDevelopment(AppBuilder *builder);
 bool isProduction(AppBuilder *builder);

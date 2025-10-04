@@ -1,8 +1,11 @@
 #ifndef cli_h
 #define cli_h
 
-void newProject(char *name);
-void runProject();
-void scaffoldController();
+int newProject(char *name);
+int runProject();
+
+int help();
+int version();
+int unknownCommand(char *option);
 
 #endif
