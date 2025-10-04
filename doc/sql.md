@@ -14,7 +14,7 @@ Run the following command to install SqlLite3.
 sudo apt install libsqlite3-dev sqlite3
 ```
 
-Include this head in your project.
+Include this header file in your project.
 
 ```c
 #include <sqlite3.h>

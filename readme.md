@@ -1,8 +1,9 @@
 # Lavandula
 
-**Lavandula** is a lightweight C web framework designed for building fast and simple web applications. It provides a small, intuitive API to define routes and run a HTTP server without the complexity of heavier frameworks. The framework is subtly inspired by .NET and Ruby on Rails.
+**Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
 
-<br/>
+
+## Example
 
 ```c
 HttpResponse home(HttpRequest _) {
@@ -61,6 +62,7 @@ int main() {
 - JSON model and function scaffolding
   - lavu model User name:string age:int
   - generates User struct, JSON serialization, CRUD endpoints in user_controller.c
+  - URL parameter parsing and routing
 
 
 ## Installation
@@ -101,15 +103,15 @@ Documentation:
 You should now be able to run the Lavu CLI tool. Refer to `api.md` for how to use Lavu.
 
 
-## Quick Start
+## Getting Started
 
-Use the Lavandula CLI with the following command to create a new project.
+1. Create a new project
 
 ```
 lavu new myProject
 ```
 
-You should see the following output once run.
+Output:
 
 ```
 Setting up Lavandula project 'myProject'...
@@ -128,28 +130,20 @@ Next steps:
   2. lavu run
 ```
 
-It automatically generates the following project structure:
-```
-.
-├── app
-│   ├── app.c
-│   ├── controllers
-│   │   └── home.c
-│   └── routes.c
-├── tests
-│   └── tests.c
-├── lavandula.yml
-└── makefile
-```
 
-
-## Compile and Run
+2. Run
 
 ```
 lavu run
 ```
 
-Your app will start on port 3000, and visiting http://localhost:3000/ will display your application.
+Your application will run on http://localhost:3000/.
+
+3. Read the docs
+
+   - [Developing with Lavandula](doc/tutorial.md)
+   - [API Documentation](doc/api.md)
+
 
 
 ## Contributing
@@ -158,5 +152,11 @@ Contributions are welcome. Feel free to submit pull requests or open issues for 
 
 Some things that probably need looking at are:
 - memory leaks
-- outdated documentation (API changes warrant a docs update)
+- outdated and unfinished documentation (API changes warrant a docs update)
 - The JSON library does not currently support nested lists
+- Some tests need to be written...
+
+
+## License
+
+Lavandula is registered under the MIT License.e
