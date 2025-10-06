@@ -32,12 +32,10 @@ typedef struct {
     bool        hadError;
 } LavenderLexer;
 
-// Lexer functions
 LavenderLexer newLexer(const char *source);
 void tokenizeSchema(LavenderLexer *lexer);
 void freeLexer(LavenderLexer *lexer);
 
-// Token utility functions
 SchemaToken newToken(const char *lexeme, SchemaTokenType type);
 void freeToken(SchemaToken *token);
 void printToken(const SchemaToken *token);

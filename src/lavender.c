@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "lavender.h"
+#include "include/lavender.h"
 
 LavenderSchemaParser newSchemaParser(const char *source) {
     LavenderLexer *lexer = malloc(sizeof(LavenderLexer));

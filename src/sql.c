@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "sql.h"
+#include "include/sql.h"
 
 DbContext *createSqlLite3DbContext(char *dbPath) {
     DbContext *context = malloc(sizeof(DbContext));

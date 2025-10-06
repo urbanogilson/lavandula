@@ -7,7 +7,7 @@
 
 typedef struct {
     LavenderLexer *lexer;
-    int           position;  // position in token array
+    int           position;
 
     SchemaNode   *nodes;
     int           nodeCount;
@@ -16,12 +16,10 @@ typedef struct {
     bool          hadError;
 } LavenderParser;
 
-// Parser functions
 LavenderParser newParser(LavenderLexer *lexer);
 void parseSchemaInternal(LavenderParser *parser);
 void freeLavenderParser(LavenderParser *parser);
 
-// Parser utility functions
 bool expectToken(LavenderParser *parser, SchemaTokenType type);
 SchemaNode parseModel(LavenderParser *parser);
 SchemaNode parseSchemaStatement(LavenderParser *parser);

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cors.h"
+#include "include/cors.h"
 
 CorsConfig corsPolicy() {
     return (CorsConfig){};

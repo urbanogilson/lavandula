@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "http.h"
+#include "include/http.h"
 
 static inline char currentChar(HttpParser *parser) {
     return parser->requestBuffer[parser->position];

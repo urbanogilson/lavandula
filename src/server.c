@@ -5,11 +5,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "server.h"
-#include "http.h"
-#include "middleware.h"
-#include "context.h"
-#include "sql.h"
+#include "include/server.h"
+#include "include/http.h"
+#include "include/middleware.h"
+#include "include/context.h"
+#include "include/sql.h"
 
 #define BUFFER_SIZE 4096
 

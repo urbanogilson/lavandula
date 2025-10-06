@@ -1,7 +1,6 @@
 #include <stdio.h>
 
-#include "logger.h"
-#include "logger.h"
+#include "include/logger.h"
 
 void logInfo(char *msg) {
     printf("[info]: %s", msg);

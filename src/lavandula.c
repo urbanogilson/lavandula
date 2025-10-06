@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lavandula.h"
+#include "include/lavandula.h"
 
 AppBuilder createBuilder() {
     AppBuilder builder = {

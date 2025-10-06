@@ -1,4 +1,4 @@
-#include "lavandula.h"
+#include "include/lavandula.h"
 
 int main(int argc, char *argv[]) {
     AppBuilder builder = createBuilder();

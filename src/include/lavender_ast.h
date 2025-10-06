@@ -18,7 +18,6 @@ typedef struct {
 
 } SchemaNode;
 
-// AST utility functions
 void freeSchemaNode(SchemaNode *node);
 void printSchemaNode(const SchemaNode *node);
 

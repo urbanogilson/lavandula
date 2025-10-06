@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "lavender_lexer.h"
-#include "utils.h"
+#include "include/lavender_lexer.h"
+#include "include/utils.h"
 
 static bool isEnd(LavenderLexer *lexer) {
     return lexer->position >= (int)strlen(lexer->source);

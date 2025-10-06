@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "lavender_parser.h"
+#include "include/lavender_parser.h"
 
 static bool isLast(LavenderParser *parser) {
     return parser->position >= parser->lexer->tokenCount;
@@ -102,7 +102,6 @@ void parseSchemaInternal(LavenderParser *parser) {
         return;
     }
 
-    // Print tokens for debugging
     for (int i = 0; i < parser->lexer->tokenCount; i++) {
         printToken(&parser->lexer->tokens[i]);
     }
@@ -110,7 +109,6 @@ void parseSchemaInternal(LavenderParser *parser) {
     createSchemaAst(parser);
     if (parser->hadError) return;
 
-    // Print AST nodes
     for (int i = 0; i < parser->nodeCount; i++) {
         printSchemaNode(&parser->nodes[i]);
     }
