@@ -7,6 +7,15 @@ typedef enum {
 
 typedef struct {
     char *name;
+    char *type;
+} ColumnDefinition;
+
+typedef struct {
+    char *name;
+
+    ColumnDefinition *columns;
+    int columnCount;
+    int columnCapacity;
 } ModelDeclaration;
 
 typedef struct {

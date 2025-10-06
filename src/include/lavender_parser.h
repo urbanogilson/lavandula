@@ -17,12 +17,8 @@ typedef struct {
 } LavenderParser;
 
 LavenderParser newParser(LavenderLexer *lexer);
-void parseSchemaInternal(LavenderParser *parser);
 void freeLavenderParser(LavenderParser *parser);
 
-bool expectToken(LavenderParser *parser, SchemaTokenType type);
-SchemaNode parseModel(LavenderParser *parser);
-SchemaNode parseSchemaStatement(LavenderParser *parser);
-void createSchemaAst(LavenderParser *parser);
+void parseSchemaInternal(LavenderParser *parser);
 
 #endif

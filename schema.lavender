@@ -1,1 +1,5 @@
-model Todo {}
+model Todo {
+    x Integer
+    y String
+    z Boolean
+}

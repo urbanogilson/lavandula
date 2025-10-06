@@ -11,6 +11,19 @@ static void advance(LavenderParser *parser) {
     parser->position++;
 }
 
+static SchemaToken currentToken(LavenderParser *parser) {
+    if (isLast(parser)) {
+        SchemaToken eofToken = {
+            .type = SCHEMA_TOKEN_ERR,
+            .lexeme = "",
+        };
+
+        return eofToken;
+    }
+
+    return parser->lexer->tokens[parser->position];
+}
+
 static SchemaNode badNode(LavenderParser *parser) {
     parser->hadError = true;
 
@@ -21,17 +34,29 @@ static SchemaNode badNode(LavenderParser *parser) {
     return node;
 }
 
-bool expectToken(LavenderParser *parser, SchemaTokenType type) {
+static bool expectToken(LavenderParser *parser, SchemaTokenType type) {
     if (isLast(parser)) return false;
 
-    SchemaToken token = parser->lexer->tokens[parser->position];
-    if (token.type != type) return false;
+    if (currentToken(parser).type != type) return false;
 
     advance(parser);
     return true;
 }
 
-SchemaNode parseModel(LavenderParser *parser) {
+static bool match(LavenderParser *parser, SchemaTokenType type) {
+    if (isLast(parser)) return false;
+    if (currentToken(parser).type != type) return false;
+
+    return true;
+}
+
+static bool isValidType(SchemaToken token) {
+    return token.type == SCHEMA_TOKEN_STRING 
+        || token.type == SCHEMA_TOKEN_INTEGER
+        || token.type == SCHEMA_TOKEN_BOOLEAN;
+}
+
+static SchemaNode parseModel(LavenderParser *parser) {
     advance(parser);
     if (isLast(parser)) {
         return badNode(parser);
@@ -49,24 +74,59 @@ SchemaNode parseModel(LavenderParser *parser) {
         return badNode(parser);
     }
 
+    int columnCapacity = 1;
+    int columnCount = 0;
+    ColumnDefinition *columns = malloc(sizeof(ColumnDefinition));
+
+    while (!match(parser, SCHEMA_TOKEN_RBRACE) && !isLast(parser)) {
+        ColumnDefinition column;
+
+        SchemaToken colNameToken = parser->lexer->tokens[parser->position];
+        if (colNameToken.type != SCHEMA_TOKEN_IDENTIFIER) {
+            printf("Expected column name in model, got: %s\n", colNameToken.lexeme);
+            free(columns);
+            return badNode(parser);
+        }
+        advance(parser);
+
+        column.name = strdup(colNameToken.lexeme);
+
+        SchemaToken typeToken = parser->lexer->tokens[parser->position];
+        if (!isValidType(typeToken)) {
+            printf("Expected column type in model, got: %s\n", typeToken.lexeme);
+            free(columns);
+            return badNode(parser);
+        }
+        advance(parser);
+
+        column.type = strdup(typeToken.lexeme);
+
+        if (columnCount >= columnCapacity) {
+            columnCapacity *= 2;
+            columns = realloc(columns, sizeof(ColumnDefinition) * columnCapacity);
+        }
+        columns[columnCount++] = column;
+
+    }
+
     if (!expectToken(parser, SCHEMA_TOKEN_RBRACE)) {
         printf("Expected '}' after model name, got: %s\n", parser->lexer->tokens[parser->position].lexeme);
         return badNode(parser);
     }
 
-    ModelDeclaration model = {
-        .name = strdup(nameToken.lexeme),
-    };
-
     SchemaNode node = {
         .type = SCHEMA_NODE_MODEL,
-        .model = model,
+        .model = {
+            .name = strdup(nameToken.lexeme),
+            .columns = columns,
+            .columnCount = columnCount,
+        },
     };
 
     return node;
 }
 
-SchemaNode parseSchemaStatement(LavenderParser *parser) {
+static SchemaNode parseSchemaStatement(LavenderParser *parser) {
     SchemaToken token = parser->lexer->tokens[parser->position];
 
     switch (token.type) {
@@ -79,7 +139,7 @@ SchemaNode parseSchemaStatement(LavenderParser *parser) {
     }
 }
 
-void createSchemaAst(LavenderParser *parser) {
+static void createSchemaAst(LavenderParser *parser) {
     parser->position = 0;
 
     while (!isLast(parser)) {

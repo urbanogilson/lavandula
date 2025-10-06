@@ -1,6 +1,12 @@
 #include "include/lavandula.h"
 
 int main(int argc, char *argv[]) {
+
+    LavenderSchemaParser parser = newSchemaParser("schema.lavender");
+    parseSchema(&parser);
+
+    return 0;
+
     if (argc < 2) {
         printf("usage: lavu <command> [options]\n");
         return 1;

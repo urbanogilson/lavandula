@@ -14,6 +14,10 @@ typedef enum {
     SCHEMA_TOKEN_LPAREN,
     SCHEMA_TOKEN_RPAREN,
     SCHEMA_TOKEN_NUMBER,
+
+    SCHEMA_TOKEN_INTEGER,
+    SCHEMA_TOKEN_STRING,
+    SCHEMA_TOKEN_BOOLEAN,
 } SchemaTokenType;
 
 typedef struct {

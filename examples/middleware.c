@@ -1,4 +1,4 @@
-#include "../src/lavandula.h"
+#include "lavandula.h"
 
 HttpResponse home(HttpRequest _) {
     return ok("Hello, World!");

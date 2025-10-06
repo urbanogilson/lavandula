@@ -8,10 +8,14 @@ LavenderSchemaParser newSchemaParser(const char *source) {
     LavenderParser *parser = malloc(sizeof(LavenderParser));
     *parser = newParser(lexer);
 
+    LavenderTranspiler *transpiler = malloc(sizeof(LavenderTranspiler));
+    *transpiler = newTranspiler(parser->nodes, parser->nodeCount);
+
     LavenderSchemaParser schemaParser = {
         .source = source,
         .lexer = lexer,
         .parser = parser,
+        .transpiler = transpiler,
         .hadError = false,
     };
 

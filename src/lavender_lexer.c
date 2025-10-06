@@ -82,6 +82,12 @@ static SchemaToken parseIdentifier(LavenderLexer *lexer) {
     SchemaTokenType type = SCHEMA_TOKEN_IDENTIFIER;
     if (strcmp(lexeme, "model") == 0) {
         type = SCHEMA_TOKEN_MODEL;
+    } else if (strcmp(lexeme, "String") == 0) {
+        type = SCHEMA_TOKEN_STRING;
+    } else if (strcmp(lexeme, "Integer") == 0) {
+        type = SCHEMA_TOKEN_INTEGER;
+    } else if (strcmp(lexeme, "Boolean") == 0) {
+        type = SCHEMA_TOKEN_BOOLEAN;
     }
 
     return newToken(lexeme, type);

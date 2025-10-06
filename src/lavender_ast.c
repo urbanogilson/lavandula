@@ -20,6 +20,9 @@ void printSchemaNode(const SchemaNode *node) {
     switch (node->type) {
         case SCHEMA_NODE_MODEL:
             printf("  Model Name: %s\n", node->model.name);
+            for (int i = 0; i < node->model.columnCount; i++) {
+                printf("    Column: Name=%s, Type=%s\n", node->model.columns[i].name, node->model.columns[i].type);
+            }
             break;
     }
 }

@@ -64,11 +64,6 @@ static char current(DotenvParser *p) {
     return p->source[p->position];
 }
 
-static char peek(DotenvParser *p) {
-    if (isEnd(p)) return '\0';
-    return p->source[p->position];
-}
-
 static Token newToken(const char *lexeme, TokenType type) {
     Token token = {
         .lexeme = strdup(lexeme),
