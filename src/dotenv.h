@@ -4,6 +4,6 @@
 char *env(char *variable);
 void  dotenv(char *path);
 
-void dotenvClean();
+void  dotenvClean();
 
 #endif

@@ -3,6 +3,7 @@
 
 int newProject(char *name);
 int runProject();
+int migrate();
 
 int help();
 int version();

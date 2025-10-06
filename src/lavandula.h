@@ -17,6 +17,8 @@
 #include "cors.h"
 #include "environment.h"
 #include "sql.h"
+#include "lavender.h"
+#include "utils.h"
 
 #include "version.h"
 
@@ -26,6 +28,7 @@ typedef struct {
     bool              verboseLogging; 
     bool              useHttpsRedirect;
     char             *environment;
+    bool              useLavender;     
 
     MiddlewareHandler middleware;
     CorsConfig        corsPolicy;
@@ -66,6 +69,9 @@ void useEnvironment(AppBuilder *builder, char *env);
 // integrates SQLite3 database with the application
 void useSqlLite3(AppBuilder *builder, char *dbPath);
 
+// integrates Lavender ORM with the application
+void useLavender(AppBuilder *builder);
+
 bool isDevelopment(AppBuilder *builder);
 bool isProduction(AppBuilder *builder);
 bool isTesting(AppBuilder *builder);
@@ -82,11 +88,14 @@ void delete(App *app, char *path, Controller controller);
 void patch(App *app, char *path, Controller controller);
 void options(App *app, char *path, Controller controller);
 
+// copy Rails essentially lmao
+void resource(App *app, char *resource, Controller (*controllerFactory)());
+
 // defines a special route for handling 404s
-void   routeNotFound(App *app,  Controller controller);
+void routeNotFound(App *app,  Controller controller);
 
 // defines a special route for handling the root path
-void   root(App *app, Controller controller);
+void root(App *app, Controller controller);
 
 
 #endif

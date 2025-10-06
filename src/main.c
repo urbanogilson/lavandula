@@ -1,6 +1,19 @@
 #include "lavandula.h"
 
 int main(int argc, char *argv[]) {
+    AppBuilder builder = createBuilder();
+    useLavender(&builder);
+
+    LavenderSchemaParser parser = newSchemaParser("schema.lavender");
+    parseSchema(&parser);
+
+    App app = build(builder);
+
+    // runApp(&app);
+    cleanupApp(&app);
+
+    return 0;
+
     if (argc < 2) {
         printf("usage: lavu <command> [options]\n");
         return 1;

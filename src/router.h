@@ -26,6 +26,7 @@ void   route(Router *router, HttpMethod method, char *path, Controller controlle
 
 HttpResponse response(char *content, HttpStatusCode);
 
+// 1xx Informational responses
 HttpResponse httpContinue(char *content);
 HttpResponse switchingProtocols(char *content);
 HttpResponse processing(char *content);
@@ -96,6 +97,5 @@ HttpResponse insufficientStorage(char *content);
 HttpResponse loopDetected(char *content);
 HttpResponse notExtended(char *content);
 HttpResponse networkAuthenticationRequired(char *content);
-
 
 #endif

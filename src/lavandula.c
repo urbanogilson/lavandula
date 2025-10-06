@@ -64,6 +64,10 @@ void useSqlLite3(AppBuilder *builder, char *dbPath) {
     builder->app.dbContext = createSqlLite3DbContext(dbPath);
 }
 
+void useLavender(AppBuilder *builder) {
+    builder->app.useLavender = true;
+}
+
 bool isDevelopment(AppBuilder *builder) {
     char *env = builder->app.environment;
     if (!env) return false;
@@ -118,6 +122,7 @@ void cleanupApp(App *app) {
     dotenvClean();
     free(app->middleware.handlers);
 
+    if (!app->dbContext) return;
     if (app->dbContext->type == SQLITE) {
         free((char *)app->dbContext->connection);
     }
@@ -145,6 +150,10 @@ void patch(App *app, char *path, Controller controller) {
 
 void options(App *app, char *path, Controller controller) {
     route(&app->server.router, HTTP_OPTIONS, path, controller);
+}
+
+void resource(App *app, char *resource, Controller (*controllerFactory)()) {
+    if (!(app && resource && controllerFactory)) return;
 }
 
 // defines a route for 404 not found

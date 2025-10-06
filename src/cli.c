@@ -21,6 +21,10 @@ int runProject() {
     return 1;
 }
 
+int migrate() {
+    return 0;
+}
+
 int help() {
     printf("Lavandula CLI\n");
     printf("Usage:\n");
@@ -158,7 +162,7 @@ int newProject(char *name) {
 
     printf(YELLOW "\nSetting up Lavandula project '%s'...\n\n" RESET, project.name);
 
-    if (!createDir(project.path)) return;
+    if (!createDir(project.path)) return 1;
 
     char appDir[256], controllersDir[256], testsDir[256];
     snprintf(appDir, sizeof(appDir), "%s/app", project.path);

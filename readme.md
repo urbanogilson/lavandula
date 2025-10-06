@@ -47,7 +47,7 @@ int main() {
 ## In Progress
 
 - CORS policy configuration
-- Potential ORM framework
+- Lavender ORM
 
 
 ## Future

@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "dotenv.h"
+#include "utils.h"
+
 typedef enum {
     TOKEN_IDENTIFIER,
     TOKEN_STRING,
@@ -49,24 +52,24 @@ char *env(char *variable) {
     return NULL;
 }
 
-bool isEnd(DotenvParser *p) {
+static bool isEnd(DotenvParser *p) {
     return p->position >= (int)strlen(p->source);
 }
 
-void advance(DotenvParser *p) {
+static void advance(DotenvParser *p) {
     p->position++;
 }
 
-char current(DotenvParser *p) {
+static char current(DotenvParser *p) {
     return p->source[p->position];
 }
 
-char peek(DotenvParser *p) {
+static char peek(DotenvParser *p) {
     if (isEnd(p)) return '\0';
     return p->source[p->position];
 }
 
-Token newToken(const char *lexeme, TokenType type) {
+static Token newToken(const char *lexeme, TokenType type) {
     Token token = {
         .lexeme = strdup(lexeme),
         .type = type,
@@ -74,17 +77,17 @@ Token newToken(const char *lexeme, TokenType type) {
     return token;
 }
 
-bool isValidIdentifierChar(char c) {
+static bool isValidIdentifierChar(char c) {
     return isalnum(c) || c == '_';
 }
 
-void skipWhitespace(DotenvParser *p) {
+static void skipWhitespace(DotenvParser *p) {
     while (!isEnd(p) && (isspace(current(p)) || current(p) == '\r')) {
         advance(p);
     }
 }
 
-Token parseSymbol(DotenvParser *p) {
+static Token parseSymbol(DotenvParser *p) {
     char c = current(p);
     advance(p);
 
@@ -95,7 +98,7 @@ Token parseSymbol(DotenvParser *p) {
     return newToken("", TOKEN_ERROR);
 }
 
-Token parseIdentifier(DotenvParser *p) {
+static Token parseIdentifier(DotenvParser *p) {
     int start = p->position;
 
     while (!isEnd(p) && isValidIdentifierChar(current(p))) {
@@ -149,7 +152,7 @@ Token parseValue(DotenvParser *p) {
     return newToken(lexeme, isNumeric ? TOKEN_NUMERIC : TOKEN_STRING);
 }
 
-Token tryParse(DotenvParser *p) {
+static Token tryParse(DotenvParser *p) {
     skipWhitespace(p);
 
     if (isEnd(p)) return newToken("", TOKEN_ERROR);
@@ -170,7 +173,7 @@ Token tryParse(DotenvParser *p) {
     return newToken("", TOKEN_ERROR);
 }
 
-void parse(DotenvParser *p) {
+static void parse(DotenvParser *p) {
     while (!isEnd(p)) {
         Token token = tryParse(p);
 
@@ -185,29 +188,6 @@ void parse(DotenvParser *p) {
             break;
         }
     }
-}
-
-char *readFile(char *path) {
-    FILE *fptr = fopen(path, "r");
-    if (!fptr) {
-        return NULL;
-    }
-
-    fseek(fptr, 0, SEEK_END);
-    int sz = ftell(fptr);
-    rewind(fptr);
-
-    char *buff = malloc(sz + 1);
-    if (!buff) {
-        fclose(fptr);
-        return NULL;
-    }
-
-    fread(buff, 1, sz, fptr);
-    buff[sz] = '\0';
-    fclose(fptr);
-
-    return buff;
 }
 
 void dotenvClean() {
