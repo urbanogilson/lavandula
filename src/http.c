@@ -54,6 +54,9 @@ char* httpMethodToStr(HttpMethod method) {
         case HTTP_DELETE: {
             return "DELETE";
         }
+        case HTTP_OPTIONS: {
+            return "OPTIONS";
+        }
         default: {
             return "UNKNOWN";
         }
