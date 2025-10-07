@@ -115,15 +115,10 @@ void test_ast_utility_functions() {
     node.type = SCHEMA_NODE_MODEL;
     node.model.name = strdup("TestModel");
     
-    // Test that the node is properly created
     expect(node.type, toBe(SCHEMA_NODE_MODEL));
     expect(strcmp(node.model.name, "TestModel"), toBe(0));
     
-    // Test freeing the node
     freeSchemaNode(&node);
-    
-    // Note: We can't easily test that the memory was freed without 
-    // additional memory tracking, but at least we verify the function runs
 }
 
 void test_empty_schema() {
@@ -144,7 +139,6 @@ void test_empty_schema() {
 }
 
 void test_invalid_model_syntax() {
-    // Test missing model name
     FILE *temp = fopen("test_schema.tmp", "w");
     fprintf(temp, "model {}");
     fclose(temp);

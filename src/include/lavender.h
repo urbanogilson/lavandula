@@ -5,8 +5,9 @@
 
 #include "lavender_ast.h"
 #include "lavender_lexer.h"
-#include "lavender_parser.h"
 #include "lavender_transpiler.h"
+
+typedef struct LavenderParser LavenderParser;
 
 typedef struct {
     const char         *source;
@@ -18,8 +19,7 @@ typedef struct {
 } LavenderSchemaParser;
 
 LavenderSchemaParser newSchemaParser(const char *source);
-
-void parseSchema(LavenderSchemaParser *parser);
 void freeSchemaParser(LavenderSchemaParser *parser);
+void parseSchema(LavenderSchemaParser *lavender);
 
 #endif

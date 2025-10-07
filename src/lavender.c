@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "include/lavender.h"
+#include "include/lavender_parser.h"
 
 LavenderSchemaParser newSchemaParser(const char *source) {
     LavenderLexer *lexer = malloc(sizeof(LavenderLexer));
@@ -20,11 +21,6 @@ LavenderSchemaParser newSchemaParser(const char *source) {
     };
 
     return schemaParser;
-}
-
-void parseSchema(LavenderSchemaParser *schemaParser) {
-    parseSchemaInternal(schemaParser->parser);
-    schemaParser->hadError = schemaParser->parser->hadError;
 }
 
 void freeSchemaParser(LavenderSchemaParser *schemaParser) {

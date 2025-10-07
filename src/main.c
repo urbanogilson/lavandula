@@ -1,9 +1,8 @@
 #include "include/lavandula.h"
 
 int main(int argc, char *argv[]) {
-
-    LavenderSchemaParser parser = newSchemaParser("schema.lavender");
-    parseSchema(&parser);
+    LavenderSchemaParser lavender = newSchemaParser("schema.lavender");
+    parseSchema(&lavender);
 
     return 0;
 

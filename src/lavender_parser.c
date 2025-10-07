@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "include/lavender_parser.h"
+#include "include/lavender_transpiler.h"
+#include "include/lavender.h"
 
 static bool isLast(LavenderParser *parser) {
     return parser->position >= parser->lexer->tokenCount;
@@ -155,23 +157,25 @@ static void createSchemaAst(LavenderParser *parser) {
     }
 }
 
-void parseSchemaInternal(LavenderParser *parser) {
-    tokenizeSchema(parser->lexer);
-    if (parser->lexer->hadError) {
-        parser->hadError = true;
+void parseSchema(LavenderSchemaParser *lavender) {
+    tokenizeSchema(lavender->lexer);
+    if (lavender->lexer->hadError) {
+        lavender->hadError = true;
         return;
     }
 
-    for (int i = 0; i < parser->lexer->tokenCount; i++) {
-        printToken(&parser->lexer->tokens[i]);
+    // for (int i = 0; i < parser->lexer->tokenCount; i++) {
+    //     printToken(&parser->lexer->tokens[i]);
+    // }
+
+    createSchemaAst(lavender->parser);
+    if (lavender->parser->hadError) return;
+
+    for (int i = 0; i < lavender->parser->nodeCount; i++) {
+        printSchemaNode(&lavender->parser->nodes[i]);
     }
 
-    createSchemaAst(parser);
-    if (parser->hadError) return;
-
-    for (int i = 0; i < parser->nodeCount; i++) {
-        printSchemaNode(&parser->nodes[i]);
-    }
+    transpileSchema(lavender->parser->nodes, lavender->parser->nodeCount);
 }
 
 LavenderParser newParser(LavenderLexer *lexer) {

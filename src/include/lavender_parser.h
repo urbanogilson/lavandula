@@ -1,11 +1,11 @@
 #ifndef LAVENDER_PARSER_H
 #define LAVENDER_PARSER_H
 
-#include <stdbool.h>
 #include "lavender_ast.h"
 #include "lavender_lexer.h"
+#include <stdbool.h>
 
-typedef struct {
+typedef struct LavenderParser {
     LavenderLexer *lexer;
     int           position;
 
@@ -18,7 +18,5 @@ typedef struct {
 
 LavenderParser newParser(LavenderLexer *lexer);
 void freeLavenderParser(LavenderParser *parser);
-
-void parseSchemaInternal(LavenderParser *parser);
 
 #endif
