@@ -3,6 +3,13 @@
 This document will walk you through creating a sample application with Lavandula, following conventions and best practices. We will create a simple web application that connects to a Sqlite3 database and serves JSON content.
 
 
+## What is Lavandula?
+
+Lavandula is a framework that makes building maintainable backends in C faster and more scalable (and fun). If you have used .NET before, then you will be familiar with some of the concepts used in the framework. The framework also takes some inspiration from Express and Rails.
+
+The core of lavandula is a customisable web server. You can define routes to serve various types of content within your application. On top of this are various tools such as a route handler, middleware pipeline, environment variable parser, logger, and even an ORM, to make your development easier.
+
+
 ## Project Setup
 
 Follow the installation and setup guide in `setup.md`.
@@ -15,7 +22,7 @@ lavu new sampleApp
 cd sampleApp
 ```
 
-You should see the following structure:
+You should see the following folder structure automatically generated:
 
 ```
 .
@@ -42,10 +49,14 @@ You should see
 Lavandula Server is running! -> http://127.0.0.1:8080
 ```
 
+## Sample Project Brief
+
+The project we will build in this tutorial is hopefully a familiar one. We are going to be building a todo application, where the user can add, remove, update, and view the todos inside of a database.
+
 
 ## Data Modelling
 
-We want to create a model for the data we are representing in our software. In our case, we want to create a todo model.
+We want to create a model for the data we are representing in our software. In our case, we want to create a todo model. This is done by simply creating a struct to hold the data fields we want to represent.
 
 ```
 typedef struct {
@@ -60,7 +71,7 @@ Our todo model has a name, so the user can write what they need to do, and an ID
 
 A controller is a method that will be called when a specific endpoint in our application is hit.
 
-To start, we will just have one endpoint, which will be to retrieve all todos in the database.
+To start, we will just have one endpoint, which will be to retrieve all todos in the database. However, we will eventually have a controller to handle creating, editing, and deleting a todo item.
 
 ```
 // all controllers must follow this function signature
@@ -72,11 +83,11 @@ HttpResponse getTodos(AppContext ctx) {
 
 ## Routing
 
-Now we need to register this controller to a route in our application. We will register this controller to the '/todos' route.
+Now we need to register this controller to a route in our application so that it can be routed to the correct endpoint. We will register this controller to the '/todos' route.
 
 ```
 void registerRoutes(App app) {
-    root(&app, home);
+    // ..
     get(&app, "/todos", getTodos);
 }
 ```
@@ -90,6 +101,8 @@ ok
 ```
 
 ## Integrating Sqlite3
+
+We are going to be integrating a Sqlite3 database into our application. The database will hold a table that has all of our todo items inside of it.
 
 You can install Sqlite3 with the following command.
 
@@ -111,14 +124,20 @@ Now add the following line in main.c. And it's as easy as that. Your application
 useSqlLite3(&builder, "todo.db");
 ```
 
-Lets's set up our database.
+Lets's set up our database with a table for our todo model and some example data.
 
 ```sql
-// create Todos () etc ...
+create table Todos (
+    id int not null,
+    title text not null,
+)
+
+insert into Todos(id, title)
+values (0, 'First Todo!'), (1, 'Second Todo!'), (2, 'Third Todo!')
 ```
 
 
-In our controller, lets add the following code to retrieve all the todo items.
+In our controller, lets add the following code to retrieve all the todo items. The query method used below will return database result which a pointer to any rows that were retrieved and the number of rows in the pointer.
 
 ```c
 DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos");
@@ -127,9 +146,11 @@ if (!result) {
 }
 ```
 
+The end goal here is to return some JSON content to the user calling the endpoint. So we are going to have to transform the database rows into JSON so we can return it in the HTTP response.
+
 We can make use of two helper methods here for converting our SQL rows into todo objects, and then our todo objects into JSON.
 
-Our method for converting 
+Here is the method for converting a database row into a todo struct.
 
 ```c
 Todo rowToTodo(DbRow *row) {
@@ -180,7 +201,7 @@ for (int i = 0; i < result->row_count; i++) {
 }
 ```
 
-For each todo object, we call 'jsonArrayAppend' to add it into the array.
+For each todo object, we append it into the array.
 
 Now we need to convert the JSON object into data that can be returned back to the client.
 
@@ -194,3 +215,12 @@ Lastly, we return an 'ok' to indicate the request was successful, along with the
 ```c
 return ok(json);
 ```
+
+Now, call the get endpoint we created and validate that the todos are returned in the HTTP response.
+
+
+## Final Remarks
+
+Hopefully you found that simple enough. The framework is designed to make doing high level operations like this in a language like C much easier.
+
+If you had any problems during this tutorial, please make this known.

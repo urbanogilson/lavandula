@@ -62,7 +62,6 @@ void test_parse_request_with_multiple_headers() {
     expect(strcmp(parser.request.resource, "/api/data"), toBe(0));
     expect(parser.request.headerCount, toBe(4));
     
-    // Check all headers
     expect(strcmp(parser.request.headers[0].name, "Host"), toBe(0));
     expect(strcmp(parser.request.headers[0].value, "example.com"), toBe(0));
     

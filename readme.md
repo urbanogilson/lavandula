@@ -48,13 +48,13 @@ int main() {
 
 - CORS policy configuration
 - Lavender ORM
+- Embedded Lavandula (ELA) HTML templating engine
 
 
 ## Future
 
 - PostgreSL, MySQL integrations, etc
 - Potential dependency injection framework
-- Templating engine
 - Rate Limiting
 - Static file serving
 - Session cookies
