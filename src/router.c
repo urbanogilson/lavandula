@@ -485,3 +485,15 @@ void route(Router *router, HttpMethod method, char *path, Controller controller)
     }
     router->routes[router->routeCount++] = route;
 }
+
+Route *findRoute(Router router, char *path) {
+    for (int i = 0; i < router.routeCount; i++) {
+        Route route = router.routes[i];
+
+        if (strcmp(route.path, path) == 0) {
+            return &router.routes[i];
+        }
+    }
+
+    return NULL;
+}

@@ -73,6 +73,8 @@ void useSqlLite3(AppBuilder *builder, char *dbPath);
 // integrates Lavender ORM with the application
 void useLavender(AppBuilder *builder);
 
+void useIpRateLimiter(AppBuilder *builder);
+
 bool isDevelopment(AppBuilder *builder);
 bool isProduction(AppBuilder *builder);
 bool isTesting(AppBuilder *builder);

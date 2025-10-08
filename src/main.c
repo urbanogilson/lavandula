@@ -1,5 +1,9 @@
 #include "include/lavandula.h"
 
+HttpResponse home(AppContext ctx) {
+    return ok("Hello, World!");
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("usage: lavu <command> [options]\n");

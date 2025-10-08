@@ -35,7 +35,7 @@ int main() {
 
 - Controller and routing system
 - HTTP endpoint support (GET, POST, etc)
-- Controller middleware
+- Controller middleware pipeline
 - Minimal dependencies (pure C)
 - Quick project scaffolding via the CLI
 - Built-in unit testing framework
@@ -47,21 +47,20 @@ int main() {
 ## In Progress
 
 - Route specific vs global middleware
-- Change middleware to return responses rather than bools
 
 - Session cookies
-
 - CORS policy configuration
+
 - Lavender ORM
 - Embedded Lavandula (ELA) HTML templating engine
 
 
 ## Future
 
-- PostgreSL, MySQL integrations, etc
-- Potential dependency injection framework
 - Rate Limiting
 - Static file serving
+- PostgreSL, MySQL integrations, etc
+- Potential dependency injection framework
 - Route/Available endpoint listing
 - JSON model and function scaffolding
   - lavu model User name:string age:int

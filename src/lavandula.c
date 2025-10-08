@@ -14,6 +14,7 @@ AppBuilder createBuilder() {
         .handlers = malloc(sizeof(MiddlewareHandler) * 1),
         .count = 0,
         .capacity = 1,
+        .current = 0,
     };
 
     return builder;

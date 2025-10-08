@@ -93,54 +93,39 @@ void runServer(Server *server, MiddlewareHandler middleware, DbContext *dbContex
         }
 
         HttpParser parser = parseRequest(buffer);
+        HttpRequest request = parser.request;
 
-        Route *route = NULL;
-        for (int i = 0; i < server->router.routeCount; i++) {
-            Route r = server->router.routes[i];
-
-            if (strcmp(r.path, parser.request.resource) == 0) {
-                route = &server->router.routes[i];
-                break;
-            }
-        }
+        Route *route = findRoute(server->router, request.resource);
 
         if (!route) {
-            Route *notFoundRoute = NULL;
-            for (int i = 0; i < server->router.routeCount; i++) {
-                Route r = server->router.routes[i];
-
-                if (strcmp(r.path, "/404") == 0) {
-                    notFoundRoute = &server->router.routes[i];
-                    break;
-                }
-            }
+            Route *notFoundRoute = findRoute(server->router, "/404");
 
             if (notFoundRoute) {
                 route = notFoundRoute;
             }
         }
 
-        AppContext context = appContext(parser.request);
+        AppContext context = appContext(request);
         context.dbContext = dbContext;
 
-        middleware.current = 0;
         middleware.finalHandler = route ? route->controller : defaultNotFoundController;
-
         HttpResponse response = next(context, &middleware);
 
-        const char *contentType = "application/json";
+        const char *contentType = "text/plain";
         int contentLength = strlen(response.content);
 
         const char *statusText = httpStatusCodeToStr(response.status);
 
+        printf("Body:\n%s\n", response.content);
+
         char header[512];
         snprintf(header, sizeof(header),
-                "HTTP/1.1 %s\r\n"
+                "HTTP/1.1 %d %s\r\n"
                 "Content-Type: %s\r\n"
                 "Content-Length: %d\r\n"
                 "Connection: close\r\n"
                 "\r\n",
-                statusText, contentType, contentLength
+                response.status, statusText, contentType, contentLength
         );
 
         write(clientSocket, header, strlen(header));

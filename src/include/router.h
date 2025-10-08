@@ -24,6 +24,8 @@ void   freeRouter(Router *router);
 
 void   route(Router *router, HttpMethod method, char *path, Controller controller);
 
+Route *findRoute(Router router, char *routePath);
+
 HttpResponse response(char *content, HttpStatusCode);
 
 // 1xx Informational responses
