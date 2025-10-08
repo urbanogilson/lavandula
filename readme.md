@@ -46,6 +46,8 @@ int main() {
 
 ## In Progress
 
+- Session cookies
+
 - CORS policy configuration
 - Lavender ORM
 - Embedded Lavandula (ELA) HTML templating engine
@@ -57,7 +59,6 @@ int main() {
 - Potential dependency injection framework
 - Rate Limiting
 - Static file serving
-- Session cookies
 - Route/Available endpoint listing
 - JSON model and function scaffolding
   - lavu model User name:string age:int

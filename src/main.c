@@ -1,11 +1,6 @@
 #include "include/lavandula.h"
 
 int main(int argc, char *argv[]) {
-    LavenderSchemaParser lavender = newSchemaParser("schema.lavender");
-    parseSchema(&lavender);
-
-    return 0;
-
     if (argc < 2) {
         printf("usage: lavu <command> [options]\n");
         return 1;
@@ -27,6 +22,8 @@ int main(int argc, char *argv[]) {
         return help();
     } else if (strcmp(option, "--version") == 0 || strcmp(option, "-v") == 0) {
         return version();
+    } else if (strcmp(option, "migrate") == 0) {
+        return migrate();
     } else {
         return unknownCommand(option);
     }

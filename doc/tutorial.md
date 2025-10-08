@@ -222,5 +222,3 @@ Now, call the get endpoint we created and validate that the todos are returned i
 ## Final Remarks
 
 Hopefully you found that simple enough. The framework is designed to make doing high level operations like this in a language like C much easier.
-
-If you had any problems during this tutorial, please make this known.

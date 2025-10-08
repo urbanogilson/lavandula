@@ -6,6 +6,7 @@
 
 #include "include/cli.h"
 #include "include/version.h"
+#include "include/utils.h"
 
 #define GREEN "\x1b[32m"
 #define YELLOW "\x1b[33m"
@@ -22,6 +23,10 @@ int runProject() {
 }
 
 int migrate() {
+    // maybe store the path to the database (*.db) in lavandula.yml
+    // since the CLI tool technically wont be able to access it, kinda
+    system("sqlite3 todo.db < output.sql");
+
     return 0;
 }
 
@@ -30,6 +35,7 @@ int help() {
     printf("Usage:\n");
     printf("  lavu new <project_name>   Create a new Lavandula project\n");
     printf("  lavu run                  Run the Lavandula project\n");
+    printf("  lavu migrate              Create a new database migration\n");
     printf("  lavu help                 Show this help message\n");
     
     return 0;
