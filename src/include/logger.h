@@ -5,7 +5,7 @@
 #include "router.h"
 #include "middleware.h"
 
-bool logger(AppContext context, MiddlewareHandler *n);
-bool fileLogger(AppContext context, MiddlewareHandler *n);
+HttpResponse logger(AppContext context, MiddlewareHandler *n);
+HttpResponse fileLogger(AppContext context, MiddlewareHandler *n);
 
 #endif

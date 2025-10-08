@@ -1,19 +1,27 @@
+#include <stddef.h>
+#include <stdlib.h>
 #include "include/middleware.h"
 
-bool next(AppContext context, MiddlewareHandler *middleware) {
-    if (middleware->current < middleware->count) {
+HttpResponse next(AppContext context, MiddlewareHandler *middleware) {
+    while (middleware->current < middleware->count) {
         MiddlewareFunc handler = middleware->handlers[middleware->current++];
         if (handler) {
-            return handler(context, middleware);
-        }
+            HttpResponse response = handler(context, middleware);
 
-        return false;
-    }
-    else {
-        if (middleware->finalHandler) {
-            middleware->finalHandler(context);
+            if (response.content != NULL) {
+                return response;
+            }
         }
-
-        return true;
     }
+    
+    if (middleware->finalHandler) {
+        return middleware->finalHandler(context);
+    }
+    
+    HttpResponse notFoundResponse = {
+        .content = "Not Found",
+        .status = HTTP_NOT_FOUND
+    };
+
+    return notFoundResponse;
 }

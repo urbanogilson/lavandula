@@ -13,6 +13,14 @@
 
 #define BUFFER_SIZE 4096
 
+HttpResponse defaultNotFoundController(AppContext context) {
+    (void)context;
+    return (HttpResponse) {
+        .content = "Not Found",
+        .status = HTTP_NOT_FOUND
+    };
+}
+
 Server initServer(int port) {
     Server server;
     server.port = port;
@@ -109,45 +117,35 @@ void runServer(Server *server, MiddlewareHandler middleware, DbContext *dbContex
 
             if (notFoundRoute) {
                 route = notFoundRoute;
-            } else {
-                const char *notFound = "404 not found";
-                write(clientSocket, notFound, strlen(notFound));
-                close(clientSocket);
-                continue;
             }
         }
 
         AppContext context = appContext(parser.request);
         context.dbContext = dbContext;
 
-        bool nextThing = next(context, &middleware);
+        middleware.current = 0;
+        middleware.finalHandler = route ? route->controller : defaultNotFoundController;
 
-        if (!nextThing) {
-            const char *forbidden = "403 forbidden";
-            write(clientSocket, forbidden, strlen(forbidden));
-            close(clientSocket);
-            continue;
-        }
-
-        HttpResponse response = route->controller(context);
+        HttpResponse response = next(context, &middleware);
 
         const char *contentType = "application/json";
         int contentLength = strlen(response.content);
 
+        const char *statusText = httpStatusCodeToStr(response.status);
+
         char header[512];
         snprintf(header, sizeof(header),
-                "HTTP/1.1 200 OK\r\n"
+                "HTTP/1.1 %s\r\n"
                 "Content-Type: %s\r\n"
                 "Content-Length: %d\r\n"
                 "Connection: close\r\n"
                 "\r\n",
-                contentType, contentLength);
+                statusText, contentType, contentLength
+        );
 
         write(clientSocket, header, strlen(header));
         write(clientSocket, response.content, contentLength);
 
         close(clientSocket);
-
-        // break;
     }
 }

@@ -46,6 +46,9 @@ int main() {
 
 ## In Progress
 
+- Route specific vs global middleware
+- Change middleware to return responses rather than bools
+
 - Session cookies
 
 - CORS policy configuration

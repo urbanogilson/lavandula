@@ -14,15 +14,28 @@ void logError(char *msg) {
     printf("[error]: %s", msg);
 }
 
-bool logger(AppContext context, MiddlewareHandler *n) {
+HttpResponse logger(AppContext context, MiddlewareHandler *n) {
     printf("%s: '%s'\n", httpMethodToStr(context.request.method), context.request.resource);
 
     return next(context, n);
 }
 
-bool fileLogger(AppContext context, MiddlewareHandler *n) {
-    if (!n) return false;
-    if (!context.request.body) return false;
+HttpResponse fileLogger(AppContext context, MiddlewareHandler *n) {
+    if (!n) {
+        return (HttpResponse) {
+            .content = "Internal Server Error",
+            .status = HTTP_INTERNAL_SERVER_ERROR
+        };
+    }
+    if (!context.request.body) {
+        return (HttpResponse) {
+            .content = "Bad Request",
+            .status = HTTP_BAD_REQUEST
+        };
+    }
 
-    return false;
+    return (HttpResponse) {
+        .content = "Bad Request",
+        .status = HTTP_BAD_REQUEST
+    };
 }

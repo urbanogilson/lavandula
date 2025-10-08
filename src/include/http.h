@@ -121,5 +121,6 @@ HttpParser parseRequest(char *request);
 void       freeParser(HttpParser *parser);
 
 char      *httpMethodToStr(HttpMethod method);
+char      *httpStatusCodeToStr(HttpStatusCode status);
 
 #endif

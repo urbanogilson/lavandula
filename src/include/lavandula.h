@@ -19,6 +19,7 @@
 #include "sql.h"
 #include "lavender.h"
 #include "utils.h"
+#include "auth.h"
 
 #include "version.h"
 
