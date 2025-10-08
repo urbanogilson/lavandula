@@ -1,5 +1,5 @@
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef version_h
+#define version_h
 
 #define APPLICATION_NAME "Lavandula"
 

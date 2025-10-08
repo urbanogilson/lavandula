@@ -69,6 +69,10 @@ void useLavender(AppBuilder *builder) {
     builder->app.useLavender = true;
 }
 
+void useBasicAuth(AppBuilder * builder) {
+    useMiddleware(builder, basicAuth);
+}
+
 bool isDevelopment(AppBuilder *builder) {
     char *env = builder->app.environment;
     if (!env) return false;

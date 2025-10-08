@@ -24,17 +24,17 @@
 #include "version.h"
 
 typedef struct {
-    Server            server;
-    int               port;
-    bool              verboseLogging; 
-    bool              useHttpsRedirect;
-    char             *environment;
-    bool              useLavender;     
+    Server             server;
+    int                port;
 
-    MiddlewareHandler middleware;
-    CorsConfig        corsPolicy;
-
-    DbContext        *dbContext;
+    bool               verboseLogging; 
+    bool               useHttpsRedirect;
+    char              *environment;
+    bool               useLavender;     
+    MiddlewareHandler  middleware;
+    CorsConfig         corsPolicy;
+    DbContext         *dbContext;
+    BasicAuthenticator auth;
 } App;
 
 typedef struct {
@@ -73,7 +73,11 @@ void useSqlLite3(AppBuilder *builder, char *dbPath);
 // integrates Lavender ORM with the application
 void useLavender(AppBuilder *builder);
 
-void useIpRateLimiter(AppBuilder *builder);
+//
+// void useIpRateLimiter(AppBuilder *builder);
+
+//
+void useBasicAuth(AppBuilder *builder);
 
 bool isDevelopment(AppBuilder *builder);
 bool isProduction(AppBuilder *builder);

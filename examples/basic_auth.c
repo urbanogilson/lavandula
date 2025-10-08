@@ -1,22 +1,21 @@
 #include "../src/include/lavandula.h"
 
-HttpResponse protectedRoute(AppContext ctx) {
-    return ok("Hello, authenticated user! This is a protected route.");
+#include "include/lavandula.h"
+
+HttpResponse home(AppContext ctx) {
+    return ok("Hello, World!");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     AppBuilder builder = createBuilder();
-    usePort(&builder, 8080);
-    
-    useMiddleware(&builder, basicAuth);
+    useBasicAuth(&builder);
 
     App app = build(builder);
 
-    get(&app, "/admin", protectedRoute);
-    
-    runApp(&app);
-    
-    cleanupApp(&app);
+    addBasicCredentials(&app.auth, "admin", "password");
 
-    return 0;
+    get(&app, "/home", home);
+
+    runApp(&app);
+    cleanupApp(&app);
 }

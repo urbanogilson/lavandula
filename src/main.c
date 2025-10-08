@@ -5,6 +5,19 @@ HttpResponse home(AppContext ctx) {
 }
 
 int main(int argc, char *argv[]) {
+    AppBuilder builder = createBuilder();
+    useBasicAuth(&builder);
+    useMiddleware(&builder, basicAuth);
+
+    App app = build(builder);
+
+    addBasicCredentials(&app.auth, "admin", "password");
+
+    get(&app, "/home", home);
+
+    runApp(&app);
+    cleanupApp(&app);
+
     if (argc < 2) {
         printf("usage: lavu <command> [options]\n");
         return 1;
