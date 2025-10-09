@@ -3,13 +3,6 @@
 **Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
 
 
-### DEVELOPMENT NOTICE
-
-Currently, there is no way to just include the framework in a project. This is something being worked on. If you still want to test and use the framework, you can delete everything in `main.c` and just start writing your application stuff in there, for now.
-
-The CLI will not be of much use for you at the current stage.
-
-
 ## Example
 
 ```c
