@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "include/json.h"
-#include "json.h"
 
 JsonBuilder *jsonBuilder() {
     JsonBuilder *builder = malloc(sizeof(JsonBuilder));
