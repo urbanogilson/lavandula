@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "include/cors.h"
-#include "cors.h"
 
 #define ORIGIN_LIMIT 50
 #define HEADER_LIMIT 50
