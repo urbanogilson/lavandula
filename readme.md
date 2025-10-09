@@ -155,4 +155,5 @@ Some things that probably need looking at are:
 
 ## License
 
-Lavandula is registered under the MIT License.e
+
+Lavandula is registered under the MIT License.
