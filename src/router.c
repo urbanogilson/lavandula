@@ -467,16 +467,31 @@ void freeRouter(Router *router) {
     for (int i = 0; i < router->routeCount; i++) {
         Route route = router->routes[i];
         free(route.path);
+        
+        if (route.middleware) {
+            free(route.middleware->handlers);
+            free(route.middleware);
+        }
     }
 
     free(router->routes);
 }
 
-void route(Router *router, HttpMethod method, char *path, Controller controller) {
+Route route(Router *router, HttpMethod method, char *path, Controller controller) {
+    MiddlewareHandler *middleware = malloc(sizeof(MiddlewareHandler));
+    *middleware = (MiddlewareHandler){
+        .handlers = malloc(sizeof(MiddlewareFunc) * 1),
+        .count = 0,
+        .capacity = 1,
+        .current = 0,
+        .finalHandler = controller
+    };
+
     Route route = {
         .method = method,
         .path = strdup(path),
-        .controller = controller
+        .controller = controller,
+        .middleware = middleware
     };
 
     if (router->routeCount >= router->routeCapacity) {
@@ -484,6 +499,8 @@ void route(Router *router, HttpMethod method, char *path, Controller controller)
         router->routes = realloc(router->routes, sizeof(Route) * router->routeCapacity);
     }
     router->routes[router->routeCount++] = route;
+
+    return route;
 }
 
 Route *findRoute(Router router, char *path) {

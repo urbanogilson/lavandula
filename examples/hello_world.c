@@ -1,6 +1,6 @@
 #include "lavandula.h"
 
-HttpResponse home(HttpRequest _) {
+HttpResponse home(AppContext ctx) {
     return ok("Hello, World!");
 }
 

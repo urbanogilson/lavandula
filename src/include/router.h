@@ -4,6 +4,9 @@
 #include "http.h"
 #include "context.h"
 
+// forward declaration
+typedef struct MiddlewareHandler MiddlewareHandler;
+
 typedef HttpResponse (*Controller)(AppContext);
 
 typedef struct {
@@ -11,6 +14,7 @@ typedef struct {
     char      *path;
 
     Controller controller;
+    MiddlewareHandler *middleware;
 } Route;
 
 typedef struct {
@@ -20,9 +24,9 @@ typedef struct {
 } Router;
 
 Router initRouter();
-void   freeRouter(Router *router);
+void freeRouter(Router *router);
 
-void   route(Router *router, HttpMethod method, char *path, Controller controller);
+Route route(Router *router, HttpMethod method, char *path, Controller controller);
 
 Route *findRoute(Router router, char *routePath);
 

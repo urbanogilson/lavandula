@@ -23,16 +23,18 @@
 
 #include "version.h"
 
+#define appRoute(name) HttpResponse name(AppContext ctx)
+
 typedef struct {
     Server             server;
     int                port;
 
-    bool               verboseLogging; 
+    bool               verboseLogging;
     bool               useHttpsRedirect;
     char              *environment;
     bool               useLavender;     
     MiddlewareHandler  middleware;
-    CorsConfig         corsPolicy;
+    CorsConfig          corsPolicy;
     DbContext         *dbContext;
     BasicAuthenticator auth;
 } App;
@@ -42,6 +44,7 @@ typedef struct {
 } AppBuilder;
 
 AppBuilder createBuilder();
+App createApp();
 
 // sets the port for the application (default is 3000)
 void usePort(AppBuilder *builder, int port);
@@ -76,7 +79,7 @@ void useLavender(AppBuilder *builder);
 //
 // void useIpRateLimiter(AppBuilder *builder);
 
-//
+// puts basic authentication on all routes
 void useBasicAuth(AppBuilder *builder);
 
 bool isDevelopment(AppBuilder *builder);
@@ -88,21 +91,21 @@ App build(AppBuilder builder);
 void runApp(App *app);
 void cleanupApp(App *app);
 
-void get(App *app, char *path, Controller controller);
-void post(App *app, char *path, Controller controller);
-void put(App *app, char *path, Controller controller);
-void delete(App *app, char *path, Controller controller);
-void patch(App *app, char *path, Controller controller);
-void options(App *app, char *path, Controller controller);
+Route get(App *app, char *path, Controller controller);
+Route post(App *app, char *path, Controller controller);
+Route put(App *app, char *path, Controller controller);
+Route delete(App *app, char *path, Controller controller);
+Route patch(App *app, char *path, Controller controller);
+Route options(App *app, char *path, Controller controller);
 
 // copy Rails essentially lmao
 void resource(App *app, char *resource, Controller (*controllerFactory)());
 
 // defines a special route for handling 404s
-void routeNotFound(App *app,  Controller controller);
+Route routeNotFound(App *app,  Controller controller);
 
 // defines a special route for handling the root path
-void root(App *app, Controller controller);
+Route root(App *app, Controller controller);
 
 
 #endif

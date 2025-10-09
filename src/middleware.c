@@ -25,3 +25,33 @@ HttpResponse next(AppContext context, MiddlewareHandler *middleware) {
 
     return notFoundResponse;
 }
+
+void useRouteMiddleware(Route *route, MiddlewareFunc handler) {
+    if (route->middleware->count >= route->middleware->capacity) {
+        route->middleware->capacity *= 2;
+        route->middleware->handlers = realloc(route->middleware->handlers, sizeof(MiddlewareFunc) * route->middleware->capacity);
+    }
+    route->middleware->handlers[route->middleware->count++] = handler;
+}
+
+MiddlewareHandler combineMiddleware(MiddlewareHandler *globalMiddleware, MiddlewareHandler *routeMiddleware) {
+    int totalCount = globalMiddleware->count + routeMiddleware->count;
+    
+    MiddlewareHandler combined = {
+        .handlers = malloc(sizeof(MiddlewareFunc) * totalCount),
+        .count = totalCount,
+        .capacity = totalCount,
+        .current = 0,
+        .finalHandler = routeMiddleware->finalHandler
+    };
+    
+    for (int i = 0; i < globalMiddleware->count; i++) {
+        combined.handlers[i] = globalMiddleware->handlers[i];
+    }
+    
+    for (int i = 0; i < routeMiddleware->count; i++) {
+        combined.handlers[globalMiddleware->count + i] = routeMiddleware->handlers[i];
+    }
+    
+    return combined;
+}

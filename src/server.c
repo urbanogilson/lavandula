@@ -95,7 +95,13 @@ void runServer(Server *server, MiddlewareHandler middleware, DbContext *dbContex
         HttpParser parser = parseRequest(buffer);
         HttpRequest request = parser.request;
 
-        Route *route = findRoute(server->router, request.resource);
+        char *pathOnly = strdup(request.resource);
+        char *queryStart = strchr(pathOnly, '?');
+        if (queryStart) {
+            *queryStart = '\0';
+        }
+
+        Route *route = findRoute(server->router, pathOnly);
 
         if (!route) {
             Route *notFoundRoute = findRoute(server->router, "/404");
@@ -105,18 +111,30 @@ void runServer(Server *server, MiddlewareHandler middleware, DbContext *dbContex
             }
         }
 
+        free(pathOnly);
+
         AppContext context = appContext(request);
         context.dbContext = dbContext;
 
-        middleware.finalHandler = route ? route->controller : defaultNotFoundController;
-        HttpResponse response = next(context, &middleware);
+        HttpResponse response;
+        
+        if (route) {
+            middleware.current = 0;
+            
+            MiddlewareHandler combinedMiddleware = combineMiddleware(&middleware, route->middleware);
+            response = next(context, &combinedMiddleware);
+            
+            free(combinedMiddleware.handlers);
+        } else {
+            middleware.current = 0;
+            middleware.finalHandler = defaultNotFoundController;
+            response = next(context, &middleware);
+        }
 
         const char *contentType = "text/plain";
         int contentLength = strlen(response.content);
 
         const char *statusText = httpStatusCodeToStr(response.status);
-
-        printf("Body:\n%s\n", response.content);
 
         char header[512];
         snprintf(header, sizeof(header),

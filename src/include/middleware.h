@@ -20,4 +20,8 @@ struct MiddlewareHandler {
 
 HttpResponse next(AppContext context, MiddlewareHandler *middleware);
 
+void useRouteMiddleware(Route *route, MiddlewareFunc handler);
+
+MiddlewareHandler combineMiddleware(MiddlewareHandler *globalMiddleware, MiddlewareHandler *routeMiddleware);
+
 #endif

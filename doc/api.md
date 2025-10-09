@@ -67,6 +67,30 @@ Try running the above example and expect the following output when you navigate 
 Hello, World!
 ```
 
+Lavandula also provides a more minimal interface for creating web applications without a builder object. Calling the `createApp` function will return you an app directly without the need for a builder.
+
+```c
+#include "lavandula.h"
+
+appRoute(home) {
+    return ok("Hello, World");
+}
+
+int main(void) {
+    App app = createApp();
+    root(&app, home);
+
+    runApp(&app);
+}
+```
+
+To make life easier when defining routes in your application, you can use the `appRoute` macro. The example above generates the following signature. The variable for accessing the `AppContext` will be by convention named `ctx` when using the `appRoute` macro.
+
+```c
+appRoute(home) -> HttpResponse home(AppContext ctx)
+```
+
+
 
 ## Application Builder
 

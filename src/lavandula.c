@@ -4,24 +4,36 @@
 
 #include "include/lavandula.h"
 
-AppBuilder createBuilder() {
-    AppBuilder builder = {
-        .app.port = 3000,
-        .app.verboseLogging = false,
-    };
-
-    builder.app.middleware = (MiddlewareHandler) {
+void initAppMiddleware(App *app) {
+    app->middleware = (MiddlewareHandler) {
         .handlers = malloc(sizeof(MiddlewareHandler) * 1),
         .count = 0,
         .capacity = 1,
         .current = 0,
     };
+}
+
+AppBuilder createBuilder() {
+    AppBuilder builder = {
+        .app = createApp()
+    };
 
     return builder;
 }
 
+App createApp() {
+    App app = {
+        .port = 3000
+    };
+
+    initAppMiddleware(&app);
+    app.server = initServer(app.port);
+
+    return app;
+}
+
 void usePort(AppBuilder *builder, int port) {
-    builder->app.port = port;
+    builder->app.server.port = port;
 }
 
 void useMiddleware(AppBuilder *builder, MiddlewareFunc middleware) {
@@ -111,13 +123,12 @@ void useDotenv(char *path) {
 }
 
 App build(AppBuilder builder) {
-    builder.app.server = initServer(builder.app.port);
-
     return builder.app;
 }
 
 void runApp(App *app) {
     runServer(&app->server, app->middleware, app->dbContext);
+    cleanupApp(app);
 }
 
 void cleanupApp(App *app) {
@@ -133,40 +144,38 @@ void cleanupApp(App *app) {
     }
 }
 
-void get(App *app, char *path, Controller controller) {
-    route(&app->server.router, HTTP_GET, path, controller);
+Route get(App *app, char *path, Controller controller) {
+    return route(&app->server.router, HTTP_GET, path, controller);
 }
 
-void post(App *app, char *path, Controller controller) {
-    route(&app->server.router, HTTP_POST, path, controller);
+Route post(App *app, char *path, Controller controller) {
+    return route(&app->server.router, HTTP_POST, path, controller);
 }
 
-void put(App *app, char *path, Controller controller) {
-    route(&app->server.router, HTTP_PUT, path, controller);
+Route put(App *app, char *path, Controller controller) {
+    return route(&app->server.router, HTTP_PUT, path, controller);
 }
 
-void delete(App *app, char *path, Controller controller) {
-    route(&app->server.router, HTTP_DELETE, path, controller);
+Route delete(App *app, char *path, Controller controller) {
+    return route(&app->server.router, HTTP_DELETE, path, controller);
 }
 
-void patch(App *app, char *path, Controller controller) {
-    route(&app->server.router, HTTP_PATCH, path, controller);
+Route patch(App *app, char *path, Controller controller) {
+    return route(&app->server.router, HTTP_PATCH, path, controller);
 }
 
-void options(App *app, char *path, Controller controller) {
-    route(&app->server.router, HTTP_OPTIONS, path, controller);
+Route options(App *app, char *path, Controller controller) {
+    return route(&app->server.router, HTTP_OPTIONS, path, controller);
 }
 
 void resource(App *app, char *resource, Controller (*controllerFactory)()) {
     if (!(app && resource && controllerFactory)) return;
 }
 
-// defines a route for 404 not found
-void routeNotFound(App *app, Controller controller) {
-    route(&app->server.router, HTTP_GET, "/404", controller);
+Route routeNotFound(App *app, Controller controller) {
+    return route(&app->server.router, HTTP_GET, "/404", controller);
 }
 
-// defines a route for GET /
-void root(App *app, Controller controller) {
-    route(&app->server.router, HTTP_GET, "/", controller);
+Route root(App *app, Controller controller) {
+    return route(&app->server.router, HTTP_GET, "/", controller);
 }

@@ -15,7 +15,7 @@ void logError(char *msg) {
 }
 
 HttpResponse logger(AppContext context, MiddlewareHandler *n) {
-    printf("%s: '%s'\n", httpMethodToStr(context.request.method), context.request.resource);
+    printf("Logger: %s: '%s'\n", httpMethodToStr(context.request.method), context.request.resource);
 
     return next(context, n);
 }
