@@ -26,7 +26,7 @@ HttpResponse next(AppContext context, MiddlewareHandler *middleware) {
     return notFoundResponse;
 }
 
-void useRouteMiddleware(Route *route, MiddlewareFunc handler) {
+void useLocalMiddleware(Route *route, MiddlewareFunc handler) {
     if (route->middleware->count >= route->middleware->capacity) {
         route->middleware->capacity *= 2;
         route->middleware->handlers = realloc(route->middleware->handlers, sizeof(MiddlewareFunc) * route->middleware->capacity);

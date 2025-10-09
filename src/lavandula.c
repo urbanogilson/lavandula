@@ -36,7 +36,7 @@ void usePort(AppBuilder *builder, int port) {
     builder->app.server.port = port;
 }
 
-void useMiddleware(AppBuilder *builder, MiddlewareFunc middleware) {
+void useGlobalMiddleware(AppBuilder *builder, MiddlewareFunc middleware) {
     if (builder->app.middleware.count >= builder->app.middleware.capacity) {
         builder->app.middleware.capacity *= 2;
         builder->app.middleware.handlers = realloc(builder->app.middleware.handlers, sizeof(MiddlewareFunc) * builder->app.middleware.capacity);
@@ -81,8 +81,8 @@ void useLavender(AppBuilder *builder) {
     builder->app.useLavender = true;
 }
 
-void useBasicAuth(AppBuilder * builder) {
-    useMiddleware(builder, basicAuth);
+void useBasicAuth(AppBuilder *builder) {
+    useGlobalMiddleware(builder, basicAuth);
 }
 
 bool isDevelopment(AppBuilder *builder) {
@@ -127,7 +127,7 @@ App build(AppBuilder builder) {
 }
 
 void runApp(App *app) {
-    runServer(&app->server, app->middleware, app->dbContext);
+    runServer(app);
     cleanupApp(app);
 }
 

@@ -1,24 +1,20 @@
 #include "include/lavandula.h"
 
-HttpResponse globalMiddleware(AppContext ctx, MiddlewareHandler *middleware) {
-    printf("Global middleware: Before request processing\n");
-    
-    return next(ctx, middleware);
-}
-
 appRoute(home) {
-    return ok("Hello, World");
+    return ok("Method Not Allowed");
 }
 
 int main() {
     AppBuilder builder = createBuilder();
-    usePort(&builder, 3001);
-    useMiddleware(&builder, globalMiddleware);
+    usePort(&builder, 8080);
     
     App app = build(builder);
+    addBasicCredentials(&app.auth, "admin", "password");
+
+    useGlobalMiddleware(&builder, basicAuth);
 
     Route homeRoute = root(&app, home);
-    useRouteMiddleware(&homeRoute, logger);
+    useLocalMiddleware(&homeRoute, basicAuth);
 
     runApp(&app);
 }

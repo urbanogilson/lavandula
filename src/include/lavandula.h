@@ -22,22 +22,9 @@
 #include "auth.h"
 
 #include "version.h"
+#include "app.h"
 
 #define appRoute(name) HttpResponse name(AppContext ctx)
-
-typedef struct {
-    Server             server;
-    int                port;
-
-    bool               verboseLogging;
-    bool               useHttpsRedirect;
-    char              *environment;
-    bool               useLavender;     
-    MiddlewareHandler  middleware;
-    CorsConfig          corsPolicy;
-    DbContext         *dbContext;
-    BasicAuthenticator auth;
-} App;
 
 typedef struct {
     App app;
@@ -49,8 +36,8 @@ App createApp();
 // sets the port for the application (default is 3000)
 void usePort(AppBuilder *builder, int port);
 
-// adds a middleware function to the application pipeline
-void useMiddleware(AppBuilder *builder, MiddlewareFunc);
+// adds a middleware function to the application pipeline for all requests
+void useGlobalMiddleware(AppBuilder *builder, MiddlewareFunc);
 
 // enables verbose logging for requests and responses
 void useVerboseLogging(AppBuilder *builder);

@@ -6,27 +6,22 @@
 ## Example
 
 ```c
-HttpResponse home(HttpRequest _) {
-    return ok("Hello, World!");
+#include "lavandula.h" 
+
+// define a route for your app
+appRoute(home) {
+  return ok("Hello, World");
 }
 
 int main() {
-    // Initialize the application builder
-    AppBuilder builder = createBuilder();
-    
-    // Build the application
-    App app = build(builder);
+  // initialise your app
+  App app = createApp();
 
-    // Define routes
-    get(&app, "/home", home);
+  // register a route in your app
+  get(&app, "/home", home);
 
-    // Run the application
-    runApp(&app);
-
-    // Cleanup leftover resources
-    cleanupApp(&app);
-
-    return 0;
+  // run the app
+  runApp(&app);
 }
 ```
 
@@ -35,7 +30,7 @@ int main() {
 
 - Controller and routing system
 - HTTP endpoint support (GET, POST, etc)
-- Controller middleware pipeline
+- Controller local/global middleware pipeline
 - Minimal dependencies (pure C)
 - Quick project scaffolding via the CLI
 - Built-in unit testing framework
@@ -46,11 +41,9 @@ int main() {
 
 ## In Progress
 
-- Route specific vs global middleware
-
+- Inject App* into AppContext
 - Session cookies
 - CORS policy configuration
-
 - Lavender ORM
 - Embedded Lavandula (ELA) HTML templating engine
 

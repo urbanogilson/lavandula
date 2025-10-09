@@ -5,6 +5,7 @@
 #include "include/auth.h"
 #include "include/base64.h"
 #include "include/router.h"
+#include "include/app.h"
 
 BasicAuthenticator initBasicAuth() {
     BasicAuthenticator auth = {
@@ -16,53 +17,6 @@ BasicAuthenticator initBasicAuth() {
     return auth;
 }
 
-HttpResponse basicAuth(AppContext context, MiddlewareHandler *n) {
-    char *authHeader = NULL;
-    for (int i = 0; i < context.request.headerCount; i++) {
-        if (strcmp(context.request.headers[i].name, "Authorization") == 0) {
-            authHeader = context.request.headers[i].value;
-            break;
-        }
-    }
-
-    if (!authHeader || strncmp(authHeader, "Basic ", 6) != 0) {
-        return unauthorized("Unauthorized");
-    }
-
-    char *encodedCredentials = authHeader + 6;
-    char *decodedCredentials = base64Decode(encodedCredentials);
-    if (!decodedCredentials) {
-        return unauthorized("Unauthorized");
-    }
-
-    char *colonPos = strchr(decodedCredentials, ':');
-    if (!colonPos) {
-        free(decodedCredentials);
-        return unauthorized("Unauthorized");
-    }
-
-    *colonPos = '\0';
-    char *username = decodedCredentials;
-    char *password = colonPos + 1;
-
-    if (strcmp(username, "admin") == 0 && strcmp(password, "password") == 0) {
-        free(decodedCredentials);
-        return next(context, n);
-    } else {
-        free(decodedCredentials);
-        return unauthorized("Unauthorized");
-    }
-}
-
-void authenticateBasicCredentials(BasicAuthenticator *auth, char *base64) {
-    if (auth->credentialsCount >= auth->credentialsCapacity) {
-        auth->credentialsCapacity *= 2;
-        auth->credentials = realloc(auth->credentials, sizeof(char *) * auth->credentialsCapacity);
-    }
-
-    auth->credentials[auth->credentialsCount++] = strdup(base64);
-}
-
 void addBasicCredentials(BasicAuthenticator *auth, char *username, char *password) {
     int credLen = strlen(username) + strlen(password) + 2;
     char *credentials = malloc(credLen);
@@ -71,15 +25,21 @@ void addBasicCredentials(BasicAuthenticator *auth, char *username, char *passwor
     char *encoded = base64Encode(credentials);
     free(credentials);
     
-    authenticateBasicCredentials(auth, encoded);
+    if (auth->credentialsCount >= auth->credentialsCapacity) {
+        auth->credentialsCapacity *= 2;
+        auth->credentials = realloc(auth->credentials, sizeof(char *) * auth->credentialsCapacity);
+    }
+
+    auth->credentials[auth->credentialsCount++] = strdup(encoded);
     free(encoded);
 }
 
-HttpResponse basicAuthWithCredentials(BasicAuthenticator *auth, AppContext context, MiddlewareHandler *n) {
+// middleware for basic authentication
+HttpResponse basicAuth(AppContext ctx, MiddlewareHandler *n) {
     char *authHeader = NULL;
-    for (int i = 0; i < context.request.headerCount; i++) {
-        if (strcmp(context.request.headers[i].name, "Authorization") == 0) {
-            authHeader = context.request.headers[i].value;
+    for (int i = 0; i < ctx.request.headerCount; i++) {
+        if (strcmp(ctx.request.headers[i].name, "Authorization") == 0) {
+            authHeader = ctx.request.headers[i].value;
             break;
         }
     }
@@ -89,9 +49,9 @@ HttpResponse basicAuthWithCredentials(BasicAuthenticator *auth, AppContext conte
     }
 
     char *encodedCredentials = authHeader + 6;
-    
-    if (checkBasicCredentials(auth, encodedCredentials)) {
-        return next(context, n);
+
+    if (checkBasicCredentials(&ctx.app->auth, encodedCredentials)) {
+        return next(ctx, n);
     } else {
         return unauthorized("Unauthorized");
     }

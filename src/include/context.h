@@ -4,11 +4,15 @@
 #include "sql.h"
 #include "http.h"
 
+typedef struct App App; 
+
 typedef struct {
+    App *app;
+
     DbContext *dbContext;
     HttpRequest request;
 } AppContext;
 
-AppContext appContext(HttpRequest request);
+AppContext appContext(App *app, HttpRequest request);
 
 #endif

@@ -4,6 +4,8 @@
 #include "router.h"
 #include "middleware.h"
 
+typedef struct App App;
+
 typedef struct {
     Router router;
     
@@ -14,6 +16,6 @@ typedef struct {
 Server initServer(int port);
 void freeServer(Server *server);
 
-void runServer(Server *server, MiddlewareHandler middleware, DbContext *dbContext);
+void runServer(App *app);
 
 #endif
