@@ -41,7 +41,7 @@ int main() {
 
 ## In Progress
 
-- Inject App* into AppContext
+- HTTP JSON body parsing
 - Session cookies
 - CORS policy configuration
 - Lavender ORM

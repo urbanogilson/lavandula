@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "include/json.h"
+#include "json.h"
 
 JsonBuilder *jsonBuilder() {
     JsonBuilder *builder = malloc(sizeof(JsonBuilder));
@@ -281,6 +282,62 @@ char *jsonStringify(JsonBuilder *builder) {
     json[length] = '\0';
 
     return json;
+}
+
+JsonBuilder *jsonParse(char *jsonString) {
+    JsonBuilder *builder = jsonBuilder();
+
+    // ..
+
+    return builder;
+}
+
+char *jsonGetString(JsonBuilder *jsonBuilder, char *key) {
+    for (int i = 0; i < jsonBuilder->jsonCount; i++) {
+        Json json = jsonBuilder->json[i];
+        
+        if (json.type == JSON_STRING && strcmp(json.key, key) == 0) {
+            return json.value;
+        }
+    }
+
+    return NULL;
+}
+
+bool jsonGetBool(JsonBuilder *jsonBuilder, char *key) {
+    for (int i = 0; i < jsonBuilder->jsonCount; i++) {
+        Json json = jsonBuilder->json[i];
+
+        if ((json.type == JSON_TRUE || json.type == JSON_FALSE) && strcmp(json.key, key) == 0) {
+            return json.boolean;
+        }
+    }
+
+    return false;
+}
+
+int jsonGetInteger(JsonBuilder *jsonBuilder, char *key) {
+    for (int i = 0; i < jsonBuilder->jsonCount; i++) {
+        Json json = jsonBuilder->json[i];
+
+        if (json.type == JSON_NUMBER && strcmp(json.key, key) == 0) {
+            return json.integer;
+        }
+    }
+
+    return 0;
+}
+
+bool jsonHasKey(JsonBuilder *jsonBuilder, char *key) {
+    for (int i = 0; i < jsonBuilder->jsonCount; i++) {
+        Json json = jsonBuilder->json[i];
+
+        if (strcmp(json.key, key) == 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void jsonPrintNode(Json json) {

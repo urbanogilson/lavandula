@@ -368,6 +368,21 @@ HttpParser parseRequest(char *request) {
     if (!isEnd(parser) && currentChar(&parser) == '\n') advance(&parser);
 
     parseHeaders(&parser);
+
+    // printf("Received request:\n%s\n", parser.requestBuffer);
+
+    for (int i = 0; i < parser.request.headerCount; i++) {
+        if (strcasecmp(parser.request.headers[i].name, "Content-Length") == 0) {
+            parser.request.bodyLength = atoi(parser.request.headers[i].value);
+            break;
+        }
+    }
+
+    parser.request.body = malloc(parser.request.bodyLength + 1);
+    for (int i = parser.position; i < parser.position + parser.request.bodyLength; i++) {
+        parser.request.body[i - parser.position] = parser.requestBuffer[i];
+    }
+
     // printHeaders(&parser);
 
     return parser;

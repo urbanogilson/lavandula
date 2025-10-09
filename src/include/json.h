@@ -64,6 +64,16 @@ Json jsonArrayJson(JsonArray *array);
 
 char *jsonStringify(JsonBuilder *jsonBuilder);
 
+JsonBuilder *jsonParse(char *jsonString);
+
+char *jsonGetString(JsonBuilder *jsonBuilder, char *key);
+bool jsonGetBool(JsonBuilder *jsonBuilder, char *key);
+int jsonGetInteger(JsonBuilder *jsonBuilder, char *key);
+
+bool jsonHasKey(JsonBuilder *jsonBuilder, char *key);
+
+// more Get methods are required
+
 void jsonPrint(JsonBuilder *jsonBuilder);
 
 #endif
