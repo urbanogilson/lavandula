@@ -8,4 +8,7 @@ Before reading, ensure you have:
 2. Ran the install script
 3. Read CONTRIBUTING.md
 
-...
+
+## Development Considerations
+
+C is inherently a very unsafe language. Because of this, the security of the application must always be a priority when writing code for the framework.
