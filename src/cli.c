@@ -226,6 +226,7 @@ int newProject(char *name) {
     if (!createRoutesHeaderFile(&project)) return 1;
     if (!createMakefile(&project)) return 1;
     if (!createTestsFile(&project)) return 1;
+    if (!createReadMeFile(&project)) return 1;
 
     char copyCommand[512];
     snprintf(copyCommand, sizeof(copyCommand), "cp -r /usr/local/lib/lavandula/src %s/lavandula", project.path);    
