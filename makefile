@@ -1,16 +1,11 @@
-SRCS = $(wildcard src/*.c)
-
-# temporary solution
-LAVENDER_SRCS = $(wildcard src/lavender/*.c)
-YAML_SRCS = $(wildcard src/yaml/*.c)
-# --
+SRCS = $(shell find src -name "*.c")
 
 TEST_SRCS = $(wildcard test/*.c)
 CFLAGS = -Wall -Wextra -lsqlite3 -Isrc
 
 all:
 	mkdir -p build
-	gcc $(SRCS) $(LAVENDER_SRCS) $(YAML_SRCS) $(CFLAGS) -o build/lavu
+	gcc $(SRCS) $(CFLAGS) -o build/lavu
 
 test:
 	mkdir -p build

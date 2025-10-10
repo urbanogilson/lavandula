@@ -41,6 +41,7 @@ int main() {
 
 ## In Progress
 
+- Separate CLI tool from Framework
 - HTTP JSON body parsing
 - Session cookies
 - CORS policy configuration

@@ -3,6 +3,7 @@ set -e
 REPO="ashtonjamesd/lavandula"
 INSTALL_DIR="/usr/local"
 TMP_DIR="/tmp/lavandula-install"
+LAVANDULA_LIB_DIR="/usr/local/lib/lavandula"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -58,6 +59,19 @@ download_source() {
     log_success "Source code downloaded"
 }
 
+install_repository() {
+    log_info "Installing repository to ${LAVANDULA_LIB_DIR}..."
+    
+    sudo mkdir -p "${LAVANDULA_LIB_DIR}"
+    
+    sudo cp -r "$TMP_DIR/." "${LAVANDULA_LIB_DIR}/"
+    
+    sudo chown -R root:root "${LAVANDULA_LIB_DIR}"
+    sudo chmod -R 755 "${LAVANDULA_LIB_DIR}"
+    
+    log_success "Repository installed to ${LAVANDULA_LIB_DIR}"
+}
+
 build_project() {
     log_info "Building Lavandula..."
     make
@@ -103,9 +117,9 @@ show_usage() {
     echo ""
 
     echo -e "${BLUE}Quick Start:${NC}"
-    echo " lavu new my-project # Create a new project"
+    echo " lavu new my-project    # Create a new project"
     echo " cd my-project"
-    echo " lavu run # Run your project"
+    echo " lavu run               # Run your project"
     echo ""
 
     echo -e "${BLUE}Documentation:${NC}"
@@ -130,6 +144,7 @@ main() {
     download_source
     build_project
     install_project
+    install_repository
     cleanup
 
     show_usage

@@ -87,14 +87,13 @@ int createAppFile(Project *project) {
     char filepath[256];
     snprintf(filepath, sizeof(filepath), "%s/app/app.c", project->path);
     const char *content =
-        "#include \"../../src/lavandula.h\"\n"
-        "#include \"routes.c\"\n\n"
+        "#include \"../lavandula/include/lavandula.h\"\n"
+        "#include \"routes.h\"\n\n"
         "int main() {\n"
         "    AppBuilder builder = createBuilder();\n"
         "    App app = build(builder);\n\n"
-        "    registerRoutes(app);\n\n"
-        "    runApp(&app);\n"
-        "    cleanupApp(&app);\n\n"
+        "    registerRoutes(&app);\n\n"
+        "    runApp(&app);\n\n"
         "    return 0;\n"
         "}\n";
 
@@ -105,8 +104,8 @@ int createHomeFile(Project *project) {
     char filepath[256];
     snprintf(filepath, sizeof(filepath), "%s/app/controllers/home.c", project->path);
     const char *content =
-        "#include \"../../../src/lavandula.h\"\n\n"
-        "HttpResponse home(HttpRequest _) {\n"
+        "#include \"../../lavandula/include/lavandula.h\"\n\n"
+        "appRoute(home) {\n"
         "    return ok(\"Hello, World!\");\n"
         "}\n";
 
@@ -117,11 +116,24 @@ int createRoutesFile(Project *project) {
     char filepath[256];
     snprintf(filepath, sizeof(filepath), "%s/app/routes.c", project->path);
     const char *content =
-        "#include \"../../src/lavandula.h\"\n"
-        "#include \"controllers/home.c\"\n\n"
-        "void registerRoutes(App app) {\n"
-        "    root(&app, home);\n"
+        "#include \"../lavandula/include/lavandula.h\"\n"
+        "#include \"controllers/controllers.h\"\n\n"
+        "void registerRoutes(App *app) {\n"
+        "    root(app, home);\n"
         "}\n";
+
+    return createFileWithContent(filepath, content);
+}
+
+int createRoutesHeaderFile(Project *project) {
+    char filepath[256];
+    snprintf(filepath, sizeof(filepath), "%s/app/routes.h", project->path);
+    const char *content =
+        "#ifndef routes_h\n"
+        "#define routes_h\n\n"
+        "#include \"../lavandula/include/lavandula.h\"\n\n"
+        "void registerRoutes(App *app);\n\n"
+        "#endif\n";
 
     return createFileWithContent(filepath, content);
 }
@@ -130,10 +142,11 @@ int createMakefile(Project *project) {
     char filepath[256];
     snprintf(filepath, sizeof(filepath), "%s/makefile", project->path);
     const char *content =
+        "SRCS_LAVANDULA = $(filter-out lavandula/main.c, $(shell find lavandula -name \"*.c\"))\n\n"
         "SRCS = app/app.c app/routes.c $(wildcard app/controllers/*.c)\n"
-        "CFLAGS = -Wall -Wextra\n\n"
+        "CFLAGS = -Wall -Wextra -lsqlite3 -Isrc -Ilavandula/include\n\n"
         "all:\n"
-        "\tgcc $(SRCS) $(CFLAGS) -o a\n";
+        "\tgcc $(SRCS) $(SRCS_LAVANDULA) $(CFLAGS) -o a\n";
 
     return createFileWithContent(filepath, content);
 }
@@ -142,7 +155,7 @@ int createTestsFile(Project *project) {
     char filepath[256];
     snprintf(filepath, sizeof(filepath), "%s/tests/tests.c", project->path);
     const char *content =
-        "#include \"../src/lavandula.h\"\n\n"
+        "#include \"../lavandula/include/lavandula.h\"\n\n"
         "void aTest() {\n"
         "   int x = 10;\n"
         "   expect(x, toBe(10));\n"
@@ -152,6 +165,19 @@ int createTestsFile(Project *project) {
         "   // ..\n"
         "}\n\n"
         "// call 'runTests' in main.c";
+
+    return createFileWithContent(filepath, content);
+}
+
+int createControllersHeaderFile(Project *project) {
+    char filepath[256];
+    snprintf(filepath, sizeof(filepath), "%s/app/controllers/controllers.h", project->path);
+    const char *content =
+        "#ifndef controllers_h\n"
+        "#define controllers_h\n\n"
+        "#include \"../../lavandula/include/lavandula.h\"\n\n"
+        "appRoute(home);\n\n"
+        "#endif\n";
 
     return createFileWithContent(filepath, content);
 }
@@ -181,10 +207,16 @@ int newProject(char *name) {
 
     if (!createYamlFile(&project)) return 1;
     if (!createAppFile(&project)) return 1;
+    if (!createControllersHeaderFile(&project)) return 1;
     if (!createHomeFile(&project)) return 1;
     if (!createRoutesFile(&project)) return 1;
+    if (!createRoutesHeaderFile(&project)) return 1;
     if (!createMakefile(&project)) return 1;
     if (!createTestsFile(&project)) return 1;
+
+    char copyCommand[512];
+    snprintf(copyCommand, sizeof(copyCommand), "cp -r /usr/local/lib/lavandula/src %s/lavandula", project.path);    
+    system(copyCommand);
 
     printf(GREEN "\n🎉 Lavandula project '%s' setup finished successfully!\n" RESET, project.name);
     printf(YELLOW "\nNext steps:\n" RESET);
