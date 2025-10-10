@@ -182,6 +182,19 @@ int createControllersHeaderFile(Project *project) {
     return createFileWithContent(filepath, content);
 }
 
+int createReadMeFile(Project *project) {
+    char filepath[256];
+    snprintf(filepath, sizeof(filepath), "%s/README.md", project->path);
+    const char *content =
+        "# Lavandula\n"
+        "\nThis project was created with the Lavandula CLI.\n"
+        "\n```\n"
+        ".\n├── app             // the root of your application\n│   ├── app.c\n│   ├── controllers\n│   │   └── home.c\n│   └── routes.c\n├── lavandula       // framework, ignore this folder\n├── tests           // directory for app tests\n│   └── tests.c\n├── lavandula.yml   // Lavandula config file\n└── makefile        // makefile for compiling your project\n```\n\n## Running\n\nUse `lavu run` to run your web application.\n"
+        "\n";
+
+    return createFileWithContent(filepath, content);
+}
+
 int newProject(char *name) {
     if (!name || strlen(name) == 0) {
         printf(RED "Error: Project name cannot be empty.\n" RESET);
