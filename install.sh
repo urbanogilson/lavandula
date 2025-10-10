@@ -126,15 +126,11 @@ main() {
     echo "Installing Lavandula Web Framework..."
     echo ""
 
-    sleep 1s
-
     check_dependencies
     download_source
     build_project
     install_project
     cleanup
-
-    sleep 0.5s
 
     show_usage
 }
