@@ -7,7 +7,7 @@
 // forward declaration
 typedef struct MiddlewareHandler MiddlewareHandler;
 
-typedef HttpResponse (*Controller)(AppContext);
+typedef HttpResponse (*Controller)(RequestContext);
 
 typedef struct {
     HttpMethod method;

@@ -22,7 +22,7 @@ Todo rowToTodo(DbRow *row) {
     return todo;
 }
 
-HttpResponse getTodos(AppContext ctx) {
+HttpResponse getTodos(RequestContext ctx) {
     DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos");
     if (!result) {
         return internalServerError("Failed to query database");

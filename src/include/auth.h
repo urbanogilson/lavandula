@@ -12,7 +12,7 @@ typedef struct {
 } BasicAuthenticator;
 
 BasicAuthenticator initBasicAuth();
-HttpResponse basicAuth(AppContext context, MiddlewareHandler *);
+HttpResponse basicAuth(RequestContext context, MiddlewareHandler *);
 void freeBasicAuth(BasicAuthenticator);
 
 void addBasicCredentials(BasicAuthenticator *, char *username, char *password);

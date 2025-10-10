@@ -35,7 +35,7 @@ void addBasicCredentials(BasicAuthenticator *auth, char *username, char *passwor
 }
 
 // middleware for basic authentication
-HttpResponse basicAuth(AppContext ctx, MiddlewareHandler *n) {
+HttpResponse basicAuth(RequestContext ctx, MiddlewareHandler *n) {
     char *authHeader = NULL;
     for (int i = 0; i < ctx.request.headerCount; i++) {
         if (strcmp(ctx.request.headers[i].name, "Authorization") == 0) {

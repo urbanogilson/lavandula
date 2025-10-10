@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "include/middleware.h"
 
-HttpResponse next(AppContext context, MiddlewareHandler *middleware) {
+HttpResponse next(RequestContext context, MiddlewareHandler *middleware) {
     while (middleware->current < middleware->count) {
         MiddlewareFunc handler = middleware->handlers[middleware->current++];
         if (handler) {

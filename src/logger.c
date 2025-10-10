@@ -14,13 +14,13 @@ void logError(char *msg) {
     printf("[error]: %s", msg);
 }
 
-HttpResponse logger(AppContext context, MiddlewareHandler *n) {
+HttpResponse logger(RequestContext context, MiddlewareHandler *n) {
     printf("Logger: %s: '%s'\n", httpMethodToStr(context.request.method), context.request.resource);
 
     return next(context, n);
 }
 
-HttpResponse fileLogger(AppContext context, MiddlewareHandler *n) {
+HttpResponse fileLogger(RequestContext context, MiddlewareHandler *n) {
     if (!n) {
         return (HttpResponse) {
             .content = "Internal Server Error",

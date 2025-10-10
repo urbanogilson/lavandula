@@ -1,6 +1,6 @@
 #include "include/lavandula.h"
 
-HttpResponse globalMiddleware(AppContext ctx, MiddlewareHandler *middleware) {
+HttpResponse globalMiddleware(RequestContext ctx, MiddlewareHandler *middleware) {
     printf("Global middleware: Before request processing\n");
     
     return next(ctx, middleware);

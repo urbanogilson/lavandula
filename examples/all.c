@@ -1,10 +1,10 @@
 #include "lavandula.h"
 
-HttpResponse homePage(AppContext _) {
+HttpResponse homePage(RequestContext _) {
     return ok("Hello, World!");
 }
 
-HttpResponse notFoundPage(AppContext _) {
+HttpResponse notFoundPage(RequestContext _) {
     return response("Oops, this resource was not found...", HTTP_NOT_FOUND);
 }
 
@@ -21,7 +21,7 @@ Json todoToJson(Todo todo) {
     return jsonObject(builder);
 }
 
-HttpResponse getTodos(AppContext ctx) {
+HttpResponse getTodos(RequestContext ctx) {
     DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos");
     if (!result) {
         return internalServerError("Failed to query database");

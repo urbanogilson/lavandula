@@ -75,7 +75,7 @@ To start, we will just have one endpoint, which will be to retrieve all todos in
 
 ```
 // all controllers must follow this function signature
-HttpResponse getTodos(AppContext ctx) {
+HttpResponse getTodos(RequestContext ctx) {
     return ok("ok");
 }
 ```

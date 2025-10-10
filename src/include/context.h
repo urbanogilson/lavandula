@@ -11,8 +11,8 @@ typedef struct {
 
     DbContext *dbContext;
     HttpRequest request;
-} AppContext;
+} RequestContext;
 
-AppContext appContext(App *app, HttpRequest request);
+RequestContext requestContext(App *app, HttpRequest request);
 
 #endif

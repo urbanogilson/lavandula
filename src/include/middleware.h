@@ -8,7 +8,7 @@ typedef struct MiddlewareHandler MiddlewareHandler;
 
 // A middleware function takes in a HttpRequest and a pointer to the next middleware handler.
 // Returns NULL to continue to next middleware, or an HttpResponse to short-circuit the pipeline.
-typedef HttpResponse (* MiddlewareFunc)(AppContext, MiddlewareHandler *);
+typedef HttpResponse (* MiddlewareFunc)(RequestContext, MiddlewareHandler *);
 
 struct MiddlewareHandler {
     MiddlewareFunc *handlers;
@@ -18,7 +18,7 @@ struct MiddlewareHandler {
     Controller finalHandler;
 };
 
-HttpResponse next(AppContext context, MiddlewareHandler *middleware);
+HttpResponse next(RequestContext context, MiddlewareHandler *middleware);
 void useLocalMiddleware(Route *route, MiddlewareFunc handler);
 MiddlewareHandler combineMiddleware(MiddlewareHandler *globalMiddleware, MiddlewareHandler *routeMiddleware);
 

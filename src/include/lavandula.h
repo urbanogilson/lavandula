@@ -24,7 +24,7 @@
 #include "version.h"
 #include "app.h"
 
-#define appRoute(name) HttpResponse name(AppContext ctx)
+#define appRoute(name) HttpResponse name(RequestContext ctx)
 
 typedef struct {
     App app;
