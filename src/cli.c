@@ -238,7 +238,7 @@ int newProject(char *name) {
     if (!createReadMeFile(&project)) return 1;
 
     char copyCommand[FILE_CONTENT_MAX];
-    snprintf(copyCommand, sizeof(copyCommand), "cp -r /usr/local/lib/lavandula/repo/src %s/lavandula", project.path);
+    snprintf(copyCommand, sizeof(copyCommand), "cp -r /usr/local/lib/lavandula/src %s/lavandula", project.path);
     system(copyCommand);
 
     printf(GREEN "\n🎉 Lavandula project '%s' setup finished successfully!\n" RESET, project.name);
