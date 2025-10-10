@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "include/lavender_ast.h"
+
+#include "../include/lavender_ast.h"
 
 void freeSchemaNode(SchemaNode *node) {
     if (!node) return;

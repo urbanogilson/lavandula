@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "include/lavender_parser.h"
-#include "include/lavender_transpiler.h"
-#include "include/lavender.h"
+
+#include "../include/lavender_parser.h"
+#include "../include/lavender_transpiler.h"
+#include "../include/lavender.h"
 
 static bool isLast(LavenderParser *parser) {
     return parser->position >= parser->lexer->tokenCount;

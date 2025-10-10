@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "include/lavender_transpiler.h"
-#include "include/lavender.h"
+#include "../include/lavender_transpiler.h"
+#include "../include/lavender.h"
 
 LavenderTranspiler newTranspiler(SchemaNode *nodes, int nodeCount) {
     LavenderTranspiler transpiler = {
