@@ -13,9 +13,11 @@
 #define RED "\x1b[31m"
 #define RESET "\x1b[0m"
 
+#define FILE_CONTENT_MAX 1024
+
 typedef struct {
-    char name[256];
-    char path[256];
+    char name[512];
+    char path[512];
 } Project;
 
 int runProject() {
@@ -27,6 +29,7 @@ int runProject() {
     return 1;
 }
 
+// migrations are being deferred because that sounds like a PAIN IN THE ASS
 int migrate() {
     // maybe store the path to the database (*.db) in lavandula.yml
     // since the CLI tool technically wont be able to access it, kinda
@@ -78,18 +81,19 @@ int createFileWithContent(const char *filepath, const char *content) {
     return 1;
 }
 
+
 int createYamlFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/lavandula.yml", project->path);
 
-    char content[256];
+    char content[FILE_CONTENT_MAX];
     snprintf(content, sizeof(content), "name: %s\nversion: 1.0.0", project->name);
 
     return createFileWithContent(filepath, content);
 }
 
 int createAppFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/app/app.c", project->path);
     const char *content =
         "#include \"../lavandula/include/lavandula.h\"\n"
@@ -106,7 +110,7 @@ int createAppFile(Project *project) {
 }
 
 int createHomeFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/app/controllers/home.c", project->path);
     const char *content =
         "#include \"../../lavandula/include/lavandula.h\"\n\n"
@@ -118,7 +122,7 @@ int createHomeFile(Project *project) {
 }
 
 int createRoutesFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/app/routes.c", project->path);
     const char *content =
         "#include \"../lavandula/include/lavandula.h\"\n"
@@ -131,7 +135,7 @@ int createRoutesFile(Project *project) {
 }
 
 int createRoutesHeaderFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/app/routes.h", project->path);
     const char *content =
         "#ifndef routes_h\n"
@@ -144,7 +148,7 @@ int createRoutesHeaderFile(Project *project) {
 }
 
 int createMakefile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/makefile", project->path);
     const char *content =
         "SRCS_LAVANDULA = $(filter-out lavandula/main.c, $(shell find lavandula -name \"*.c\"))\n\n"
@@ -157,7 +161,7 @@ int createMakefile(Project *project) {
 }
 
 int createTestsFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/tests/tests.c", project->path);
     const char *content =
         "#include \"../lavandula/include/lavandula.h\"\n\n"
@@ -168,14 +172,13 @@ int createTestsFile(Project *project) {
         "void runTests() {\n"
         "   runTest(aTest);\n"
         "   // ..\n"
-        "}\n\n"
-        "// call 'runTests' in main.c";
+        "}\n\n";
 
     return createFileWithContent(filepath, content);
 }
 
 int createControllersHeaderFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/app/controllers/controllers.h", project->path);
     const char *content =
         "#ifndef controllers_h\n"
@@ -188,14 +191,15 @@ int createControllersHeaderFile(Project *project) {
 }
 
 int createReadMeFile(Project *project) {
-    char filepath[256];
+    char filepath[FILE_CONTENT_MAX];
     snprintf(filepath, sizeof(filepath), "%s/README.md", project->path);
     const char *content =
-        "# Lavandula\n"
-        "\nThis project was created with the Lavandula CLI.\n"
-        "\n```\n"
-        ".\n├── app             // the root of your application\n│   ├── app.c\n│   ├── controllers\n│   │   └── home.c\n│   └── routes.c\n├── lavandula       // framework, ignore this folder\n├── tests           // directory for app tests\n│   └── tests.c\n├── lavandula.yml   // Lavandula config file\n└── makefile        // makefile for compiling your project\n```\n\n## Running\n\nUse `lavu run` to run your web application.\n"
-        "\n";
+        "# My Lavandula Project\n\n"
+        "## Getting Started\n\n"
+        "Run your project:\n"
+        "```bash\n"
+        "lavu run\n"
+        "```\n";
 
     return createFileWithContent(filepath, content);
 }
@@ -214,7 +218,7 @@ int newProject(char *name) {
 
     if (!createDir(project.path)) return 1;
 
-    char appDir[256], controllersDir[256], testsDir[256];
+    char appDir[1024], controllersDir[1024], testsDir[1024];
     snprintf(appDir, sizeof(appDir), "%s/app", project.path);
     snprintf(controllersDir, sizeof(controllersDir), "%s/app/controllers", project.path);
     snprintf(testsDir, sizeof(testsDir), "%s/tests", project.path);
@@ -233,8 +237,8 @@ int newProject(char *name) {
     if (!createTestsFile(&project)) return 1;
     if (!createReadMeFile(&project)) return 1;
 
-    char copyCommand[512];
-    snprintf(copyCommand, sizeof(copyCommand), "cp -r /usr/local/lib/lavandula/src %s/lavandula", project.path);    
+    char copyCommand[FILE_CONTENT_MAX];
+    snprintf(copyCommand, sizeof(copyCommand), "cp -r /usr/local/lib/lavandula/repo/src %s/lavandula", project.path);
     system(copyCommand);
 
     printf(GREEN "\n🎉 Lavandula project '%s' setup finished successfully!\n" RESET, project.name);

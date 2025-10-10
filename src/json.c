@@ -15,6 +15,7 @@ JsonBuilder *jsonBuilder() {
 
 JsonArray jsonArray() {
     JsonArray array = {};
+
     array.items = NULL;
     array.count = 0;
     array.capacity = 0;
@@ -284,6 +285,8 @@ char *jsonStringify(JsonBuilder *builder) {
 }
 
 JsonBuilder *jsonParse(char *jsonString) {
+    if (!jsonString) return NULL;
+
     JsonBuilder *builder = jsonBuilder();
 
     // ..

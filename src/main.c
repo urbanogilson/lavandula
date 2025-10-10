@@ -1,56 +1,56 @@
 #include "include/lavandula.h"
 
-typedef struct {
-    char name[100];
-    char password[100];
-} User;
+// typedef struct {
+//     char name[100];
+//     char password[100];
+// } User;
 
-User rowToUser(DbRow row) {
-    User user;
-    strcpy(user.name, row.col_values[0]);
-    strcpy(user.password, row.col_values[1]);
+// User rowToUser(DbRow row) {
+//     User user;
+//     strcpy(user.name, row.col_values[0]);
+//     strcpy(user.password, row.col_values[1]);
 
-    return user;
-}
+//     return user;
+// }
 
-Json userToJson(User user) {
-    JsonBuilder *builder = jsonBuilder();
-    jsonPutString(builder, "name", user.name);
-    jsonPutString(builder, "password", user.password);
+// Json userToJson(User user) {
+//     JsonBuilder *builder = jsonBuilder();
+//     jsonPutString(builder, "name", user.name);
+//     jsonPutString(builder, "password", user.password);
 
-    return jsonObject(builder);
-}
+//     return jsonObject(builder);
+// }
 
-appRoute(getUsers) {
-    JsonBuilder *root = jsonBuilder();
+// appRoute(getUsers) {
+//     JsonBuilder *root = jsonBuilder();
 
-    JsonArray array = jsonArray();
-    jsonPutArray(root, "todos", &array);
+//     JsonArray array = jsonArray();
+//     jsonPutArray(root, "todos", &array);
 
-    DbResult *result = dbQueryRows(ctx.dbContext, "select * from users;");
-    for (int i = 0; i < result->row_count; i++) {
-        jsonArrayAppend(&array, userToJson(rowToUser(result->rows[i])));
-    }
+//     DbResult *result = dbQueryRows(ctx.dbContext, "select * from users;");
+//     for (int i = 0; i < result->row_count; i++) {
+//         jsonArrayAppend(&array, userToJson(rowToUser(result->rows[i])));
+//     }
 
-    char *json = jsonStringify(root);
-    freeJsonBuilder(root);
+//     char *json = jsonStringify(root);
+//     freeJsonBuilder(root);
 
-    return ok(json);
-}
+//     return ok(json);
+// }
 
-appRoute(createUser) {
-    JsonBuilder *builder = jsonParse(ctx.request.body);
+// appRoute(createUser) {
+//     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    char *name = jsonGetString(builder, "name");
-    char *password = jsonGetString(builder, "password");
+//     char *name = jsonGetString(builder, "name");
+//     char *password = jsonGetString(builder, "password");
 
-    // dbExec(ctx.dbContext, "insert into users (name, password) values (?, ?);", name, password);
+//     // dbExec(ctx.dbContext, "insert into users (name, password) values (?, ?);", name, password);
     
-    char *json = jsonStringify(builder);
-    freeJsonBuilder(builder);
+//     char *json = jsonStringify(builder);
+//     freeJsonBuilder(builder);
 
-    return ok(json);
-}
+//     return ok(json);
+// }
 
 int main(int argc, char *argv[]) {
     // AppBuilder builder = createBuilder();
