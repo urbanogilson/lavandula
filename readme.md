@@ -96,7 +96,7 @@ Documentation:
 
 3. Finish
 
-You should now be able to run the Lavu CLI tool. Refer to `api.md` for how to use Lavu.
+You should now be able to run the Lavu CLI tool and begin writing your application. Refer to `api.md` for how to use Lavu.
 
 
 ## Getting Started
@@ -106,6 +106,8 @@ You should now be able to run the Lavu CLI tool. Refer to `api.md` for how to us
 ```
 lavu new myProject
 ```
+
+This will set up an application folder structure and copy the Lavandula '/src' directory into the created folder structure. This allows you to easily compile the framework and your app together.
 
 Output:
 
@@ -118,6 +120,7 @@ Setting up Lavandula project 'myProject'...
 -> Created myProject/app/routes.c
 -> Created myProject/makefile
 -> Created myProject/tests/tests.c
+...
 
 🎉 Lavandula project 'myProject' setup finished successfully!
 
@@ -139,7 +142,6 @@ Your application will run on http://localhost:3000/.
 
    - [Developing with Lavandula](doc/tutorial.md)
    - [API Documentation](doc/api.md)
-
 
 
 ## Contributing
