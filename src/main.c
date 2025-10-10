@@ -22,8 +22,6 @@ int main(int argc, char *argv[]) {
         return help();
     } else if (strcmp(option, "--version") == 0 || strcmp(option, "-v") == 0) {
         return version();
-    } else if (strcmp(option, "migrate") == 0) {
-        return migrate();
     } else {
         return unknownCommand(option);
     }

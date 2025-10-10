@@ -5,17 +5,7 @@
 
 #include "include/http.h"
 
-static inline char currentChar(HttpParser *parser) {
-    return parser->requestBuffer[parser->position];
-}
-
-static inline void advance(HttpParser *parser) {
-    parser->position++;
-}
-
-static inline bool isEnd(HttpParser parser) {
-    return parser.position >= parser.requestLength;
-}
+#define MAX_BODY_SIZE (10 * 1024 * 1024) // 10 MiB
 
 static HttpMethod toHttpMethod(char *s) {
     if (strcmp(s, "GET") == 0) {
@@ -262,6 +252,18 @@ char* httpStatusCodeToStr(HttpStatusCode code) {
     }
 }
 
+static inline char currentChar(HttpParser *parser) {
+    return parser->requestBuffer[parser->position];
+}
+
+static inline void advance(HttpParser *parser) {
+    parser->position++;
+}
+
+static inline bool isEnd(HttpParser parser) {
+    return parser.position >= parser.requestLength;
+}
+
 static void skipWhitespace(HttpParser *parser) {
     while (!isEnd(*parser) && (currentChar(parser) == ' ' || currentChar(parser) == '\r' || currentChar(parser) == '\n')) {
         advance(parser);
@@ -329,8 +331,8 @@ void printHeaders(HttpParser *parser) {
     printf("  Method: %s\n", httpMethodToStr(parser->request.method));
     printf("  Resource: %s\n", parser->request.resource);
 
-    printf("Headers (%d):\n", parser->request.headerCount);
-    for (int i = 0; i < parser->request.headerCount; i++) {
+    printf("Headers (%ld):\n", parser->request.headerCount);
+    for (size_t i = 0; i < parser->request.headerCount; i++) {
         printf("  HEADER '%s':  %s\n", parser->request.headers[i].name, parser->request.headers[i].value);
     }
 }
@@ -371,23 +373,65 @@ HttpParser parseRequest(char *request) {
 
     // printf("Received request:\n%s\n", parser.requestBuffer);
 
-    for (int i = 0; i < parser.request.headerCount; i++) {
-        if (strcasecmp(parser.request.headers[i].name, "Content-Length") == 0) {
-            parser.request.bodyLength = atoi(parser.request.headers[i].value);
+    bool hasContentLength = false;
+    long long contentLengthVal = 0;
+
+    parser.request.bodyLength = 0;
+
+    for (size_t i = 0; i < parser.request.headerCount; i++) {
+        Header header = parser.request.headers[i];
+
+        if (strcasecmp(header.name, "Content-Length") == 0) {
+            char *endptr = NULL;
+            long long val = strtoll(header.value, &endptr, 10);
+
+            if (val < 0 || endptr == header.value) {
+                parser.isValid = false;
+                return parser;
+            }
+
+            hasContentLength = true;
+            contentLengthVal = val;
+
             break;
         }
     }
 
-    parser.request.body = malloc(parser.request.bodyLength + 1);
-    for (int i = parser.position; i < parser.position + parser.request.bodyLength; i++) {
-        parser.request.body[i - parser.position] = parser.requestBuffer[i];
+    if (hasContentLength) {
+        if (contentLengthVal > MAX_BODY_SIZE) {
+            parser.isValid = false;
+            return parser;
+        }
+
+        if ((unsigned long long)contentLengthVal > (size_t) -1) {
+            parser.isValid = false;
+            return parser;
+        }
+        size_t contentLength = (size_t)contentLengthVal;
+
+        size_t alloc_size = contentLength + 1;
+        parser.request.body = malloc(alloc_size);
+        if (!parser.request.body) {
+            parser.isValid = false;
+            return parser;
+        }
+
+        memcpy(parser.request.body, parser.requestBuffer + parser.position, contentLength);
+        parser.request.body[contentLength] = '\0';
+
+        parser.request.bodyLength = contentLength;
+
+        parser.position += contentLength;
     }
+
+    // for (int i = parser.position; i < parser.position + parser.request.bodyLength; i++) {
+    //     parser.request.body[i - parser.position] = parser.requestBuffer[i];
+    // }
 
     // printHeaders(&parser);
 
     return parser;
 }
-
 
 void freeParser(HttpParser *parser) {
     if (!parser) return;
@@ -395,9 +439,6 @@ void freeParser(HttpParser *parser) {
     free(parser->requestBuffer);
     free(parser->request.resource);
 
-    for (int i = 0; i < parser->request.headerCount; i++) {
-
-    }
     free(parser->request.headers);
 
     free(parser->request.body);

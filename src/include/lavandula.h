@@ -24,7 +24,12 @@
 #include "version.h"
 #include "app.h"
 
+// some useful macros
+
 #define appRoute(name) HttpResponse name(RequestContext ctx)
+
+#define returnIfNull(x, msg) if (!(x)) { return internalServerError(msg); }
+
 
 typedef struct {
     App app;

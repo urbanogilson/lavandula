@@ -1,9 +1,12 @@
 #include "include/context.h"
+#include "include/app.h"
 
 RequestContext requestContext(App *app, HttpRequest request) {
-    RequestContext context;
-    context.app = app;
-    context.request = request;
+    RequestContext context = {
+        .app = app,
+        .request = request,
+        .dbContext = app->dbContext
+    };
 
     return context;
 }

@@ -1,41 +1,37 @@
-#include "lavandula.h"
+
+#include "include/lavandula.h"
 
 typedef struct {
-    char *name;
-    int   id;
-} Todo;
+    char name[100];
+    char password[100];
+} User;
 
-Json todoToJson(Todo todo) {
+User rowToUser(DbRow row) {
+    User user;
+    strcpy(user.name, row.col_values[0]);
+    strcpy(user.password, row.col_values[1]);
+
+    return user;
+}
+
+Json userToJson(User user) {
     JsonBuilder *builder = jsonBuilder();
-    jsonPutString(builder, "name", todo.name);
-    jsonPutInteger(builder, "id", todo.id);
+    jsonPutString(builder, "name", user.name);
+    jsonPutString(builder, "password", user.password);
 
     return jsonObject(builder);
 }
 
-Todo rowToTodo(DbRow *row) {
-    Todo todo = {
-        .name = strdup(row->col_values[0]),
-        .id = atoi(row->col_values[1])
-    };
-
-    return todo;
-}
-
-HttpResponse getTodos(RequestContext ctx) {
-    DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos");
-    if (!result) {
-        return internalServerError("Failed to query database");
-    }
+appRoute(getUsers) {
+    DbResult *result = dbQueryRows(ctx.dbContext, "select * from users;");
+    returnIfNull(result, "Database query failed");
 
     JsonBuilder *root = jsonBuilder();
-
     JsonArray array = jsonArray();
-    jsonPutArray(root, "todos", &array);
-
+    jsonPutArray(root, "users", &array);
+    
     for (int i = 0; i < result->row_count; i++) {
-        Todo todo = rowToTodo(&result->rows[i]);
-        jsonArrayAppend(&array, todoToJson(todo));
+        jsonArrayAppend(&array, userToJson(rowToUser(result->rows[i])));
     }
 
     char *json = jsonStringify(root);
@@ -44,16 +40,31 @@ HttpResponse getTodos(RequestContext ctx) {
     return ok(json);
 }
 
-int main() {
-    AppBuilder builder = createBuilder();
-    useSqlLite3(&builder, "todo.db");
+appRoute(createUser) {
+    JsonBuilder *builder = jsonParse(ctx.request.body);
 
+    char *name = jsonGetString(builder, "name");
+    char *password = jsonGetString(builder, "password");
+
+    // how it will eventually work.. maybe..
+    // dbExec(ctx.dbContext, "insert into users (name, password) values (?, ?);", name, password);
+    
+    char *json = jsonStringify(builder);
+    freeJsonBuilder(builder);
+
+    return ok(json);
+}
+
+int main(int argc, char *argv[]) {
+    AppBuilder builder = createBuilder();
+    useSqlLite3(&builder, "init.db");
+    
     App app = build(builder);
 
-    get(&app, "/todos", getTodos);
+    get(&app, "/getUsers", getUsers);
+    post(&app, "/createUser", createUser);
 
     runApp(&app);
-    cleanupApp(&app);
 
     return 0;
 }

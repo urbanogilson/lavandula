@@ -115,7 +115,6 @@ void runServer(App *app) {
         free(pathOnly);
 
         RequestContext context = requestContext(app, request);
-        context.dbContext = app->dbContext;
 
         HttpResponse response;
         if (route) {

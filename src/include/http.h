@@ -2,6 +2,8 @@
 #define http_h
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define MAX_HEADER_NAME 64
 #define MAX_HEADER_VALUE 256
@@ -96,11 +98,11 @@ typedef struct {
     char       version[16];
 
     Header    *headers;
-    int        headerCount;
-    int        headerCapacity;
+    size_t     headerCount;
+    size_t     headerCapacity;
 
     char      *body;
-    int        bodyLength;
+    size_t     bodyLength;
 } HttpRequest;
 
 typedef struct {
@@ -112,9 +114,9 @@ typedef struct {
     HttpRequest request;
     bool        isValid;
 
-    int         position;
+    size_t      position;
     char       *requestBuffer;
-    int         requestLength;
+    size_t      requestLength;
 } HttpParser;
 
 HttpParser parseRequest(char *request);
