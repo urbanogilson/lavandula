@@ -19,6 +19,11 @@ typedef struct {
 } Project;
 
 int runProject() {
+    system("make");
+    system("./a");
+
+    system("rm ./a");
+    
     return 1;
 }
 
