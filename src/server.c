@@ -112,8 +112,6 @@ void runServer(App *app) {
 
         Route *route = findRoute(app->server.router, request.method, pathOnly);
 
-        free(pathOnly);
-
         RequestContext context = requestContext(app, request);
 
         HttpResponse response;
@@ -129,6 +127,8 @@ void runServer(App *app) {
             app->middleware.finalHandler = pathExists(app->server.router, pathOnly) ? defaultMethodNotAllowedController : defaultNotFoundController;
             response = next(context, &app->middleware);
         }
+
+        free(pathOnly);
 
         const char *contentType = "text/plain";
         int contentLength = strlen(response.content);
