@@ -503,14 +503,26 @@ Route route(Router *router, HttpMethod method, char *path, Controller controller
     return route;
 }
 
-Route *findRoute(Router router, char *path) {
+Route *findRoute(Router router, HttpMethod method, char *path) {
     for (int i = 0; i < router.routeCount; i++) {
         Route route = router.routes[i];
 
-        if (strcmp(route.path, path) == 0) {
+        if ((strcmp(route.path, path) == 0) && (route.method == method)) {
             return &router.routes[i];
         }
     }
 
     return NULL;
+}
+
+bool pathExists(Router router, char *path) {
+    for (int i = 0; i < router.routeCount; i++) {
+        Route route = router.routes[i];
+
+        if (strcmp(route.path, path) == 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
