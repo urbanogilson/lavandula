@@ -75,9 +75,12 @@ int createFileWithContent(const char *filepath, const char *content) {
         perror(filepath);
         return 0;
     }
+
     fputs(content, fp);
     fclose(fp);
+
     printf(GREEN "-> Created %s\n" RESET, filepath);
+
     return 1;
 }
 

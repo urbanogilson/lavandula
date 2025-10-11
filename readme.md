@@ -108,7 +108,7 @@ You should now be able to run the Lavu CLI tool and begin writing your applicati
 lavu new myProject
 ```
 
-This will set up an application folder structure and copy the Lavandula '/src' directory into the created folder structure. This allows you to easily compile the framework and your app together.
+This will set up an application folder structure and copy the Lavandula `/src` directory into the created folder structure. This allows you to easily compile the framework and your app together.
 
 Output:
 
@@ -117,10 +117,13 @@ Setting up Lavandula project 'myProject'...
 
 -> Created myProject/lavandula.yml
 -> Created myProject/app/app.c
+-> Created myProject/app/controllers/controllers.h
 -> Created myProject/app/controllers/home.c
 -> Created myProject/app/routes.c
+-> Created myProject/app/routes.h
 -> Created myProject/makefile
 -> Created myProject/tests/tests.c
+-> Created myProject/README.md
 ...
 
 🎉 Lavandula project 'myProject' setup finished successfully!

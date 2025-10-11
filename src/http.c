@@ -409,6 +409,11 @@ HttpParser parseRequest(char *request) {
         }
         size_t contentLength = (size_t)contentLengthVal;
 
+        if (parser.position + contentLength > parser.requestLength) {
+            parser.isValid = false;
+            return parser;
+        }
+
         size_t alloc_size = contentLength + 1;
         parser.request.body = malloc(alloc_size);
         if (!parser.request.body) {
