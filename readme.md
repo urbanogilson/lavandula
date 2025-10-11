@@ -1,5 +1,8 @@
 # Lavandula
 
+> ⚠️ **Notice:** Lavandula is still in early development and not ready for production use.  
+> Expect frequent breaking changes and incomplete documentation.
+
 **Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
 
 
@@ -163,3 +166,4 @@ Some things that probably need looking at are:
 
 
 Lavandula is registered under the MIT License.
+
