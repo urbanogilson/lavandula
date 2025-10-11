@@ -22,6 +22,14 @@ HttpResponse defaultNotFoundController(RequestContext context) {
     };
 }
 
+HttpResponse defaultMethodNotAllowedController(RequestContext context) {
+    (void)context;
+    return (HttpResponse) {
+        .content = "Method Not Allowed",
+        .status = HTTP_METHOD_NOT_ALLOWED
+    };
+}
+
 Server initServer(int port) {
     Server server;
     server.port = port;
@@ -102,15 +110,7 @@ void runServer(App *app) {
             *queryStart = '\0';
         }
 
-        Route *route = findRoute(app->server.router, pathOnly);
-
-        if (!route) {
-            Route *notFoundRoute = findRoute(app->server.router, "/404");
-
-            if (notFoundRoute) {
-                route = notFoundRoute;
-            }
-        }
+        Route *route = findRoute(app->server.router, request.method, pathOnly);
 
         free(pathOnly);
 
@@ -126,7 +126,7 @@ void runServer(App *app) {
             free(combinedMiddleware.handlers);
         } else {
             app->middleware.current = 0;
-            app->middleware.finalHandler = defaultNotFoundController;
+            app->middleware.finalHandler = pathExists(app->server.router, pathOnly) ? defaultMethodNotAllowedController : defaultNotFoundController;
             response = next(context, &app->middleware);
         }
 
