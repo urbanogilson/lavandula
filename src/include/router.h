@@ -28,7 +28,9 @@ void freeRouter(Router *router);
 
 Route route(Router *router, HttpMethod method, char *path, Controller controller);
 
-Route *findRoute(Router router, char *routePath);
+Route *findRoute(Router router, HttpMethod method, char *routePath);
+
+bool pathExists(Router router, char *routePath);
 
 HttpResponse response(char *content, HttpStatusCode);
 
