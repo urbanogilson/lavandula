@@ -9,6 +9,7 @@ typedef struct {
 
 Todo rowToTodo(DbRow row) {
     Todo todo;
+
     todo.id = atoi(row.colValues[0]);
     strcpy(todo.title, row.colValues[1]);
     todo.completed = atoi(row.colValues[2]);
@@ -18,6 +19,7 @@ Todo rowToTodo(DbRow row) {
 
 Json todoToJson(Todo todo) {
     JsonBuilder *builder = jsonBuilder();
+
     jsonPutInteger(builder, "id", todo.id);
     jsonPutString(builder, "title", todo.title);
     jsonPutBool(builder, "completed", todo.completed);
@@ -26,7 +28,7 @@ Json todoToJson(Todo todo) {
 }
 
 appRoute(getTodos) {
-    DbResult *result = dbQueryRows(ctx.dbContext, "select * from todos;", NULL, 0);
+    DbResult *result = dbQueryRows(ctx.db, "select * from todos;", NULL, 0);
     returnIfNull(result, "Database query failed");
 
     JsonBuilder *root = jsonBuilder();
@@ -46,89 +48,72 @@ appRoute(getTodos) {
 appRoute(createTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    if (!jsonHasKey(builder, "title")) {
-        return internalServerError("Missing 'title' in request body");
-    }
+    returnIfNoKey(builder, "title", "Missing 'title' in request body");
 
     char *name = jsonGetString(builder, "title");
     bool completed = jsonGetBool(builder, "completed");
 
-    DbParam params[] = {
+    DbParam *params = DB_PARAMS(
         PARAM_TEXT(name),
         PARAM_BOOL(completed)
-    };
+    );
 
-    bool result = dbExec(ctx.dbContext, "insert into todos (title, completed) values (?, ?);", params, 2);
+    bool result = dbExec(ctx.db, "insert into todos (title, completed) values (?, ?);", params, 2);
 
-    if (!result) {
-        return internalServerError("Failed to create todo");
-    }
-
+    returnIfNull(result, "Failed to create todo");
     return ok("");
 }
 
 appRoute(updateTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    if (!jsonHasKey(builder, "id")) {
-        return internalServerError("Missing 'id' in request body");
-    }
+    returnIfNoKey(builder, "id", "Missing 'id' in request body");
 
     int id = jsonGetInteger(builder, "id");
     char *title = jsonGetString(builder, "title");
     bool completed = jsonGetBool(builder, "completed");
 
-    DbParam params[] = {
+    DbParam *params = DB_PARAMS(
         PARAM_TEXT(title),
         PARAM_BOOL(completed),
         PARAM_INT(id)
-    };
+    );
 
-    bool result = dbExec(ctx.dbContext, "update todos set title = ?, completed = ? where id = ?;", params, 3);
+    bool result = dbExec(ctx.db, "update todos set title = ?, completed = ? where id = ?;", params, 3);
 
-    if (!result) {
-        return internalServerError("Failed to update todo");
-    }
-
+    returnIfNull(result, "Failed to update todo");
     return ok("");
 }
 
 appRoute(deleteTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    if (!jsonHasKey(builder, "id")) {
-        return internalServerError("Missing 'id' in request body");
-    }
+    returnIfNoKey(builder, "id", "Missing 'id' in request body");
 
     int id = jsonGetInteger(builder, "id");
 
-    DbParam params[] = {
+    DbParam *params = DB_PARAMS(
         PARAM_INT(id)
-    };
+    );
 
-    bool result = dbExec(ctx.dbContext, "delete from todos where id = ?;", params, 1);
+    bool result = dbExec(ctx.db, "delete from todos where id = ?;", params, 1);
 
-    if (!result) {
-        return internalServerError("Failed to delete todo");
-    }
-
+    returnIfNull(result, "Failed to delete todo");
     return ok("");
 }
 
 appRoute(getTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    if (!jsonHasKey(builder, "id")) {
-        return internalServerError("Missing 'id' in request body");
-    }
+    returnIfNoKey(builder, "id", "Missing 'id' in request body");
 
     int id = jsonGetInteger(builder, "id");
 
-    DbParam params[] = {
+    DbParam *params = DB_PARAMS(
         PARAM_INT(id)
-    };
+    );
 
-    DbResult *result = dbQueryRows(ctx.dbContext, "select * from todos where id = ?;", params, 1);
+    DbResult *result = dbQueryRows(ctx.db, "select * from todos where id = ?;", params, 1);
     returnIfNull(result, "Database query failed");
 
     if (result->rowCount == 0) {

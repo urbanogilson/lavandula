@@ -28,6 +28,49 @@ int main() {
 }
 ```
 
+### Todo App Example
+
+```c
+int main(int argc, char *argv[]) {
+  AppBuilder builder = createBuilder();
+  useSqlLite3(&builder, "init.db");
+  
+  App app = build(builder);
+
+  get(&app, "/getTodos", getTodos);
+  get(&app, "/getTodo", getTodo);
+  post(&app, "/createTodo", createTodo);
+  post(&app, "/updateTodo", updateTodo);
+  post(&app, "/deleteTodo", deleteTodo);
+
+  runApp(&app);
+
+  return 0;
+}
+```
+
+### Endpoint Example
+
+```c
+appRoute(getTodos) {
+    DbResult *result = dbQueryRows(ctx.db, "select * from todos;", NULL, 0);
+    returnIfNull(result, "Database query failed");
+
+    JsonBuilder *root = jsonBuilder();
+    JsonArray array = jsonArray();
+    jsonPutArray(root, "todos", &array);
+    
+    for (int i = 0; i < result->rowCount; i++) {
+        jsonArrayAppend(&array, todoToJson(rowToTodo(result->rows[i])));
+    }
+
+    char *json = jsonStringify(root);
+    freeJsonBuilder(root);
+
+    return ok(json);
+}
+```
+
 
 ## Features
 
