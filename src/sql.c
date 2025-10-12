@@ -8,7 +8,10 @@
 
 DbContext *createSqlLite3DbContext(char *dbPath) {
     DbContext *context = malloc(sizeof(DbContext));
-    if (!context) return NULL;
+    if (!context) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 
     context->type = SQLITE;
 
@@ -102,16 +105,31 @@ DbResult *dbQueryRows(DbContext *db, const char *query, DbParam *params, int par
     int rowCount = 0;
     DbRow *rows = malloc(sizeof(DbRow) * capacity);
 
+    if (!rows) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         if (rowCount >= capacity) {
             capacity *= 2;
             rows = realloc(rows, sizeof(DbRow) * capacity);
+
+            if (!rows) {
+                fprintf(stderr, "Fatal: out of memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         DbRow *row = &rows[rowCount];
         row->colCount = colCount;
         row->colNames = malloc(sizeof(char*) * colCount);
         row->colValues = malloc(sizeof(char*) * colCount);
+
+        if (!row->colNames || !row->colValues) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
 
         for (int i = 0; i < colCount; i++) {
             const char *name = sqlite3_column_name(stmt, i);
@@ -127,6 +145,12 @@ DbResult *dbQueryRows(DbContext *db, const char *query, DbParam *params, int par
     sqlite3_finalize(stmt);
 
     DbResult *result = malloc(sizeof(DbResult));
+    
+    if (!result) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     result->rowCount = rowCount;
     result->rows = rows;
 

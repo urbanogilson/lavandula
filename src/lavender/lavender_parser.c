@@ -81,6 +81,11 @@ static SchemaNode parseModel(LavenderParser *parser) {
     int columnCount = 0;
     ColumnDefinition *columns = malloc(sizeof(ColumnDefinition));
 
+    if (!columns) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     while (!match(parser, SCHEMA_TOKEN_RBRACE) && !isLast(parser)) {
         ColumnDefinition column;
 
@@ -107,6 +112,11 @@ static SchemaNode parseModel(LavenderParser *parser) {
         if (columnCount >= columnCapacity) {
             columnCapacity *= 2;
             columns = realloc(columns, sizeof(ColumnDefinition) * columnCapacity);
+
+            if (!columns) {
+                fprintf(stderr, "Fatal: out of memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
         columns[columnCount++] = column;
 
@@ -152,6 +162,11 @@ static void createSchemaAst(LavenderParser *parser) {
         if (parser->nodeCount >= parser->nodeCapacity) {
             parser->nodeCapacity *= 2;
             parser->nodes = realloc(parser->nodes, sizeof(SchemaNode) * parser->nodeCapacity);
+
+            if (!parser->nodes) {
+                fprintf(stderr, "Fatal: out of memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         parser->nodes[parser->nodeCount++] = node;
@@ -188,6 +203,11 @@ LavenderParser newParser(LavenderLexer *lexer) {
         .nodeCapacity = 1,
         .hadError = false,
     };
+
+    if (!parser.nodes) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 
     return parser;
 }

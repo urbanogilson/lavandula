@@ -275,10 +275,20 @@ static char *parseTokenUntil(HttpParser *parser, char delimiter) {
     int length = 0;
     char *token = malloc(capacity);
 
+    if (!token) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     while (!isEnd(*parser) && currentChar(parser) != delimiter && currentChar(parser) != '\r' && currentChar(parser) != '\n') {
         if (length + 1 >= capacity) {
             capacity *= 2;
             token = realloc(token, capacity);
+
+            if (!token) {
+                fprintf(stderr, "Fatal: out of memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
         token[length++] = currentChar(parser);
         advance(parser);
@@ -291,6 +301,11 @@ static void parseHeaders(HttpParser *parser) {
     parser->request.headerCapacity = 8;
     parser->request.headerCount = 0;
     parser->request.headers = malloc(sizeof(Header) * parser->request.headerCapacity);
+
+    if (!parser->request.headers) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 
     while (!isEnd(*parser)) {
         if (currentChar(parser) == '\r' && parser->position + 1 < parser->requestLength && parser->requestBuffer[parser->position + 1] == '\n') {
@@ -310,6 +325,11 @@ static void parseHeaders(HttpParser *parser) {
         if (parser->request.headerCount >= parser->request.headerCapacity) {
             parser->request.headerCapacity *= 2;
             parser->request.headers = realloc(parser->request.headers, sizeof(Header) * parser->request.headerCapacity);
+        }
+
+        if (!parser->request.headers) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
         }
 
         int headerCount = parser->request.headerCount;
@@ -416,6 +436,7 @@ HttpParser parseRequest(char *request) {
 
         size_t alloc_size = contentLength + 1;
         parser.request.body = malloc(alloc_size);
+
         if (!parser.request.body) {
             parser.isValid = false;
             return parser;

@@ -458,6 +458,11 @@ Router initRouter() {
         .routes = malloc(sizeof(Route))
     };
 
+    if (!router.routes) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     return router;
 }
 
@@ -487,6 +492,11 @@ Route route(Router *router, HttpMethod method, char *path, Controller controller
         .finalHandler = controller
     };
 
+    if (!middleware || !middleware->handlers) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     Route route = {
         .method = method,
         .path = strdup(path),
@@ -497,6 +507,11 @@ Route route(Router *router, HttpMethod method, char *path, Controller controller
     if (router->routeCount >= router->routeCapacity) {
         router->routeCapacity *= 2;
         router->routes = realloc(router->routes, sizeof(Route) * router->routeCapacity);
+
+        if (!router->routes) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
     }
     router->routes[router->routeCount++] = route;
 

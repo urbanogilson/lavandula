@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "include/middleware.h"
 
 HttpResponse next(RequestContext context, MiddlewareHandler *middleware) {
@@ -30,6 +32,11 @@ void useLocalMiddleware(Route *route, MiddlewareFunc handler) {
     if (route->middleware->count >= route->middleware->capacity) {
         route->middleware->capacity *= 2;
         route->middleware->handlers = realloc(route->middleware->handlers, sizeof(MiddlewareFunc) * route->middleware->capacity);
+
+        if (!route->middleware->handlers) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
     }
     route->middleware->handlers[route->middleware->count++] = handler;
 }
@@ -44,6 +51,11 @@ MiddlewareHandler combineMiddleware(MiddlewareHandler *globalMiddleware, Middlew
         .current = 0,
         .finalHandler = routeMiddleware->finalHandler
     };
+
+    if (!combined.handlers) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
     
     for (int i = 0; i < globalMiddleware->count; i++) {
         combined.handlers[i] = globalMiddleware->handlers[i];

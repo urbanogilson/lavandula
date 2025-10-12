@@ -144,6 +144,11 @@ void tokenizeSchema(LavenderLexer *lexer) {
         if (lexer->tokenCount >= lexer->tokenCapacity) {
             lexer->tokenCapacity *= 2;
             lexer->tokens = realloc(lexer->tokens, sizeof(SchemaToken) * lexer->tokenCapacity);
+
+            if (!lexer->tokens) {
+                fprintf(stderr, "Fatal: out of memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         lexer->tokens[lexer->tokenCount++] = token;
@@ -166,6 +171,11 @@ LavenderLexer newLexer(const char *source) {
         .tokenCapacity = 1,
         .hadError = false,
     };
+
+    if (!lexer.tokens) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 
     return lexer;
 }

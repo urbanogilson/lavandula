@@ -6,6 +6,12 @@
 
 JsonBuilder *jsonBuilder() {
     JsonBuilder *builder = malloc(sizeof(JsonBuilder));
+
+    if (!builder) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     builder->json = NULL;
     builder->jsonCount = 0;
     builder->jsonCapacity = 0;
@@ -58,6 +64,11 @@ void addJson(JsonBuilder *builder, Json json) {
     if (builder->jsonCount >= builder->jsonCapacity) {
         builder->jsonCapacity = builder->jsonCapacity == 0 ? 1 : builder->jsonCapacity * 2;
         builder->json = realloc(builder->json, sizeof(Json) * builder->jsonCapacity);
+
+        if (!builder->json) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
     }
     builder->json[builder->jsonCount++] = json;
 }
@@ -167,6 +178,11 @@ void jsonArrayAppend(JsonArray *array, Json value) {
     if (array->count >= array->capacity) {
         array->capacity = array->capacity == 0 ? 1 : array->capacity * 2;
         array->items = realloc(array->items, sizeof(Json) * array->capacity);
+
+        if (!array->items) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
     }
     array->items[array->count++] = value;
 }
@@ -175,6 +191,11 @@ char *jsonStringify(JsonBuilder *builder) {
     int capacity = 16;
     int length = 0;
     char *json = malloc(capacity);
+
+    if (!json) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 
     json[length++] = '{';
 
@@ -202,6 +223,12 @@ char *jsonStringify(JsonBuilder *builder) {
                 int arrCap = 64;
                 int arrLen = 0;
                 char *arrStr = malloc(arrCap);
+                
+                if (!arrStr) {
+                    fprintf(stderr, "Fatal: out of memory\n");
+                    exit(EXIT_FAILURE);
+                }
+
                 arrStr[arrLen++] = '[';
 
                 for (int j = 0; j < node.array->count; j++) {
@@ -243,6 +270,11 @@ char *jsonStringify(JsonBuilder *builder) {
                     if (arrLen + arrBufLen + 3 > arrCap) {
                         arrCap = (arrLen + arrBufLen + 3) * 2;
                         arrStr = realloc(arrStr, arrCap);
+
+                        if (!arrStr) {
+                            fprintf(stderr, "Fatal: out of memory\n");
+                            exit(EXIT_FAILURE);
+                        }
                     }
                     memcpy(arrStr + arrLen, arrBuf, arrBufLen);
                     arrLen += arrBufLen;
@@ -272,6 +304,11 @@ char *jsonStringify(JsonBuilder *builder) {
         if (length + bufferLength + 3 > capacity) {
             capacity = (length + bufferLength + 3) * 2;
             json = realloc(json, capacity);
+
+            if (!json) {
+                fprintf(stderr, "Fatal: out of memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         memcpy(json + length, buffer, bufferLength);
@@ -311,6 +348,12 @@ static char *parseJsonString(char **str) {
     
     int length = end - start;
     char *result = malloc(length + 1);
+    
+    if (!result) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     strncpy(result, start, length);
     result[length] = '\0';
     
@@ -345,6 +388,12 @@ static JsonArray *parseJsonArray(char **str) {
     
     (*str)++;
     JsonArray *array = malloc(sizeof(JsonArray));
+    
+    if (!array) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     *array = jsonArray();
     
     *str = skipWhitespace(*str);

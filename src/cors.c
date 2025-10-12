@@ -8,7 +8,7 @@
 #define HEADER_LIMIT 50
 
 CorsConfig corsPolicy() {
-    return (CorsConfig){
+    CorsConfig config = {
         .allowOrigin = malloc(ORIGIN_LIMIT * sizeof(char*)),
         .allowOriginCount = 0,
         .allowMethods = {0},
@@ -16,6 +16,13 @@ CorsConfig corsPolicy() {
         .allowHeaders = malloc(HEADER_LIMIT * sizeof(char*)),
         .headerCount = 0,
     };
+
+    if (!config.allowOrigin || !config.allowHeaders) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return config;
 }
 
 void allowOrigin(CorsConfig *config, char *origin) {

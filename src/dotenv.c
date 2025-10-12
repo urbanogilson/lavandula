@@ -177,6 +177,11 @@ static void parse(DotenvParser *p) {
             p->tokens = realloc(p->tokens, sizeof(Token) * p->tokenCapacity);
         }
 
+        if (!p->tokens) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
+
         p->tokens[p->tokenCount++] = token;
 
         if (token.type == TOKEN_ERROR) {
@@ -204,6 +209,11 @@ void dotenv(char *path) {
         .entryCount = 0
     };
 
+    if (!map.entries) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     DotenvParser p = {
         .position = 0,
         .source = source,
@@ -211,6 +221,11 @@ void dotenv(char *path) {
         .tokenCount = 0,
         .tokens = malloc(sizeof(Token) * 4)
     };
+
+    if (!p.tokens) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 
     parse(&p);
 
@@ -242,6 +257,12 @@ void dotenv(char *path) {
             map.entryCapacity *= 2;
             map.entries = realloc(map.entries, sizeof(MapEntry) * map.entryCapacity);
         }
+        
+        if (!map.entries) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
+
         map.entries[map.entryCount++] = entry;
     }
 

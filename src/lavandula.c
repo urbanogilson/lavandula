@@ -11,6 +11,11 @@ void initAppMiddleware(App *app) {
         .capacity = 1,
         .current = 0,
     };
+
+    if (!app->middleware.handlers) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 AppBuilder createBuilder() {
@@ -40,6 +45,11 @@ void useGlobalMiddleware(AppBuilder *builder, MiddlewareFunc middleware) {
     if (builder->app.middleware.count >= builder->app.middleware.capacity) {
         builder->app.middleware.capacity *= 2;
         builder->app.middleware.handlers = realloc(builder->app.middleware.handlers, sizeof(MiddlewareFunc) * builder->app.middleware.capacity);
+
+        if (!builder->app.middleware.handlers) {
+            fprintf(stderr, "Fatal: out of memory\n");
+            exit(EXIT_FAILURE);
+        }
     }
     builder->app.middleware.handlers[builder->app.middleware.count++] = middleware;
 }

@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 char base64Map[] = {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -14,6 +15,12 @@ char *base64Encode(char *plain) {
     int counts = 0;
     char buffer[3];
     char *cipher = malloc(strlen(plain) * 4 / 3 + 4);
+    
+    if (!cipher) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     int i = 0, c = 0;
 
     for(i = 0; plain[i] != '\0'; i++) {
@@ -48,6 +55,12 @@ char *base64Decode(char *cipher) {
     int counts = 0;
     char buffer[4];
     char *plain = malloc(strlen(cipher) * 3 / 4);
+        
+    if (!plain) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     int i = 0, p = 0;
 
     for(i = 0; cipher[i] != '\0'; i++) {

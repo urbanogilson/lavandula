@@ -14,12 +14,23 @@ BasicAuthenticator initBasicAuth() {
         .credentialsCapacity = 1
     };
 
+    if (!auth.credentials) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     return auth;
 }
 
 void addBasicCredentials(BasicAuthenticator *auth, char *username, char *password) {
     int credLen = strlen(username) + strlen(password) + 2;
     char *credentials = malloc(credLen);
+
+    if (!credentials) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+    
     snprintf(credentials, credLen, "%s:%s", username, password);
     
     char *encoded = base64Encode(credentials);
@@ -28,6 +39,11 @@ void addBasicCredentials(BasicAuthenticator *auth, char *username, char *passwor
     if (auth->credentialsCount >= auth->credentialsCapacity) {
         auth->credentialsCapacity *= 2;
         auth->credentials = realloc(auth->credentials, sizeof(char *) * auth->credentialsCapacity);
+    }
+
+    if (!auth->credentials) {
+        fprintf(stderr, "Fatal: out of memory\n");
+        exit(EXIT_FAILURE);
     }
 
     auth->credentials[auth->credentialsCount++] = strdup(encoded);
