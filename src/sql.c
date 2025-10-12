@@ -24,28 +24,36 @@ DbContext *createSqlLite3DbContext(char *dbPath) {
     return context;
 }
 
-bool dbExec(DbContext *db, const char *query, ...) {
+bool dbExec(DbContext *db, const char *query, const DbParam *params, int paramCount) {
     sqlite3_stmt *stmt;
-    
+
     if (sqlite3_prepare_v2((sqlite3 *)db->connection, query, -1, &stmt, NULL) != SQLITE_OK) {
         fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg((sqlite3 *)db->connection));
         return false;
     }
     
-    va_list args;
-    va_start(args, query);
-    
-    int paramCount = sqlite3_bind_parameter_count(stmt);
-    for (int i = 1; i <= paramCount; i++) {
-        char *param = va_arg(args, char*);
-        if (param) {
-            sqlite3_bind_text(stmt, i, param, -1, SQLITE_STATIC);
-        } else {
-            sqlite3_bind_null(stmt, i);
+    for (int i = 0; i < paramCount; i++) {
+        switch (params[i].type) {
+            case DB_PARAM_NULL:
+                sqlite3_bind_null(stmt, i + 1);
+                break;
+            case DB_PARAM_INT:
+                sqlite3_bind_int(stmt, i + 1, params[i].value.i);
+                break;
+            case DB_PARAM_INT64:
+                sqlite3_bind_int64(stmt, i + 1, params[i].value.i64);
+                break;
+            case DB_PARAM_DOUBLE:
+                sqlite3_bind_double(stmt, i + 1, params[i].value.d);
+                break;
+            case DB_PARAM_TEXT:
+                sqlite3_bind_text(stmt, i + 1, params[i].value.s, -1, SQLITE_TRANSIENT);
+                break;
+            case DB_PARAM_BOOL:
+                sqlite3_bind_int(stmt, i + 1, params[i].value.b ? 1 : 0);
+                break;
         }
     }
-    
-    va_end(args);
     
     int rc = sqlite3_step(stmt);
     sqlite3_finalize(stmt);
@@ -58,15 +66,38 @@ bool dbExec(DbContext *db, const char *query, ...) {
     return true;
 }
 
-DbResult *dbQueryRows(DbContext *db, const char *query) {
+DbResult *dbQueryRows(DbContext *db, const char *query, DbParam *params, int paramCount) {
     sqlite3_stmt *stmt;
+
     if (sqlite3_prepare_v2((sqlite3 *)db->connection, query, -1, &stmt, NULL) != SQLITE_OK) {
         fprintf(stderr, "Failed to prepare query: %s\n", sqlite3_errmsg((sqlite3 *)db->connection));
         return NULL;
     }
 
-    int colCount = sqlite3_column_count(stmt);
+    for (int i = 0; i < paramCount; i++) {
+        switch (params[i].type) {
+            case DB_PARAM_NULL:
+                sqlite3_bind_null(stmt, i + 1);
+                break;
+            case DB_PARAM_INT:
+                sqlite3_bind_int(stmt, i + 1, params[i].value.i);
+                break;
+            case DB_PARAM_INT64:
+                sqlite3_bind_int64(stmt, i + 1, params[i].value.i64);
+                break;
+            case DB_PARAM_DOUBLE:
+                sqlite3_bind_double(stmt, i + 1, params[i].value.d);
+                break;
+            case DB_PARAM_TEXT:
+                sqlite3_bind_text(stmt, i + 1, params[i].value.s, -1, SQLITE_TRANSIENT);
+                break;
+            case DB_PARAM_BOOL:
+                sqlite3_bind_int(stmt, i + 1, params[i].value.b ? 1 : 0);
+                break;
+        }
+    }
 
+    int colCount = sqlite3_column_count(stmt);
     int capacity = 10;
     int rowCount = 0;
     DbRow *rows = malloc(sizeof(DbRow) * capacity);
@@ -79,14 +110,15 @@ DbResult *dbQueryRows(DbContext *db, const char *query) {
 
         DbRow *row = &rows[rowCount];
         row->colCount = colCount;
-
         row->colNames = malloc(sizeof(char*) * colCount);
         row->colValues = malloc(sizeof(char*) * colCount);
 
         for (int i = 0; i < colCount; i++) {
-            row->colNames[i] = strdup(sqlite3_column_name(stmt, i));
-            const char *val = (const char *)sqlite3_column_text(stmt, i);
-            row->colValues[i] = val ? strdup(val) : strdup("NULL");
+            const char *name = sqlite3_column_name(stmt, i);
+            const unsigned char *val = sqlite3_column_text(stmt, i);
+
+            row->colNames[i] = strdup(name);
+            row->colValues[i] = val ? strdup((const char *)val) : strdup("NULL");
         }
 
         rowCount++;

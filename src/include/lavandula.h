@@ -30,6 +30,10 @@
 
 #define returnIfNull(x, msg) if (!(x)) { return internalServerError(msg); }
 
+#define returnIfNoKey(builder, key, msg) \
+    if (!jsonHasKey(builder, key)) { \
+        return internalServerError(msg); \
+    }
 
 typedef struct {
     App app;

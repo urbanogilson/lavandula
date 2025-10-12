@@ -22,7 +22,7 @@ Json todoToJson(Todo todo) {
 }
 
 HttpResponse getTodos(RequestContext ctx) {
-    DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos");
+    DbResult *result = dbQueryRows(ctx.db, "select * from Todos");
     if (!result) {
         return internalServerError("Failed to query database");
     }
@@ -32,12 +32,12 @@ HttpResponse getTodos(RequestContext ctx) {
     JsonArray array = jsonArray();
     jsonPutArray(root, "todos", &array);
 
-    for (int i = 0; i < result->row_count; i++) {
+    for (int i = 0; i < result->rowCount; i++) {
         DbRow *row = &result->rows[i];
 
         Todo todo = {
-            .name = strdup(row->col_values[0]),
-            .id = atoi(row->col_values[1])
+            .name = strdup(row->colValues[0]),
+            .id = atoi(row->colValues[1])
         };
         
         jsonArrayAppend(&array, todoToJson(todo));

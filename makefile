@@ -1,7 +1,7 @@
 SRCS = $(shell find src -name "*.c")
 
 TEST_SRCS = $(wildcard test/*.c)
-CFLAGS = -Wall -Wextra -lsqlite3 -Isrc -lssl -lcrypto
+CFLAGS = -Wall -Wextra -lsqlite3 -Isrc
 
 all:
 	mkdir -p build

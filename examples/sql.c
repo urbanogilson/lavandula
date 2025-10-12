@@ -8,8 +8,8 @@ typedef struct {
 
 User rowToUser(DbRow row) {
     User user;
-    strcpy(user.name, row.col_values[0]);
-    strcpy(user.password, row.col_values[1]);
+    strcpy(user.name, row.colValues[0]);
+    strcpy(user.password, row.colValues[1]);
 
     return user;
 }
@@ -30,7 +30,7 @@ appRoute(getUsers) {
     JsonArray array = jsonArray();
     jsonPutArray(root, "users", &array);
     
-    for (int i = 0; i < result->row_count; i++) {
+    for (int i = 0; i < result->rowCount; i++) {
         jsonArrayAppend(&array, userToJson(rowToUser(result->rows[i])));
     }
 

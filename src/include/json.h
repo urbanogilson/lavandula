@@ -53,6 +53,7 @@ void jsonPutInteger(JsonBuilder *jsonBuilder, char *key, int value);
 void jsonPutNull(JsonBuilder *jsonBuilder, char *key);
 void jsonPutObject(JsonBuilder *jsonBuilder, char *key, JsonBuilder *object);
 void jsonPutArray(JsonBuilder *jsonBuilder, char *key, JsonArray *array);
+void jsonPutJson(JsonBuilder *builder, char *key, Json value);
 
 void jsonArrayAppend(JsonArray *array, Json value);
 

@@ -103,6 +103,11 @@ void jsonPutObject(JsonBuilder *builder, char *key, JsonBuilder *object) {
     addJson(builder, json);
 }
 
+void jsonPutJson(JsonBuilder *builder, char *key, Json value) {
+    value.key = strdup(key);
+    addJson(builder, value);
+}
+
 void jsonPutArray(JsonBuilder *builder, char *key, JsonArray *array) {
     Json json = makeJson(key, JSON_ARRAY);
     json.array = array;

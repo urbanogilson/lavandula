@@ -9,7 +9,7 @@ typedef struct App App;
 typedef struct {
     App *app;
 
-    DbContext *dbContext;
+    DbContext *db;
     HttpRequest request;
 } RequestContext;
 

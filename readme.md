@@ -44,8 +44,6 @@ int main() {
 
 ## In Progress
 
-- HTTP JSON body parsing
-- Request body field validation
 - Session cookies
 - CORS policy configuration
 - Lavender ORM
