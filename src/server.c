@@ -111,6 +111,17 @@ void runServer(App *app) {
         }
 
         Route *route = findRoute(app->server.router, request.method, pathOnly);
+        bool routeOfAnyMethodExists = pathExists(app->server.router, pathOnly);
+
+        if (!route && !routeOfAnyMethodExists) {
+            Route *notFoundRoute = findRoute(app->server.router, request.method, "/404");
+
+            if (notFoundRoute) {
+                route = notFoundRoute;
+            }
+        }
+
+        free(pathOnly);
 
         RequestContext context = requestContext(app, request);
 
@@ -124,11 +135,9 @@ void runServer(App *app) {
             free(combinedMiddleware.handlers);
         } else {
             app->middleware.current = 0;
-            app->middleware.finalHandler = pathExists(app->server.router, pathOnly) ? defaultMethodNotAllowedController : defaultNotFoundController;
+            app->middleware.finalHandler = routeOfAnyMethodExists ? defaultMethodNotAllowedController : defaultNotFoundController;
             response = next(context, &app->middleware);
         }
-
-        free(pathOnly);
 
         const char *contentType = "text/plain";
         int contentLength = strlen(response.content);
