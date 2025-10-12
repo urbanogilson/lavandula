@@ -44,8 +44,8 @@ int main() {
 
 ## In Progress
 
-- Separate CLI tool from Framework
 - HTTP JSON body parsing
+- Request body field validation
 - Session cookies
 - CORS policy configuration
 - Lavender ORM

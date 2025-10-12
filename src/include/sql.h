@@ -6,13 +6,13 @@
 typedef void (*RowCallback)(int colCount, char **colNames, char **colValues, void *userData);
 
 typedef struct {
-    int col_count;
-    char **col_names;
-    char **col_values;
+    int colCount;
+    char **colNames;
+    char **colValues;
 } DbRow;
 
 typedef struct {
-    int row_count;
+    int rowCount;
     DbRow *rows;
 } DbResult;
 
@@ -29,7 +29,7 @@ typedef struct {
 
 DbContext *createSqlLite3DbContext(char *dbPath);
 
-bool dbExec(DbContext *db, const char *query);
+bool dbExec(DbContext *db, const char *query, ...);
 DbResult *dbQueryRows(DbContext *db, const char *query);
 
 #endif

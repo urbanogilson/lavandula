@@ -284,13 +284,192 @@ char *jsonStringify(JsonBuilder *builder) {
     return json;
 }
 
+static char *skipWhitespace(char *str) {
+    while (*str && (*str == ' ' || *str == '\t' || *str == '\n' || *str == '\r')) {
+        str++;
+    }
+    return str;
+}
+
+static char *parseJsonString(char **str) {
+    char *start = *str;
+    if (*start != '"') return NULL;
+    
+    start++;
+    char *end = start;
+    
+    while (*end && *end != '"') {
+        end++;
+    }
+    
+    if (*end != '"') return NULL;
+    
+    int length = end - start;
+    char *result = malloc(length + 1);
+    strncpy(result, start, length);
+    result[length] = '\0';
+    
+    *str = end + 1;
+    return result;
+}
+
+static int parseJsonNumber(char **str) {
+    char *start = *str;
+    int result = 0;
+    int negative = 0;
+    
+    if (*start == '-') {
+        negative = 1;
+        start++;
+    }
+    
+    while (*start >= '0' && *start <= '9') {
+        result = result * 10 + (*start - '0');
+        start++;
+    }
+    
+    *str = start;
+    return negative ? -result : result;
+}
+
+static Json parseJsonValue(char **str);
+
+static JsonArray *parseJsonArray(char **str) {
+    *str = skipWhitespace(*str);
+    if (**str != '[') return NULL;
+    
+    (*str)++;
+    JsonArray *array = malloc(sizeof(JsonArray));
+    *array = jsonArray();
+    
+    *str = skipWhitespace(*str);
+    
+    if (**str == ']') {
+        (*str)++;
+        return array;
+    }
+    
+    while (1) {
+        *str = skipWhitespace(*str);
+        Json value = parseJsonValue(str);
+        jsonArrayAppend(array, value);
+        
+        *str = skipWhitespace(*str);
+        if (**str == ']') {
+            (*str)++;
+            break;
+        } else if (**str == ',') {
+            (*str)++;
+        } else {
+            freeJsonArray(array);
+            free(array);
+            return NULL;
+        }
+    }
+    
+    return array;
+}
+
+static JsonBuilder *parseJsonObject(char **str) {
+    *str = skipWhitespace(*str);
+    if (**str != '{') return NULL;
+    
+    (*str)++;
+    JsonBuilder *builder = jsonBuilder();
+    
+    *str = skipWhitespace(*str);
+    
+    if (**str == '}') {
+        (*str)++;
+        return builder;
+    }
+    
+    while (1) {
+        *str = skipWhitespace(*str);
+        
+        char *key = parseJsonString(str);
+        if (!key) {
+            freeJsonBuilder(builder);
+            free(builder);
+            return NULL;
+        }
+        
+        *str = skipWhitespace(*str);
+        if (**str != ':') {
+            free(key);
+            freeJsonBuilder(builder);
+            free(builder);
+            return NULL;
+        }
+        (*str)++;
+        
+        *str = skipWhitespace(*str);
+        
+        Json value = parseJsonValue(str);
+        value.key = key;
+        addJson(builder, value);
+        
+        *str = skipWhitespace(*str);
+        if (**str == '}') {
+            (*str)++;
+            break;
+        } else if (**str == ',') {
+            (*str)++;
+        } else {
+            freeJsonBuilder(builder);
+            free(builder);
+            return NULL;
+        }
+    }
+    
+    return builder;
+}
+
+static Json parseJsonValue(char **str) {
+    Json json = {0};
+    *str = skipWhitespace(*str);
+    
+    if (**str == '"') {
+        char *value = parseJsonString(str);
+        json.type = JSON_STRING;
+        json.value = value;
+    } else if (**str == '{') {
+        JsonBuilder *object = parseJsonObject(str);
+        json.type = JSON_OBJECT;
+        json.object = object;
+    } else if (**str == '[') {
+        JsonArray *array = parseJsonArray(str);
+        json.type = JSON_ARRAY;
+        json.array = array;
+    } else if (strncmp(*str, "true", 4) == 0) {
+        json.type = JSON_TRUE;
+        json.boolean = true;
+        *str += 4;
+    } else if (strncmp(*str, "false", 5) == 0) {
+        json.type = JSON_FALSE;
+        json.boolean = false;
+        *str += 5;
+    } else if (strncmp(*str, "null", 4) == 0) {
+        json.type = JSON_NULL;
+        *str += 4;
+    } else if (**str == '-' || (**str >= '0' && **str <= '9')) {
+        int value = parseJsonNumber(str);
+        json.type = JSON_NUMBER;
+        json.integer = value;
+    }
+    
+    return json;
+}
+
 JsonBuilder *jsonParse(char *jsonString) {
     if (!jsonString) return NULL;
-
-    JsonBuilder *builder = jsonBuilder();
-
-    // ..
-
+    
+    char *str = jsonString;
+    str = skipWhitespace(str);
+    
+    if (*str != '{') return NULL;
+    
+    JsonBuilder *builder = parseJsonObject(&str);
     return builder;
 }
 

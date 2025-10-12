@@ -18,4 +18,6 @@ void freeBasicAuth(BasicAuthenticator);
 void addBasicCredentials(BasicAuthenticator *, char *username, char *password);
 bool checkBasicCredentials(BasicAuthenticator *, char *base64);
 
+bool consttimeStrcmp(const char *a, const char *b);
+
 #endif

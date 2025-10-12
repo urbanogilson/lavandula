@@ -46,8 +46,7 @@ appRoute(createUser) {
     char *name = jsonGetString(builder, "name");
     char *password = jsonGetString(builder, "password");
 
-    // how it will eventually work.. maybe..
-    // dbExec(ctx.dbContext, "insert into users (name, password) values (?, ?);", name, password);
+    bool result = dbExec(ctx.dbContext, "insert into users (name, password) values (?, ?);", name, password);
     
     char *json = jsonStringify(builder);
     freeJsonBuilder(builder);

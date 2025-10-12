@@ -5,7 +5,7 @@ int testsRan = 0;
 int testsFailed = 0;
 int assertions = 0;
 int assertionsFailed = 0;
-
+const char* currentTestName = NULL;
 static int currentTestFailed = 0;
 
 void testFailed() {
@@ -15,12 +15,6 @@ void testFailed() {
         testsFailed++;
         currentTestFailed = 1;
     }
-}
-
-void runTest(TestFunction test) {
-    currentTestFailed = 0;
-    test();
-    testsRan++;
 }
 
 void testResults() {

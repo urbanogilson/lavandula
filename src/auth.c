@@ -56,16 +56,32 @@ HttpResponse basicAuth(RequestContext ctx, MiddlewareHandler *n) {
     }
 }
 
+bool consttimeStrcmp(const char *a, const char *b) {
+    size_t i = 0;
+    unsigned char result = 0;
+
+    while (a[i] != '\0' && b[i] != '\0') {
+        result |= a[i] ^ b[i];
+        i++;
+    }
+
+    result |= a[i] ^ b[i];  
+
+    return result == 0;
+}
+
 bool checkBasicCredentials(BasicAuthenticator *auth, char *base64) {
+    if (!base64) return false;
+    if (!auth->credentials) return false;
+    
     for (int i = 0; i < auth->credentialsCount; i++) {
-        if (strcmp(auth->credentials[i], base64) == 0) {
+        
+        if (consttimeStrcmp(auth->credentials[i], base64)) {
             return true;
         }
     }
-
     return false;
 }
-
 void freeBasicAuth(BasicAuthenticator auth) {
     if (!auth.credentials) {
         return;

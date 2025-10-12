@@ -1,6 +1,7 @@
 #include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 
 #include "include/sql.h"
@@ -23,13 +24,37 @@ DbContext *createSqlLite3DbContext(char *dbPath) {
     return context;
 }
 
-bool dbExec(DbContext *db, const char *query) {
-    char *err_msg = NULL;
-    if (sqlite3_exec((sqlite3 *)db->connection, query, 0, 0, &err_msg) != SQLITE_OK) {
-        fprintf(stderr, "SQL error: %s\n", err_msg);
-        sqlite3_free(err_msg);
+bool dbExec(DbContext *db, const char *query, ...) {
+    sqlite3_stmt *stmt;
+    
+    if (sqlite3_prepare_v2((sqlite3 *)db->connection, query, -1, &stmt, NULL) != SQLITE_OK) {
+        fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg((sqlite3 *)db->connection));
         return false;
     }
+    
+    va_list args;
+    va_start(args, query);
+    
+    int paramCount = sqlite3_bind_parameter_count(stmt);
+    for (int i = 1; i <= paramCount; i++) {
+        char *param = va_arg(args, char*);
+        if (param) {
+            sqlite3_bind_text(stmt, i, param, -1, SQLITE_STATIC);
+        } else {
+            sqlite3_bind_null(stmt, i);
+        }
+    }
+    
+    va_end(args);
+    
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    
+    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+        fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg((sqlite3 *)db->connection));
+        return false;
+    }
+    
     return true;
 }
 
@@ -40,37 +65,37 @@ DbResult *dbQueryRows(DbContext *db, const char *query) {
         return NULL;
     }
 
-    int col_count = sqlite3_column_count(stmt);
+    int colCount = sqlite3_column_count(stmt);
 
     int capacity = 10;
-    int row_count = 0;
+    int rowCount = 0;
     DbRow *rows = malloc(sizeof(DbRow) * capacity);
 
     while (sqlite3_step(stmt) == SQLITE_ROW) {
-        if (row_count >= capacity) {
+        if (rowCount >= capacity) {
             capacity *= 2;
             rows = realloc(rows, sizeof(DbRow) * capacity);
         }
 
-        DbRow *row = &rows[row_count];
-        row->col_count = col_count;
+        DbRow *row = &rows[rowCount];
+        row->colCount = colCount;
 
-        row->col_names = malloc(sizeof(char*) * col_count);
-        row->col_values = malloc(sizeof(char*) * col_count);
+        row->colNames = malloc(sizeof(char*) * colCount);
+        row->colValues = malloc(sizeof(char*) * colCount);
 
-        for (int i = 0; i < col_count; i++) {
-            row->col_names[i] = strdup(sqlite3_column_name(stmt, i));
+        for (int i = 0; i < colCount; i++) {
+            row->colNames[i] = strdup(sqlite3_column_name(stmt, i));
             const char *val = (const char *)sqlite3_column_text(stmt, i);
-            row->col_values[i] = val ? strdup(val) : strdup("NULL");
+            row->colValues[i] = val ? strdup(val) : strdup("NULL");
         }
 
-        row_count++;
+        rowCount++;
     }
 
     sqlite3_finalize(stmt);
 
     DbResult *result = malloc(sizeof(DbResult));
-    result->row_count = row_count;
+    result->rowCount = rowCount;
     result->rows = rows;
 
     return result;

@@ -4,7 +4,7 @@
 #include "../src/include/lavandula_test.h"
 #include "../src/include/lavender_lexer.h"
 
-void test_lexer_initialization() {
+void testLexerInitialization() {
     LavenderLexer lexer = newLexer("test source");
     
     expect(lexer.position, toBe(0));
@@ -15,7 +15,7 @@ void test_lexer_initialization() {
     freeLexer(&lexer);
 }
 
-void test_tokenize_simple_model() {
+void testTokenizeSimpleModel() {
     FILE *temp = fopen("test_schema.tmp", "w");
     fprintf(temp, "model User {}");
     fclose(temp);
@@ -40,7 +40,7 @@ void test_tokenize_simple_model() {
     remove("test_schema.tmp");
 }
 
-void test_tokenize_with_whitespace() {
+void testTokenizeWithWhitespace() {
     FILE *temp = fopen("test_schema.tmp", "w");
     fprintf(temp, "  model   Todo   {  }  ");
     fclose(temp);
@@ -60,7 +60,7 @@ void test_tokenize_with_whitespace() {
     remove("test_schema.tmp");
 }
 
-void test_tokenize_symbols() {
+void testTokenizeSymbols() {
     FILE *temp = fopen("test_schema.tmp", "w");
     fprintf(temp, "@ ( ) { }");
     fclose(temp);
@@ -81,7 +81,7 @@ void test_tokenize_symbols() {
     remove("test_schema.tmp");
 }
 
-void test_tokenize_numbers() {
+void testTokenizeNumbers() {
     FILE *temp = fopen("test_schema.tmp", "w");
     fprintf(temp, "123 456 789");
     fclose(temp);
@@ -104,7 +104,7 @@ void test_tokenize_numbers() {
     remove("test_schema.tmp");
 }
 
-void test_tokenize_identifiers() {
+void testTokenizeIdentifiers() {
     FILE *temp = fopen("test_schema.tmp", "w");
     fprintf(temp, "User Todo id name_field field123");
     fclose(temp);
@@ -123,7 +123,7 @@ void test_tokenize_identifiers() {
     remove("test_schema.tmp");
 }
 
-void test_token_utility_functions() {
+void testTokenUtilityFunctions() {
     SchemaToken token = newToken("test", SCHEMA_TOKEN_IDENTIFIER);
     
     expect(token.type, toBe(SCHEMA_TOKEN_IDENTIFIER));
@@ -134,7 +134,7 @@ void test_token_utility_functions() {
     expect(token.lexeme == NULL, toBe(1));
 }
 
-void test_empty_file() {
+void testEmptyFile() {
     FILE *temp = fopen("test_schema.tmp", "w");
     fclose(temp);
     
@@ -148,13 +148,13 @@ void test_empty_file() {
     remove("test_schema.tmp");
 }
 
-void run_lexer_tests() {
-    runTest(test_lexer_initialization);
-    runTest(test_tokenize_simple_model);
-    runTest(test_tokenize_with_whitespace);
-    runTest(test_tokenize_symbols);
-    runTest(test_tokenize_numbers);
-    runTest(test_tokenize_identifiers);
-    runTest(test_token_utility_functions);
-    runTest(test_empty_file);
+void runLexerTests() {
+    runTest(testLexerInitialization);
+    runTest(testTokenizeSimpleModel);
+    runTest(testTokenizeWithWhitespace);
+    runTest(testTokenizeSymbols);
+    runTest(testTokenizeNumbers);
+    runTest(testTokenizeIdentifiers);
+    runTest(testTokenUtilityFunctions);
+    runTest(testEmptyFile);
 }

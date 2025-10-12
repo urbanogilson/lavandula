@@ -4,7 +4,7 @@
 #include "../src/include/lavandula_test.h"
 #include "../src/include/http.h"
 
-void test_http_method_to_string() {
+void testHttpMethodToString() {
     expect(strcmp(httpMethodToStr(HTTP_GET), "GET"), toBe(0));
     expect(strcmp(httpMethodToStr(HTTP_POST), "POST"), toBe(0));
     expect(strcmp(httpMethodToStr(HTTP_PUT), "PUT"), toBe(0));
@@ -13,7 +13,7 @@ void test_http_method_to_string() {
     expect(strcmp(httpMethodToStr(HTTP_OPTIONS), "OPTIONS"), toBe(0));
 }
 
-void test_parse_simple_get_request() {
+void testParseSimpleGetRequest() {
     char *requestStr = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
     HttpParser parser = parseRequest(requestStr);
     
@@ -28,7 +28,7 @@ void test_parse_simple_get_request() {
     freeParser(&parser);
 }
 
-void test_parse_post_request_with_body() {
+void testParsePostRequestWithBody() {
     char *requestStr = "POST /api/users HTTP/1.1\r\n"
                       "Content-Type: application/json\r\n"
                       "Content-Length: 13\r\n"
@@ -47,7 +47,7 @@ void test_parse_post_request_with_body() {
     freeParser(&parser);
 }
 
-void test_parse_request_with_multiple_headers() {
+void testParseRequestWithMultipleHeaders() {
     char *requestStr = "GET /api/data HTTP/1.1\r\n"
                       "Host: example.com\r\n"
                       "User-Agent: TestAgent/1.0\r\n"
@@ -77,7 +77,7 @@ void test_parse_request_with_multiple_headers() {
     freeParser(&parser);
 }
 
-void test_parse_put_request() {
+void testParsePutRequest() {
     char *requestStr = "PUT /api/users/123 HTTP/1.1\r\n"
                       "Content-Type: application/json\r\n"
                       "\r\n"
@@ -93,7 +93,7 @@ void test_parse_put_request() {
     freeParser(&parser);
 }
 
-void test_parse_delete_request() {
+void testParseDeleteRequest() {
     char *requestStr = "DELETE /api/users/123 HTTP/1.1\r\n"
                       "Host: example.com\r\n"
                       "\r\n";
@@ -107,7 +107,7 @@ void test_parse_delete_request() {
     freeParser(&parser);
 }
 
-void test_parse_options_request() {
+void testParseOptionsRequest() {
     char *requestStr = "OPTIONS /api/users HTTP/1.1\r\n"
                       "Host: example.com\r\n"
                       "\r\n";
@@ -121,7 +121,7 @@ void test_parse_options_request() {
     freeParser(&parser);
 }
 
-void test_parse_request_with_query_parameters() {
+void testParseRequestWithQueryParameters() {
     char *requestStr = "GET /api/users?page=1&limit=10 HTTP/1.1\r\n"
                       "Host: example.com\r\n"
                       "\r\n";
@@ -135,7 +135,7 @@ void test_parse_request_with_query_parameters() {
     freeParser(&parser);
 }
 
-void test_parse_request_no_headers() {
+void testParseRequestNoHeaders() {
     char *requestStr = "GET / HTTP/1.1\r\n\r\n";
     HttpParser parser = parseRequest(requestStr);
     
@@ -147,14 +147,14 @@ void test_parse_request_no_headers() {
     freeParser(&parser);
 }
 
-void run_http_tests() {
-    runTest(test_http_method_to_string);
-    runTest(test_parse_simple_get_request);
-    // runTest(test_parse_post_request_with_body); // segfaults
-    runTest(test_parse_request_with_multiple_headers);
-    runTest(test_parse_put_request);
-    runTest(test_parse_delete_request);
-    // runTest(test_parse_options_request); // fails
-    runTest(test_parse_request_with_query_parameters);
-    runTest(test_parse_request_no_headers);
+void runHttpTests() {
+    runTest(testHttpMethodToString);
+    runTest(testParseSimpleGetRequest);
+    // runTest(testParsePostRequestWithBody); // segfaults
+    runTest(testParseRequestWithMultipleHeaders);
+    runTest(testParsePutRequest);
+    runTest(testParseDeleteRequest);
+    // runTest(testParseOptionsRequest); // fails
+    runTest(testParseRequestWithQueryParameters);
+    runTest(testParseRequestNoHeaders);
 }

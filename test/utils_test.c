@@ -4,7 +4,7 @@
 #include "../src/include/lavandula_test.h"
 #include "../src/include/utils.h"
 
-void test_read_file_exists() {
+void testReadFileExists() {
     FILE *temp = fopen("test_utils.tmp", "w");
     fprintf(temp, "Hello, World!\nThis is a test file.\n");
     fclose(temp);
@@ -18,13 +18,13 @@ void test_read_file_exists() {
     remove("test_utils.tmp");
 }
 
-void test_read_file_nonexistent() {
+void testReadFileNonexistent() {
     char *content = readFile("nonexistent_file.txt");
     
     expect(content == NULL, toBe(1));
 }
 
-void test_read_empty_file() {
+void testReadEmptyFile() {
     FILE *temp = fopen("empty_test.tmp", "w");
     fclose(temp);
     
@@ -37,7 +37,7 @@ void test_read_empty_file() {
     remove("empty_test.tmp");
 }
 
-void test_read_file_with_newlines() {
+void testReadFileWithNewlines() {
     FILE *temp = fopen("newlines_test.tmp", "w");
     fprintf(temp, "Line 1\nLine 2\n\nLine 4\n");
     fclose(temp);
@@ -51,7 +51,7 @@ void test_read_file_with_newlines() {
     remove("newlines_test.tmp");
 }
 
-void test_read_file_large_content() {
+void testReadFileLargeContent() {
     FILE *temp = fopen("large_test.tmp", "w");
     for (int i = 0; i < 100; i++) {
         fprintf(temp, "This is line number %d with some additional content to make it longer.\n", i);
@@ -69,7 +69,7 @@ void test_read_file_large_content() {
     remove("large_test.tmp");
 }
 
-void test_read_file_utf8_content() {
+void testReadFileUtf8Content() {
     FILE *temp = fopen("utf8_test.tmp", "w");
     fprintf(temp, "UTF-8 test: café, naïve, résumé, 你好, мир");
     fclose(temp);
@@ -83,11 +83,11 @@ void test_read_file_utf8_content() {
     remove("utf8_test.tmp");
 }
 
-void run_utils_tests() {
-    runTest(test_read_file_exists);
-    runTest(test_read_file_nonexistent);
-    runTest(test_read_empty_file);
-    runTest(test_read_file_with_newlines);
-    runTest(test_read_file_large_content);
-    runTest(test_read_file_utf8_content);
+void runUtilsTests() {
+    runTest(testReadFileExists);
+    runTest(testReadFileNonexistent);
+    runTest(testReadEmptyFile);
+    runTest(testReadFileWithNewlines);
+    runTest(testReadFileLargeContent);
+    runTest(testReadFileUtf8Content);
 }

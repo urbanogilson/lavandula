@@ -130,7 +130,7 @@ void runServer(App *app) {
             response = next(context, &app->middleware);
         }
 
-        const char *contentType = "text/plain";
+        const char *contentType = "application/json";
         int contentLength = strlen(response.content);
 
         const char *statusText = httpStatusCodeToStr(response.status);
