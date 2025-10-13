@@ -40,6 +40,7 @@ LavenderLexer newLexer(const char *source);
 void tokenizeSchema(LavenderLexer *lexer);
 void freeLexer(LavenderLexer *lexer);
 
+SchemaToken newTokenWithSize(const char *lexeme, int size, SchemaTokenType type);
 SchemaToken newToken(const char *lexeme, SchemaTokenType type);
 void freeToken(SchemaToken *token);
 void printToken(const SchemaToken *token);

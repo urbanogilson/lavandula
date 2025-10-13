@@ -27,7 +27,7 @@ static HttpMethod toHttpMethod(char *s) {
     return HTTP_GET;
 }
 
-char* httpMethodToStr(HttpMethod method) {
+const char* httpMethodToStr(HttpMethod method) {
     switch (method) {
         case HTTP_GET: {
             return "GET";
@@ -53,7 +53,7 @@ char* httpMethodToStr(HttpMethod method) {
     }
 }
 
-char* httpStatusCodeToStr(HttpStatusCode code) {
+const char* httpStatusCodeToStr(HttpStatusCode code) {
     switch (code) {
         case HTTP_CONTINUE: {
             return "Continue";
