@@ -122,7 +122,7 @@ typedef struct {
 HttpParser parseRequest(char *request);
 void       freeParser(HttpParser *parser);
 
-char      *httpMethodToStr(HttpMethod method);
-char      *httpStatusCodeToStr(HttpStatusCode status);
+const char      *httpMethodToStr(HttpMethod method);
+const char      *httpStatusCodeToStr(HttpStatusCode status);
 
 #endif

@@ -13,7 +13,7 @@ LavenderTranspiler newTranspiler(SchemaNode *nodes, int nodeCount) {
     return transpiler;
 }
 
-char *sqlTypeForSchemaType(char *columnType) {
+static const char *sqlTypeForSchemaType(char *columnType) {
     if (strcmp(columnType, "String") == 0) {
         return "TEXT";
     } else if (strcmp(columnType, "Integer") == 0) {

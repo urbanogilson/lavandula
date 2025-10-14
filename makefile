@@ -1,15 +1,16 @@
 SRCS = $(shell find src -name "*.c")
 
 TEST_SRCS = $(wildcard test/*.c)
-CFLAGS = -Wall -Wextra -lsqlite3 -Isrc
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -lsqlite3 -Isrc
 
 all:
 	mkdir -p build
-	gcc $(SRCS) $(CFLAGS) -o build/lavu
+	$(CC) $(SRCS) $(CFLAGS) -o build/lavu
 
 test:
 	mkdir -p build
-	gcc $(filter-out src/main.c, $(SRCS)) $(TEST_SRCS) $(CFLAGS) -o build/test_runner
+	$(CC) $(filter-out src/main.c, $(SRCS)) $(TEST_SRCS) $(CFLAGS) -o build/test_runner
 	./build/test_runner
 
 install:

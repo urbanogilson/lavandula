@@ -18,13 +18,18 @@ static char current(LavenderLexer *lexer) {
     return lexer->source[lexer->position];
 }
 
+SchemaToken newTokenWithSize(const char *lexeme, int size, SchemaTokenType type) {
+    return (SchemaToken) {
+        .lexeme = strndup(lexeme, size),
+        .type = type,
+    };
+}
+
 SchemaToken newToken(const char *lexeme, SchemaTokenType type) {
-    SchemaToken token = {
+    return (SchemaToken) {
         .lexeme = strdup(lexeme),
         .type = type,
     };
-
-    return token;
 }
 
 void freeToken(SchemaToken *token) {
@@ -78,20 +83,20 @@ static SchemaToken parseIdentifier(LavenderLexer *lexer) {
     }
 
     int length = lexer->position - start;
-    char *lexeme = strndup(lexer->source + start, length);
+    const char *lexeme = lexer->source + start;
 
     SchemaTokenType type = SCHEMA_TOKEN_IDENTIFIER;
-    if (strcmp(lexeme, "model") == 0) {
+    if (strncmp(lexeme, "model", length) == 0) {
         type = SCHEMA_TOKEN_MODEL;
-    } else if (strcmp(lexeme, "String") == 0) {
+    } else if (strncmp(lexeme, "String", length) == 0) {
         type = SCHEMA_TOKEN_STRING;
-    } else if (strcmp(lexeme, "Integer") == 0) {
+    } else if (strncmp(lexeme, "Integer", length) == 0) {
         type = SCHEMA_TOKEN_INTEGER;
-    } else if (strcmp(lexeme, "Boolean") == 0) {
+    } else if (strncmp(lexeme, "Boolean", length) == 0) {
         type = SCHEMA_TOKEN_BOOLEAN;
     }
 
-    return newToken(lexeme, type);
+    return newTokenWithSize(lexeme, length, type);
 }
 
 static SchemaToken parseNumber(LavenderLexer *lexer) {
@@ -102,8 +107,8 @@ static SchemaToken parseNumber(LavenderLexer *lexer) {
     }
 
     int length = lexer->position - start;
-    char *lexeme = strndup(lexer->source + start, length);
-    return newToken(lexeme, SCHEMA_TOKEN_NUMBER);
+    const char *lexeme = lexer->source + start;
+    return newTokenWithSize(lexeme, length, SCHEMA_TOKEN_NUMBER);
 }
 
 static SchemaToken tryParse(LavenderLexer *lexer) {
