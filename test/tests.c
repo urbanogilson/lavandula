@@ -7,6 +7,7 @@ void runLexerTests();
 void runHttpTests();
 void runUtilsTests();
 void runAuthTests();
+void runJsonTests();
 
 int main() {
     testsRan = 0;
@@ -19,6 +20,7 @@ int main() {
     runHttpTests();
     runUtilsTests();
     runAuthTests();
+    runJsonTests();
 
     printf("=== Lavandula Test Results ===\n");
     testResults();

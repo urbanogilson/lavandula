@@ -20,13 +20,11 @@ JsonBuilder *jsonBuilder() {
 }
 
 JsonArray jsonArray() {
-    JsonArray array = {};
-
-    array.items = NULL;
-    array.count = 0;
-    array.capacity = 0;
-
-    return array;
+    return (JsonArray) {
+        .items = NULL,
+        .count = 0,
+        .capacity = 0
+    };
 }
 
 void freeJsonArray(JsonArray *jsonArray) {
@@ -58,6 +56,8 @@ void freeJsonBuilder(JsonBuilder *builder)
     builder->json = NULL;
     builder->jsonCount = 0;
     builder->jsonCapacity = 0;
+
+    free(builder);
 }
 
 void addJson(JsonBuilder *builder, Json json) {
@@ -73,7 +73,7 @@ void addJson(JsonBuilder *builder, Json json) {
     builder->json[builder->jsonCount++] = json;
 }
 
-Json makeJson(char *key, JsonType type) {
+static Json makeJson(char *key, JsonType type) {
     return (Json){
         .type = type,
         .key = strdup(key),
@@ -127,51 +127,43 @@ void jsonPutArray(JsonBuilder *builder, char *key, JsonArray *array) {
 }
 
 Json jsonInteger(int value) {
-    Json json = {
+    return (Json) {
         .type = JSON_NUMBER,
         .key = NULL,
         .integer = value,
     };
-
-    return json;
 }
 
 Json jsonBool(bool value) {
-    Json json = {
+    return (Json) {
         .type = value ? JSON_TRUE : JSON_FALSE,
         .key = NULL,
         .boolean = value,
     };
-    return json;
 }
 
 Json jsonString(char *value) {
-    Json json = {
+    return (Json) {
         .type = JSON_STRING,
         .key = NULL,
         .value = strdup(value),
     };
-    return json;
 }
 
 Json jsonObject(JsonBuilder *builder) {
-    Json json = {
+    return (Json) {
         .type = JSON_OBJECT,
         .key = NULL,
         .object = builder,
     };
-
-    return json;
 }
 
 Json jsonArrayJson(JsonArray *array) {
-    Json json = {
+    return (Json) {
         .type = JSON_ARRAY,
         .key = NULL,
         .array = array,
     };
-
-    return json;
 }
 
 void jsonArrayAppend(JsonArray *array, Json value) {
@@ -563,6 +555,18 @@ int jsonGetInteger(JsonBuilder *jsonBuilder, char *key) {
     return 0;
 }
 
+JsonBuilder *jsonGetJson(JsonBuilder *jsonBuilder, char *key) {
+    for (int i = 0; i < jsonBuilder->jsonCount; i++) {
+        Json json = jsonBuilder->json[i];
+
+        if (strcmp(json.key, key) == 0) {
+            return json.object;
+        }
+    }
+
+    return NULL;
+}
+
 bool jsonHasKey(JsonBuilder *jsonBuilder, char *key) {
     for (int i = 0; i < jsonBuilder->jsonCount; i++) {
         Json json = jsonBuilder->json[i];
@@ -575,42 +579,46 @@ bool jsonHasKey(JsonBuilder *jsonBuilder, char *key) {
     return false;
 }
 
-void jsonPrintNode(Json json) {
+void jsonFilePrintNode(FILE *fp, Json json) {
     switch (json.type) {
         case JSON_STRING:
-            printf("\"%s\": \"%s\"", json.key, json.value);
+            fprintf(fp, "\"%s\": \"%s\"", json.key, json.value);
             break;
         case JSON_TRUE:
-            printf("\"%s\": true", json.key);
+            fprintf(fp, "\"%s\": true", json.key);
             break;
         case JSON_FALSE:
-            printf("\"%s\": false", json.key);
+            fprintf(fp, "\"%s\": false", json.key);
             break;
         case JSON_NUMBER:
-            printf("\"%s\": %d", json.key, json.integer);
+            fprintf(fp, "\"%s\": %d", json.key, json.integer);
             break;
         case JSON_NULL:
-            printf("\"%s\": null", json.key);
+            fprintf(fp, "\"%s\": null", json.key);
             break;
         case JSON_ARRAY:
             break;
         case JSON_OBJECT:
-            printf("\"%s\": ", json.key);
-            jsonPrint(json.object);
+            fprintf(fp, "\"%s\": ", json.key);
+            jsonFilePrint(fp, json.object);
             break;
         default:
             break;
     }
 }
 
-void jsonPrint(JsonBuilder *builder) {
-    printf("{");
+void jsonFilePrint(FILE *fp, JsonBuilder *builder) {
+    fprintf(fp, "{");
     for (int i = 0; i < builder->jsonCount; i++) {
-        jsonPrintNode(builder->json[i]);
+        jsonFilePrintNode(fp, builder->json[i]);
 
         if (i < builder->jsonCount - 1) {
-            printf(", ");
+            fprintf(fp, ", ");
         }
     }
-    printf("}\n");
+    fprintf(fp, "}\n");
+}
+
+void jsonPrint(JsonBuilder *builder) {
+    jsonFilePrint(stdout, builder);
 }
