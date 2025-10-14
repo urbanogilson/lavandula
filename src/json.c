@@ -27,7 +27,25 @@ JsonArray jsonArray() {
     };
 }
 
+static void freeJson(Json json){
+    if (json.type == JSON_STRING && json.value) {
+        free(json.value);
+    } else if (json.type == JSON_OBJECT && json.object) {
+        freeJsonBuilder(json.object);
+    } else if (json.type == JSON_ARRAY && json.array) {
+        freeJsonArray(json.array);
+    }
+
+    if (json.key != NULL) {
+        free(json.key);
+    }
+}
+
 void freeJsonArray(JsonArray *jsonArray) {
+    for (int i = 0; i < jsonArray->count; i++) {
+        Json json = jsonArray->items[i];
+        freeJson(json);
+    }
     free(jsonArray->items);
 }
 
@@ -35,20 +53,7 @@ void freeJsonBuilder(JsonBuilder *builder)
 {
     for (int i = 0; i < builder->jsonCount; i++) {
         Json json = builder->json[i];
-
-        if (json.type == JSON_STRING && json.value) {
-            free(json.value);
-        } else if (json.type == JSON_OBJECT && json.object) {
-            freeJsonBuilder(json.object);
-            // free(json.object);
-        } else if (json.type == JSON_ARRAY && json.array) {
-            // freeJsonBuilder(json.array);
-            free(json.array->items);
-        }
-
-        if (json.key != NULL) {
-            free(json.key);
-        }
+        freeJson(json);
     }
 
     free(builder->json);

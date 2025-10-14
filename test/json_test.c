@@ -97,6 +97,41 @@ void testJsonBuildJsonField() {
     freeJsonBuilder(builder);
 }
 
+void testJsonBuildArrayField() {
+    JsonBuilder *builder = jsonBuilder();
+
+    JsonArray array = jsonArray();
+    jsonArrayAppend(&array, jsonInteger(1));
+    jsonArrayAppend(&array, jsonString("2"));
+    jsonArrayAppend(&array, jsonBool(true));
+    JsonBuilder *object = jsonBuilder();
+    jsonPutString(object, "name", "lavandula");
+    jsonPutInteger(object, "year", 2025);
+    jsonArrayAppend(&array, jsonObject(object));
+
+    jsonPutArray(builder, "numbers", &array);
+    expect(jsonHasKey(builder, "numbers"), toBe(true));
+
+    char *json = jsonStringify(builder);
+    expect(strcmp(json, "{\"numbers\": [1, \"2\", true, {\"name\": \"lavandula\", \"year\": 2025}]}"), toBe(0));
+
+    free(json);
+    freeJsonBuilder(builder);
+}
+
+void testJsonBuildEmptyArray() {
+    JsonBuilder *builder = jsonBuilder();
+
+    JsonArray array = jsonArray();
+    jsonPutArray(builder, "empty", &array);
+
+    char *json = jsonStringify(builder);
+    expect(strcmp(json, "{\"empty\": []}"), toBe(0));
+
+    free(json);
+    freeJsonBuilder(builder);
+}
+
 void runJsonTests(){
     runTest(testJsonArrayInit);
     runTest(testJsonBuilderInit);
@@ -106,4 +141,6 @@ void runJsonTests(){
     runTest(testJsonBuildNullField);
     runTest(testJsonBuildObjectField);
     runTest(testJsonBuildJsonField);
+    runTest(testJsonBuildArrayField);
+    runTest(testJsonBuildEmptyArray);
 }
