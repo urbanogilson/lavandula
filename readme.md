@@ -87,23 +87,17 @@ appRoute(getTodos) {
 
 ## In Progress
 
-- Session cookies
-- CORS policy configuration
-- Lavender ORM
-- Embedded Lavandula (ELA) HTML templating engine
+- Static file serving
 
 
 ## Future
 
+- TLS
+- Session cookies
+- CORS policy configuration
+- Multithreading
 - Rate Limiting
-- Static file serving
 - PostgreSL, MySQL integrations, etc
-- Potential dependency injection framework
-- Route/Available endpoint listing
-- JSON model and function scaffolding
-  - lavu model User name:string age:int
-  - generates User struct, JSON serialization, CRUD endpoints in user_controller.c
-  - URL parameter parsing and routing
 
 
 ## Installation
@@ -207,4 +201,5 @@ Some things that probably need looking at are:
 
 
 Lavandula is registered under the MIT License.
+
 
