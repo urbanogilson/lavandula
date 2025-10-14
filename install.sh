@@ -66,7 +66,12 @@ install_repository() {
     
     sudo cp -r "$TMP_DIR/." "${LAVANDULA_LIB_DIR}/"
     
-    sudo chown -R root:root "${LAVANDULA_LIB_DIR}"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sudo chown -R root:wheel "${LAVANDULA_LIB_DIR}"
+    else
+        sudo chown -R root:root "${LAVANDULA_LIB_DIR}"
+    fi
+
     sudo chmod -R 755 "${LAVANDULA_LIB_DIR}"
     
     log_success "Repository installed to ${LAVANDULA_LIB_DIR}"
