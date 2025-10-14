@@ -1,0 +1,12 @@
+prefix="/usr/local"
+exec_prefix="${prefix}"
+libdir="${prefix}/lib"
+includedir="${prefix}/include"
+
+Name: Lavandula
+Description: Lightweight, fast, and intuitive C web framework designed for building modern web applications quickly.
+URL: https://github.com/ashtonjamesd/lavandula
+Version: 0.0.1
+Cflags: -I"${includedir}" -I"${includedir}/lavandula"
+Libs: -L"${libdir}" -llavu
+Libs.private: -L"${libdir}" -llavu
