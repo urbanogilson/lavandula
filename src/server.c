@@ -66,7 +66,7 @@ void runServer(App *app) {
         exit(EXIT_FAILURE);
     }
 
-    struct sockaddr_in address;
+    struct sockaddr_in address = {0};
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(app->server.port);
