@@ -17,9 +17,9 @@ typedef enum {
     HTTP_OPTIONS,
 } HttpMethod;
 
-static char *APPLICATION_JSON = "application/json";
-static char *TEXT_PLAIN = "text/plain";
-static char *TEXT_HTML = "text/html";
+extern char *APPLICATION_JSON;
+extern char *TEXT_PLAIN;
+extern char *TEXT_HTML;
 
 typedef enum {
     HTTP_CONTINUE = 100,
