@@ -29,7 +29,9 @@ Json todoToJson(Todo todo) {
 
 appRoute(getTodos) {
     DbResult *result = dbQueryRows(ctx.db, "select * from todos;", NULL, 0);
-    returnIfNull(result, "Database query failed");
+    if (!result) { 
+        return internalServerError("Database query failed", TEXT_PLAIN); 
+    }
 
     JsonBuilder *root = jsonBuilder();
     JsonArray array = jsonArray();
@@ -42,13 +44,15 @@ appRoute(getTodos) {
     char *json = jsonStringify(root);
     freeJsonBuilder(root);
 
-    return ok(json);
+    return ok(json, APPLICATION_JSON);
 }
 
 appRoute(createTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    returnIfNoKey(builder, "title", "Missing 'title' in request body");
+    if (!jsonHasKey(builder, "title")) { 
+        return internalServerError("Missing 'title' in request body", TEXT_PLAIN); 
+    }
 
     char *name = jsonGetString(builder, "title");
     bool completed = jsonGetBool(builder, "completed");
@@ -60,14 +64,19 @@ appRoute(createTodo) {
 
     bool result = dbExec(ctx.db, "insert into todos (title, completed) values (?, ?);", params, 2);
 
-    returnIfNull(result, "Failed to create todo");
-    return ok("");
+    if (!result) { 
+        return internalServerError("Failed to create todo", TEXT_PLAIN); 
+    }
+
+    return ok("ok", TEXT_PLAIN);
 }
 
 appRoute(updateTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    returnIfNoKey(builder, "id", "Missing 'id' in request body");
+    if (!jsonHasKey(builder, "id")) { 
+        return internalServerError("Missing 'id' in request body", TEXT_PLAIN); 
+    }
 
     int id = jsonGetInteger(builder, "id");
     char *title = jsonGetString(builder, "title");
@@ -81,14 +90,19 @@ appRoute(updateTodo) {
 
     bool result = dbExec(ctx.db, "update todos set title = ?, completed = ? where id = ?;", params, 3);
 
-    returnIfNull(result, "Failed to update todo");
-    return ok("");
+    if (!result) { 
+        return internalServerError("Failed to update todo", TEXT_PLAIN); 
+    }
+
+    return ok("ok", TEXT_PLAIN);
 }
 
 appRoute(deleteTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    returnIfNoKey(builder, "id", "Missing 'id' in request body");
+    if (!jsonHasKey(builder, "id")) { 
+        return internalServerError("Missing 'id' in request body", TEXT_PLAIN); 
+    }
 
     int id = jsonGetInteger(builder, "id");
 
@@ -98,14 +112,19 @@ appRoute(deleteTodo) {
 
     bool result = dbExec(ctx.db, "delete from todos where id = ?;", params, 1);
 
-    returnIfNull(result, "Failed to delete todo");
-    return ok("");
+    if (!result) { 
+        return internalServerError("Failed to delete todo", TEXT_PLAIN); 
+    }
+
+    return ok("ok", TEXT_PLAIN);
 }
 
 appRoute(getTodo) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
-    returnIfNoKey(builder, "id", "Missing 'id' in request body");
+    if (!jsonHasKey(builder, "id")) { 
+        return internalServerError("Missing 'id' in request body", TEXT_PLAIN); 
+    }
 
     int id = jsonGetInteger(builder, "id");
 
@@ -114,10 +133,12 @@ appRoute(getTodo) {
     );
 
     DbResult *result = dbQueryRows(ctx.db, "select * from todos where id = ?;", params, 1);
-    returnIfNull(result, "Database query failed");
+    if (!(result)) { 
+        return internalServerError("Database query failed", TEXT_PLAIN); 
+    }
 
     if (result->rowCount == 0) {
-        return internalServerError("Todo not found");
+        return internalServerError("Todo not found", TEXT_PLAIN);
     }
 
     JsonBuilder *root = jsonBuilder();
@@ -126,8 +147,7 @@ appRoute(getTodo) {
     jsonPutJson(root, "todo", todo);
 
     char *json = jsonStringify(root);
-
-    return ok(json);
+    return ok(json, APPLICATION_JSON);
 }
 
 int main(int argc, char *argv[]) {

@@ -1,4 +1,4 @@
-#include "../src/lavandula.h"
+#include "lavandula.h"
 
 int main() {
     AppBuilder builder = createBuilder();
@@ -13,10 +13,6 @@ int main() {
     App app = build(builder);
 
     runApp(&app);
-
-    // Clean up environment variables
-    dotenvClean();
-    cleanupApp(&app);
 
     return 0;
 }

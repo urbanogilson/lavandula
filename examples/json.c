@@ -28,7 +28,7 @@ Todo *allTodos() {
     return todos;
 }
 
-HttpResponse getTodos(HttpRequest _) {
+appRoute(getTodos) {
     JsonBuilder *root = jsonBuilder();
 
     JsonArray array = jsonArray();
@@ -42,7 +42,7 @@ HttpResponse getTodos(HttpRequest _) {
     char *json = jsonStringify(root);
     freeJsonBuilder(root);
 
-    return ok(json);
+    return ok(json, APPLICATION_JSON);
 }
 
 int main(int argc, char *argv[]) {
@@ -52,7 +52,6 @@ int main(int argc, char *argv[]) {
     get(&app, "/todos", getTodos);
 
     runApp(&app);
-    cleanupApp(&app);
 
     return 0;
 }

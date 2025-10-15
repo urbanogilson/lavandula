@@ -28,12 +28,11 @@
 
 #define appRoute(name) HttpResponse name(RequestContext ctx)
 
-#define returnIfNull(x, msg) if (!(x)) { return internalServerError(msg); }
-
-#define returnIfNoKey(builder, key, msg) \
-    if (!jsonHasKey(builder, key)) { \
-        return internalServerError(msg); \
-    }
+#define appRoutePage(name, path) appRoute(name) {  \
+    if (!ctx.app) exit(1); \
+    char *content = readFile(path); \
+    return ok(content ? content : "Not Found", TEXT_HTML); \
+} \
 
 typedef struct {
     App app;

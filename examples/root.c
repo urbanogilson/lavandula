@@ -1,7 +1,7 @@
 #include "lavandula.h"
 
-HttpResponse home(HttpRequest _) {
-    return ok("Hello, World!");
+appRoute(home) {
+    return ok("Hello, World!", TEXT_PLAIN);
 }
 
 int main() {

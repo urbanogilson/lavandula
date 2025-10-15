@@ -84,10 +84,10 @@ appRoute(getTodos) {
 - Built-in logging
 - SQLite integration
 - Built-in JSON library
+- Static file serving
 
 ## In Progress
 
-- Static file serving
 
 
 ## Future

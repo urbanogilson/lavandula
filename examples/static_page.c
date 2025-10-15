@@ -1,18 +1,18 @@
 #include "lavandula.h"
 
-appRoute(home) {
-    return ok("Hello, World!", TEXT_PLAIN);
-}
+appRoutePage(home, "home.html");
 
 int main() {
+    // Initialize the application builder
     AppBuilder builder = createBuilder();
+    
+    // Build the application
     App app = build(builder);
 
-    // Logging middleware example
-    useMiddleware(&builder, logger);
-
+    // Define routes
     get(&app, "/home", home);
 
+    // Run the application
     runApp(&app);
 
     return 0;

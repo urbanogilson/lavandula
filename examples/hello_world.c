@@ -1,7 +1,7 @@
 #include "lavandula.h"
 
-HttpResponse home(RequestContext ctx) {
-    return ok("Hello, World!");
+appRoute(home) {
+    return ok("Hello, World!", TEXT_PLAIN);
 }
 
 int main() {
@@ -16,9 +16,6 @@ int main() {
 
     // Run the application
     runApp(&app);
-
-    // Cleanup leftover resources
-    cleanupApp(&app);
 
     return 0;
 }

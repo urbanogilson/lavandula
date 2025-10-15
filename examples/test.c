@@ -1,4 +1,4 @@
-#include "../src/lavandula.h"
+#include "include/lavandula.h"
 
 void testOne() {
     int x = 10;
@@ -13,7 +13,6 @@ int main() {
     App app = build(builder);
 
     runApp(&app);
-    cleanupApp(&app);
 
     return 0;
 }

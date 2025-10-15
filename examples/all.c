@@ -1,11 +1,11 @@
 #include "lavandula.h"
 
-HttpResponse homePage(RequestContext _) {
-    return ok("Hello, World!");
+appRoute(homePage) {
+    return ok("Hello, World!", TEXT_PLAIN);
 }
 
-HttpResponse notFoundPage(RequestContext _) {
-    return response("Oops, this resource was not found...", HTTP_NOT_FOUND);
+appRoute(notFoundPage) {
+    return notFound("Oops, this resource was not found...", TEXT_PLAIN);
 }
 
 typedef struct {
@@ -22,9 +22,9 @@ Json todoToJson(Todo todo) {
 }
 
 HttpResponse getTodos(RequestContext ctx) {
-    DbResult *result = dbQueryRows(ctx.db, "select * from Todos");
+    DbResult *result = dbQueryRows(ctx.db, "select * from Todos", NULL, 0);
     if (!result) {
-        return internalServerError("Failed to query database");
+        return internalServerError("Failed to query database", TEXT_PLAIN);
     }
 
     JsonBuilder *root = jsonBuilder();
@@ -46,7 +46,7 @@ HttpResponse getTodos(RequestContext ctx) {
     char *json = jsonStringify(root);
     freeJsonBuilder(root);
 
-    return ok(json);
+    return ok(json, APPLICATION_JSON);
 }
 
 int main() {
@@ -81,7 +81,6 @@ int main() {
     get(&app, "/todos", getTodos);
 
     runApp(&app);
-    cleanupApp(&app);
 
     return 0;
 }
