@@ -139,7 +139,6 @@ void runServer(App *app) {
             response = next(context, &app->middleware);
         }
 
-        const char *contentType = "application/json";
         int contentLength = strlen(response.content);
 
         const char *statusText = httpStatusCodeToStr(response.status);
@@ -151,7 +150,7 @@ void runServer(App *app) {
                 "Content-Length: %d\r\n"
                 "Connection: close\r\n"
                 "\r\n",
-                response.status, statusText, contentType, contentLength
+                response.status, statusText, response.contentType, contentLength
         );
 
         write(clientSocket, header, strlen(header));

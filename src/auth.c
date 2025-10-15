@@ -60,7 +60,7 @@ HttpResponse basicAuth(RequestContext ctx, MiddlewareHandler *n) {
     }
 
     if (!authHeader || strncmp(authHeader, "Basic ", 6) != 0) {
-        return unauthorized("Unauthorized");
+        return unauthorized("Unauthorized", TEXT_PLAIN);
     }
 
     char *encodedCredentials = authHeader + 6;
@@ -68,7 +68,7 @@ HttpResponse basicAuth(RequestContext ctx, MiddlewareHandler *n) {
     if (checkBasicCredentials(&ctx.app->auth, encodedCredentials)) {
         return next(ctx, n);
     } else {
-        return unauthorized("Unauthorized");
+        return unauthorized("Unauthorized", TEXT_PLAIN);
     }
 }
 

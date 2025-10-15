@@ -17,6 +17,10 @@ typedef enum {
     HTTP_OPTIONS,
 } HttpMethod;
 
+static char *APPLICATION_JSON = "application/json";
+static char *TEXT_PLAIN = "text/plain";
+static char *TEXT_HTML = "text/html";
+
 typedef enum {
     HTTP_CONTINUE = 100,
     HTTP_SWITCHING_PROTOCOLS = 101,
@@ -106,8 +110,9 @@ typedef struct {
 } HttpRequest;
 
 typedef struct {
-    char      *content;
+    char          *content;
     HttpStatusCode status;
+    char          *contentType;
 } HttpResponse;
 
 typedef struct {
