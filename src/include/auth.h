@@ -11,13 +11,13 @@ typedef struct {
     int    credentialsCapacity;
 } BasicAuthenticator;
 
-BasicAuthenticator initBasicAuth();
+BasicAuthenticator initBasicAuth(void);
 HttpResponse basicAuth(RequestContext context, MiddlewareHandler *);
 void freeBasicAuth(BasicAuthenticator);
 
-void addBasicCredentials(BasicAuthenticator *, char *username, char *password);
-bool checkBasicCredentials(BasicAuthenticator *, char *base64);
+void addBasicCredentials(BasicAuthenticator *auth, const char *const username, const char *const password);
+bool checkBasicCredentials(BasicAuthenticator *, const char *const base64);
 
-bool consttimeStrcmp(const char *a, const char *b);
+bool consttimeStrcmp(const char *const a, const char *const b);
 
 #endif
