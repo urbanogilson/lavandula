@@ -1,6 +1,6 @@
 #include "lavandula.h"
 
-appRoutePage(home, "home.html");
+appRouteStatic(home, "home.html");
 
 int main() {
     // Initialize the application builder

@@ -9,7 +9,6 @@ Lavandula is a framework that makes building maintainable backends in C faster a
 
 The core of lavandula is a customisable web server. You can define routes to serve various types of content within your application. On top of this are various tools such as a route handler, middleware pipeline, environment variable parser, logger, and even an ORM, to make your development easier.
 
-
 ## Project Setup
 
 Follow the installation and setup guide in `setup.md`.
@@ -27,15 +26,48 @@ You should see the following folder structure automatically generated:
 ```
 .
 ├── app
-│   ├── app.c
 │   ├── controllers
+│   │   ├── controllers.h
 │   │   └── home.c
-│   └── routes.c
+│   ├── app.c
+│   ├── routes.c
+│   └── routes.h
 ├── tests
 │   └── tests.c
 ├── lavandula.yml
-└── makefile
+├── makefile
+└── README.md
 ```
+
+#### `Lavandula.yml`
+
+This file is your project configuration file and contains things such as the project name and version.
+
+
+#### `/app/app.c`
+
+This file contains your top-level app code which will run your web application through `runApp`.
+
+
+#### `/app/routes.h`
+
+You likely wont have to alter this file. It is just a header file exposing the `registerRoutes` method.
+
+#### `/app/routes.c`
+
+This file contains a pre-generated method called `registerRoutes`. Every time you want to add a new route in your application, add another route method call inside here.
+
+
+#### `/app/controllers/controllers.h`
+
+This file exposes all of your controllers to the router. Every time you add a new controller, add the declaration inside here so the router can access it.
+
+#### `/app/controllers/home.c`
+
+This is a feature-specific file and contains controllers related to 'home'.
+
+
+<br/>
 
 Run the application.
 
@@ -74,8 +106,7 @@ A controller is a method that will be called when a specific endpoint in our app
 To start, we will just have one endpoint, which will be to retrieve all todos in the database. However, we will eventually have a controller to handle creating, editing, and deleting a todo item.
 
 ```
-// all controllers must follow this function signature
-HttpResponse getTodos(RequestContext ctx) {
+appRoute(getTodos) {
     return ok("ok");
 }
 ```
@@ -140,7 +171,7 @@ values (0, 'First Todo!'), (1, 'Second Todo!'), (2, 'Third Todo!')
 In our controller, lets add the following code to retrieve all the todo items. The query method used below will return database result which a pointer to any rows that were retrieved and the number of rows in the pointer.
 
 ```c
-DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos");
+DbResult *result = dbQueryRows(ctx.dbContext, "select * from Todos", NULL, 0);
 if (!result) {
     return internalServerError("Failed to query database");
 }

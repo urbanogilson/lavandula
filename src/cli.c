@@ -43,7 +43,7 @@ int help() {
     printf("Usage:\n");
     printf("  lavu new <project_name>   Create a new Lavandula project\n");
     printf("  lavu run                  Run the Lavandula project\n");
-    printf("  lavu migrate              Create a new database migration\n");
+    // printf("  lavu migrate              Create a new database migration\n");
     printf("  lavu help                 Show this help message\n");
     
     return 0;

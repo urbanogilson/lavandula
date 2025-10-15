@@ -47,10 +47,11 @@ check_dependencies() {
         exit 1
     fi
 
-    if [ ! -f "/usr/include/sqlite3.h" ]; then
-        log_error "Development tools for the sqlite3 is required but not installed. Please install sqlite3 devel first."
-        exit 1
-    fi
+    # temporary fix, does not work on MacOS currently
+    # if [ ! -f "/usr/include/sqlite3.h" ]; then
+    #     log_error "Development tools for the sqlite3 is required but not installed. Please install sqlite3 devel first."
+    #     exit 1
+    # fi
 }
 
 download_source() {
