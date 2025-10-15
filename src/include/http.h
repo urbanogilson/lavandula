@@ -7,6 +7,9 @@
 
 #define MAX_HEADER_NAME 64
 #define MAX_HEADER_VALUE 256
+#define APPLICATION_JSON "application/json"
+#define TEXT_PLAIN       "text/plain"
+#define TEXT_HTML        "text/html"
 
 typedef enum {
     HTTP_GET,
@@ -16,10 +19,6 @@ typedef enum {
     HTTP_DELETE,
     HTTP_OPTIONS,
 } HttpMethod;
-
-extern char *APPLICATION_JSON;
-extern char *TEXT_PLAIN;
-extern char *TEXT_HTML;
 
 typedef enum {
     HTTP_CONTINUE = 100,
