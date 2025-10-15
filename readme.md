@@ -6,70 +6,22 @@
 **Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
 
 
-## Example
-
 ```c
 #include "lavandula.h" 
 
-// define a route for your app
 appRoute(home) {
   return ok("Hello, World");
 }
 
 int main() {
-  // initialise your app
   App app = createApp();
-
-  // register a route in your app
   get(&app, "/home", home);
 
-  // run the app
   runApp(&app);
 }
 ```
 
-### Todo App Example
-
-```c
-int main(int argc, char *argv[]) {
-  AppBuilder builder = createBuilder();
-  useSqlLite3(&builder, "init.db");
-  
-  App app = build(builder);
-
-  get(&app, "/getTodos", getTodos);
-  get(&app, "/getTodo", getTodo);
-  post(&app, "/createTodo", createTodo);
-  post(&app, "/updateTodo", updateTodo);
-  post(&app, "/deleteTodo", deleteTodo);
-
-  runApp(&app);
-
-  return 0;
-}
-```
-
-### Endpoint Example
-
-```c
-appRoute(getTodos) {
-    DbResult *result = dbQueryRows(ctx.db, "select * from todos;", NULL, 0);
-    returnIfNull(result, "Database query failed");
-
-    JsonBuilder *root = jsonBuilder();
-    JsonArray array = jsonArray();
-    jsonPutArray(root, "todos", &array);
-    
-    for (int i = 0; i < result->rowCount; i++) {
-        jsonArrayAppend(&array, todoToJson(rowToTodo(result->rows[i])));
-    }
-
-    char *json = jsonStringify(root);
-    freeJsonBuilder(root);
-
-    return ok(json);
-}
-```
+See `/examples` for more.
 
 
 ## Features
@@ -88,16 +40,15 @@ appRoute(getTodos) {
 
 ## In Progress
 
-
+- PostgreSL, MySQL integrations, etc
 
 ## Future
 
-- TLS
-- Session cookies
 - CORS policy configuration
+- TLS
 - Multithreading
 - Rate Limiting
-- PostgreSL, MySQL integrations, etc
+- Session cookies
 
 
 ## Installation
@@ -154,14 +105,7 @@ Output:
 Setting up Lavandula project 'myProject'...
 
 -> Created myProject/lavandula.yml
--> Created myProject/app/app.c
--> Created myProject/app/controllers/controllers.h
--> Created myProject/app/controllers/home.c
--> Created myProject/app/routes.c
--> Created myProject/app/routes.h
--> Created myProject/makefile
--> Created myProject/tests/tests.c
--> Created myProject/README.md
+
 ...
 
 🎉 Lavandula project 'myProject' setup finished successfully!
@@ -190,16 +134,13 @@ Your application will run on http://localhost:3000/.
 
 Contributions are welcome. Feel free to submit pull requests or open issues for feature requests or bugs.
 
-Some things that probably need looking at are:
-- memory leaks
-- outdated and unfinished documentation (API changes warrant a docs update)
-- The JSON library does not currently support nested lists
-- Some tests need to be written...
+Some places to start:
+- Possible memory leaks
+- Application security
+- Outdated and unfinished documentation (API changes warrant a docs update)
 
 
 ## License
 
 
 Lavandula is registered under the MIT License.
-
-

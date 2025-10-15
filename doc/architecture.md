@@ -4,11 +4,3 @@ A Lavandula project is broken down into various components. These components are
 
 
 ## Project Structure
-
-...
-
-
-## Endpoints
-
-...
-
