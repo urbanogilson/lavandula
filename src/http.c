@@ -5,6 +5,10 @@
 
 #include "include/http.h"
 
+char *APPLICATION_JSON = "application/json";
+char *TEXT_PLAIN = "text/plain";
+char *TEXT_HTML = "text/html";
+
 #define MAX_BODY_SIZE (10 * 1024 * 1024) // 10 MiB
 
 static HttpMethod toHttpMethod(char *s) {

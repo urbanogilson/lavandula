@@ -1,8 +1,6 @@
 #include "lavandula.h"
 
 int main() {
-    AppBuilder builder = createBuilder();
-
     // Parse .env file and load environment variables
     useDotenv(".env");
 
@@ -10,8 +8,7 @@ int main() {
     char *dbUser = env("DB_USER");
     char *dbPass = env("DB_PASS");
 
-    App app = build(builder);
-
+    App app = createApp();
     runApp(&app);
 
     return 0;

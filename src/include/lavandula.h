@@ -28,7 +28,7 @@
 
 #define appRoute(name) HttpResponse name(RequestContext ctx)
 
-#define appRoutePage(name, path) appRoute(name) {  \
+#define appRouteStatic(name, path) appRoute(name) {  \
     if (!ctx.app) exit(1); \
     char *content = readFile(path); \
     return ok(content ? content : "Not Found", TEXT_HTML); \
