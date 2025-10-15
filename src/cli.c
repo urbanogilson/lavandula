@@ -23,9 +23,7 @@ typedef struct {
 int runProject() {
     system("make");
     system("./a");
-
     system("rm ./a");
-    
     return 1;
 }
 
@@ -118,7 +116,7 @@ int createHomeFile(Project *project) {
     const char *content =
         "#include \"../../lavandula/include/lavandula.h\"\n\n"
         "appRoute(home) {\n"
-        "    return ok(\"Hello, World!\");\n"
+        "    return ok(\"Hello, World!\", \"text/plain\");\n"
         "}\n";
 
     return createFileWithContent(filepath, content);
