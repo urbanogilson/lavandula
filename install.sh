@@ -46,6 +46,11 @@ check_dependencies() {
         log_error "git is required but not installed. Please install git first."
         exit 1
     fi
+
+    if [ ! -f "/usr/include/sqlite3.h" ]; then
+        log_error "Development tools for the sqlite3 is required but not installed. Please install sqlite3 devel first."
+        exit 1
+    fi
 }
 
 download_source() {

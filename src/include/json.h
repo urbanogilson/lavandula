@@ -70,11 +70,13 @@ JsonBuilder *jsonParse(char *jsonString);
 char *jsonGetString(JsonBuilder *jsonBuilder, char *key);
 bool jsonGetBool(JsonBuilder *jsonBuilder, char *key);
 int jsonGetInteger(JsonBuilder *jsonBuilder, char *key);
+JsonBuilder *jsonGetJson(JsonBuilder *jsonBuilder, char *key);
 
 bool jsonHasKey(JsonBuilder *jsonBuilder, char *key);
 
 // more Get methods are required
 
+void jsonFilePrint(FILE *fp, JsonBuilder *builder);
 void jsonPrint(JsonBuilder *jsonBuilder);
 
 #endif

@@ -14,7 +14,7 @@ test:
 	./build/test_runner
 
 install:
-	cp build/lavu /usr/local/bin/lavandula
+	cp build/lavu /usr/local/bin/lavu
 
 clean:
 	rm -rf build
