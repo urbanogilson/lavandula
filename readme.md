@@ -2,7 +2,6 @@
 <img src="lavandula.png" alt="drawing" width="400"/>
 
 <br/>
-<br/>
 
 
 **Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
