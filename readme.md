@@ -1,7 +1,9 @@
-# Lavandula
+<!-- ![Express Logo](lavandula.png) -->
+<img src="lavandula.png" alt="drawing" width="400"/>
 
-> ⚠️ **Notice:** Lavandula is still in early development and not ready for production use.  
-> Expect frequent breaking changes and incomplete documentation.
+<br/>
+<br/>
+
 
 **Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
 
@@ -23,6 +25,15 @@ int main() {
 
 See `/examples` for more.
 
+<br/>
+
+[![Lavandula](https://github.com/ashtonjamesd/lavandula/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/ashtonjamesd/lavandula/actions/workflows/ci.yaml)
+
+
+> ⚠️ **Notice:** Lavandula is still in early development and not ready for production use.  
+> Expect frequent breaking changes and incomplete documentation.
+
+<hr/>
 
 ## Features
 
