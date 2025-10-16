@@ -7,7 +7,7 @@
 #include "include/router.h"
 #include "include/app.h"
 
-BasicAuthenticator initBasicAuth() {
+BasicAuthenticator initBasicAuth(void) {
     BasicAuthenticator auth = {
         .credentials = malloc(sizeof(char *)),
         .credentialsCount = 0,
@@ -22,7 +22,7 @@ BasicAuthenticator initBasicAuth() {
     return auth;
 }
 
-void addBasicCredentials(BasicAuthenticator *auth, char *username, char *password) {
+void addBasicCredentials(BasicAuthenticator *auth, const char *const username, const char *const password) {
     int credLen = strlen(username) + strlen(password) + 2;
     char *credentials = malloc(credLen);
 
@@ -46,8 +46,7 @@ void addBasicCredentials(BasicAuthenticator *auth, char *username, char *passwor
         exit(EXIT_FAILURE);
     }
 
-    auth->credentials[auth->credentialsCount++] = strdup(encoded);
-    free(encoded);
+    auth->credentials[auth->credentialsCount++] = encoded;
 }
 
 HttpResponse basicAuth(RequestContext ctx, MiddlewareHandler *n) {
@@ -72,7 +71,7 @@ HttpResponse basicAuth(RequestContext ctx, MiddlewareHandler *n) {
     }
 }
 
-bool consttimeStrcmp(const char *a, const char *b) {
+bool consttimeStrcmp(const char *const a, const char *const b) {
     size_t i = 0;
     unsigned char result = 0;
 
@@ -86,7 +85,7 @@ bool consttimeStrcmp(const char *a, const char *b) {
     return result == 0;
 }
 
-bool checkBasicCredentials(BasicAuthenticator *auth, char *base64) {
+bool checkBasicCredentials(BasicAuthenticator *auth, const char *const base64) {
     if (!base64) return false;
     if (!auth->credentials) return false;
     

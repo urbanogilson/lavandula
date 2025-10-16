@@ -11,7 +11,7 @@ char base64Map[] = {
     'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
 };
 
-char *base64Encode(char *plain) {
+char *base64Encode(const char *const plain) {
     int counts = 0;
     char buffer[3];
     char *cipher = malloc(strlen(plain) * 4 / 3 + 4);
@@ -51,10 +51,10 @@ char *base64Encode(char *plain) {
 }
 
 
-char *base64Decode(char *cipher) {
+char *base64Decode(const char *const cipher) {
     int counts = 0;
     char buffer[4];
-    char *plain = malloc(strlen(cipher) * 3 / 4);
+    char *plain = malloc(strlen(cipher) * 3 / 4 + 1);
         
     if (!plain) {
         fprintf(stderr, "Fatal: out of memory\n");

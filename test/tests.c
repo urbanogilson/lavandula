@@ -8,6 +8,7 @@ void runHttpTests();
 void runUtilsTests();
 void runAuthTests();
 void runJsonTests();
+void runBase64Tests();
 
 int main() {
     testsRan = 0;
@@ -21,6 +22,7 @@ int main() {
     runUtilsTests();
     runAuthTests();
     runJsonTests();
+    runBase64Tests();
 
     printf("=== Lavandula Test Results ===\n");
     testResults();

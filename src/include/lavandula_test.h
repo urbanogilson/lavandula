@@ -15,16 +15,21 @@ void runTest(TestFunction);
 void testResults();
 void testFailed();
 
-#define expect(x, n) do { \
+#define _assert(cond, x_str, msg) do { \
     assertions++; \
-    if ((x) != (n)) { \
+    if (!(cond)) { \
         assertionsFailed++; \
-        printf("FAILED: %s at line %d - expected %s to be %s\n", \
+        printf("FAILED: %s at line %d - expected %s %s\n", \
                currentTestName ? currentTestName : "Unknown Test", \
-               __LINE__, #x, #n); \
+               __LINE__, x_str, msg); \
         testFailed(); \
     } \
 } while(0)
+
+#define expect(x, n) _assert((x) == (n), #x, "to be " #n)
+#define expectNot(x, n) _assert((x) != (n), #x, "to not be " #n)
+#define expectNull(x) _assert((x) == NULL, #x, "to be NULL")
+#define expectNotNull(x) _assert((x) != NULL, #x, "to be not NULL")
 
 #define runTest(func) do { \
     currentTestName = #func; \
