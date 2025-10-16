@@ -3,7 +3,7 @@ SRCS = $(shell find src -name "*.c")
 TEST_SRCS = $(wildcard test/*.c)
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -lsqlite3 -Isrc
-TEST_CFLAGS = -g3 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fstack-protector-strong
+TEST_CFLAGS = -g3 -O0 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fstack-protector-strong
 
 LIB_SRCS = $(filter-out src/main.c src/cli.c, $(SRCS))
 LIB_CFLAGS = -Wall -Wextra -Isrc
