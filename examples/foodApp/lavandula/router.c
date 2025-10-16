@@ -4,6 +4,7 @@
 
 #include "include/router.h"
 #include "include/server.h"
+#include "router.h"
 
 // 1xx Informational responses
 HttpResponse httpContinue(char *content, char *contentType) {

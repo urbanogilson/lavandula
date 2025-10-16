@@ -50,6 +50,7 @@ See `/examples` for more.
 
 ## In Progress
 
+- Auto parse request body JSON (removes need for user to parse and free)
 - PostgreSL, MySQL integrations, etc
 - CORS policy configuration
 - TLS

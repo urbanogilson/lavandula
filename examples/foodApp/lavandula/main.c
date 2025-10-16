@@ -18,8 +18,6 @@ int main(int argc, char *argv[]) {
         return newProject(projectName);
     } else if (strcmp(option, "run") == 0) {
         return runProject();
-    } else if (strcmp(option, "build") == 0) {
-        return buildProject();
     } else if (strcmp(option, "help") == 0) {
         return help();
     } else if (strcmp(option, "--version") == 0 || strcmp(option, "-v") == 0) {
