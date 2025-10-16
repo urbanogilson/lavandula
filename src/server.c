@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #include "include/server.h"
 #include "include/http.h"
@@ -72,7 +73,13 @@ void runServer(App *app) {
     address.sin_port = htons(app->server.port);
 
     if (bind(app->server.fileDescriptor, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        perror("bind failed");
+
+        if (errno == EADDRINUSE) {
+            fprintf(stderr, "Port %d is already in use. Please choose a different port.\n", app->server.port);
+        } else {
+            fprintf(stderr, "Failed to bind to port %d: %s\n", app->server.port, strerror(errno));
+        }
+
         exit(EXIT_FAILURE);
     }
 

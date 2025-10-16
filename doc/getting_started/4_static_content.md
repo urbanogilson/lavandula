@@ -5,7 +5,7 @@ Static content refers to resources that are unchanging, such as images or HTML f
 To serve static content, first call `readFile` to get the content of the file. Then return the content of the file with the correct content type header.
 
 ```c
-appRoute(home) {
+appRoute(home, ctx) {
     char *html = readFile("home.html");
     return ok(html, TEXT_HTML);
 }
@@ -25,4 +25,4 @@ get(&app, "/home", home);
 
 Now, when you go to `/home`, you will see the content inside of `home.html`.
 
-Next: [API Documentation](../api.md)
+Next: [Project Tutorial](../tutorial/tutorial.md)

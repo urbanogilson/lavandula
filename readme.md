@@ -1,7 +1,8 @@
-# Lavandula
+<!-- ![Express Logo](lavandula.png) -->
+<img src="lavandula.png" alt="drawing" width="400"/>
 
-> ⚠️ **Notice:** Lavandula is still in early development and not ready for production use.  
-> Expect frequent breaking changes and incomplete documentation.
+<br/>
+
 
 **Lavandula** is a lightweight, fast, and intuitive C web framework designed for building modern web applications quickly. It focuses on simplicity, performance, and productivity, providing all the essentials without the bloat of heavier frameworks.
 
@@ -9,7 +10,7 @@
 ```c
 #include "lavandula.h" 
 
-appRoute(home) {
+appRoute(home, ctx) {
   return ok("Hello, World", TEXT_PLAIN);
 }
 
@@ -23,6 +24,15 @@ int main() {
 
 See `/examples` for more.
 
+<br/>
+
+[![Lavandula](https://github.com/ashtonjamesd/lavandula/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/ashtonjamesd/lavandula/actions/workflows/ci.yaml)
+
+
+> ⚠️ **Notice:** Lavandula is still in early development and not ready for production use.  
+> Expect frequent breaking changes and incomplete documentation.
+
+<hr/>
 
 ## Features
 
@@ -41,9 +51,6 @@ See `/examples` for more.
 ## In Progress
 
 - PostgreSL, MySQL integrations, etc
-
-## Future
-
 - CORS policy configuration
 - TLS
 - Multithreading
@@ -86,7 +93,7 @@ Documentation:
 
 3. Finish
 
-You should now be able to run the Lavu CLI tool and begin writing your application. Refer to `api.md` for how to use Lavu.
+You should now be able to run the Lavu CLI tool and begin writing your application. Refer to [this document](doc/api/cli.md) for how to use Lavu.
 
 
 ## Getting Started
@@ -125,9 +132,9 @@ lavu run
 Your application will run on http://localhost:3000/.
 
 3. Read the docs
-
-   - [Developing with Lavandula](doc/tutorial.md)
-   - [API Documentation](doc/api.md)
+  
+   - [Getting Started](doc/getting_started/1_installing.md)
+   - [Project Tutorial](doc/tutorial/tutorial.md)
 
 
 ## Contributing

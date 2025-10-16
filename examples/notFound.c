@@ -1,6 +1,6 @@
 #include "lavandula.h"
 
-appRoute(notFound) {
+appRoute(notFound, ctx) {
     return response("Route not found", HTTP_NOT_FOUND, TEXT_PLAIN);
 }
 

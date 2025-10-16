@@ -28,7 +28,7 @@ Todo *allTodos() {
     return todos;
 }
 
-appRoute(getTodos) {
+appRoute(getTodos, ctx) {
     JsonBuilder *root = jsonBuilder();
 
     JsonArray array = jsonArray();

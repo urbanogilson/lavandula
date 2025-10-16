@@ -27,7 +27,7 @@ Json todoToJson(Todo todo) {
     return jsonObject(builder);
 }
 
-appRoute(getTodos) {
+appRoute(getTodos, ctx) {
     DbResult *result = dbQueryRows(ctx.db, "select * from todos;", NULL, 0);
     if (!result) { 
         return internalServerError("Database query failed", TEXT_PLAIN); 
@@ -47,7 +47,7 @@ appRoute(getTodos) {
     return ok(json, APPLICATION_JSON);
 }
 
-appRoute(createTodo) {
+appRoute(createTodo, ctx) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
     if (!jsonHasKey(builder, "title")) { 
@@ -71,7 +71,7 @@ appRoute(createTodo) {
     return ok("ok", TEXT_PLAIN);
 }
 
-appRoute(updateTodo) {
+appRoute(updateTodo, ctx) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
     if (!jsonHasKey(builder, "id")) { 
@@ -97,7 +97,7 @@ appRoute(updateTodo) {
     return ok("ok", TEXT_PLAIN);
 }
 
-appRoute(deleteTodo) {
+appRoute(deleteTodo, ctx) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
     if (!jsonHasKey(builder, "id")) { 
@@ -119,7 +119,7 @@ appRoute(deleteTodo) {
     return ok("ok", TEXT_PLAIN);
 }
 
-appRoute(getTodo) {
+appRoute(getTodo, ctx) {
     JsonBuilder *builder = jsonParse(ctx.request.body);
 
     if (!jsonHasKey(builder, "id")) { 

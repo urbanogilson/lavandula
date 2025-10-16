@@ -1,17 +1,17 @@
-# Lavandula Tutorial
+# Lavandula Sample App Tutorial
 
 This document will walk you through creating a sample application with Lavandula, following conventions and best practices. We will create a simple web application that connects to a Sqlite3 database and serves JSON content.
 
 
 ## What is Lavandula?
 
-Lavandula is a framework that makes building maintainable backends in C faster and more scalable (and fun). If you have used .NET before, then you will be familiar with some of the concepts used in the framework. The framework also takes some inspiration from Express and Rails.
+Lavandula is a framework that makes building maintainable backends in C faster and more scalable (and fun). If you have used .NET controller APIs before, then you will be familiar with the layout and some of the concepts used in the framework. The framework also takes some inspiration from Express.
 
 The core of lavandula is a customisable web server. You can define routes to serve various types of content within your application. On top of this are various tools such as a route handler, middleware pipeline, environment variable parser, logger, and even an ORM, to make your development easier.
 
 ## Project Setup
 
-Follow the installation and setup guide in `setup.md`.
+Ensure you have followed the installation guide in the 'getting started' section.
 
 Change directory into where you want the new project to be created.
 
@@ -69,7 +69,7 @@ This is a feature-specific file and contains controllers related to 'home'.
 
 <br/>
 
-Run the application.
+Now, run the application.
 
 ```bash
 lavu run
@@ -78,7 +78,7 @@ lavu run
 You should see
 
 ```
-Lavandula Server is running! -> http://127.0.0.1:8080
+Lavandula Server is running! -> http://127.0.0.1:3000
 ```
 
 ## Sample Project Brief
@@ -101,15 +101,17 @@ Our todo model has a name, so the user can write what they need to do, and an ID
 
 ## Controllers
 
-A controller is a method that will be called when a specific endpoint in our application is hit.
+A controller is a method that will be called when a specific endpoint in our application is hit. Generally, and depending on the design patterns you're following, you don't put much logic in the controller. However, for the purposes of this tutorial, we will refrain from creating services and repositories, etc.
 
 To start, we will just have one endpoint, which will be to retrieve all todos in the database. However, we will eventually have a controller to handle creating, editing, and deleting a todo item.
 
 ```
-appRoute(getTodos) {
+appRoute(getTodos, ctx) {
     return ok("ok");
 }
 ```
+
+This defines a controller function called 'getTodos'. The `ctx` is the name of the RequestContext for this endpoint.
 
 
 ## Routing
@@ -119,13 +121,14 @@ Now we need to register this controller to a route in our application so that it
 ```
 void registerRoutes(App app) {
     // ..
+
     get(&app, "/todos", getTodos);
 }
 ```
 
 Let's now test our application serves the correct content when accessing the '/todos' route.
 
-Visit 'http://127.0.0.1:8080/todos' and ensure the following output on the webpage.
+Visit 'http://127.0.0.1:3030/todos' and ensure the following output on the webpage.
 
 ```
 ok
@@ -149,7 +152,7 @@ Include this header file in your project.
 
 Sqlite3 requires the use of a single *.db file, so lets create that now. I am going to call mine 'todo.db'.
 
-Now add the following line in main.c. And it's as easy as that. Your application will now be able to interact with a Sqlite3 database.
+Now add the following line in main.c. And it's as easy as that. Your application will now be able to interact with your Sqlite3 database.
 
 ```c
 useSqlLite3(&builder, "todo.db");
@@ -237,6 +240,8 @@ For each todo object, we append it into the array.
 Now we need to convert the JSON object into data that can be returned back to the client.
 
 ```c
+// ..
+
 char *json = jsonStringify(root);
 freeJsonBuilder(root);
 ```

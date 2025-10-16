@@ -115,7 +115,7 @@ int createHomeFile(Project *project) {
     snprintf(filepath, sizeof(filepath), "%s/app/controllers/home.c", project->path);
     const char *content =
         "#include \"../../lavandula/include/lavandula.h\"\n\n"
-        "appRoute(home) {\n"
+        "appRoute(home, ctx) {\n"
         "    return ok(\"Hello, World!\", \"text/plain\");\n"
         "}\n";
 
@@ -185,7 +185,7 @@ int createControllersHeaderFile(Project *project) {
         "#ifndef controllers_h\n"
         "#define controllers_h\n\n"
         "#include \"../../lavandula/include/lavandula.h\"\n\n"
-        "appRoute(home);\n\n"
+        "appRoute(home, ctx);\n\n"
         "#endif\n";
 
     return createFileWithContent(filepath, content);
