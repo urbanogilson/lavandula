@@ -25,7 +25,7 @@ static: $(LIB_OBJS)
 
 shared: $(LIB_OBJS)
 	mkdir -p build
-	gcc -shared -o build/liblavu.so $(LIB_OBJS) -lsqlite3 -Wl,-rpath,/usr/local/lib
+	$(CC) -shared -o build/liblavu.so $(LIB_OBJS) -lsqlite3 -Wl,-rpath,/usr/local/lib
 	if [ "$(OS)" = "Darwin" ]; then \
 		install_name_tool -id /usr/local/lib/liblavu.so build/liblavu.so; \
 		otool -L build/liblavu.so; \
@@ -33,15 +33,15 @@ shared: $(LIB_OBJS)
 
 build/lavender/%.o: src/lavender/%.c
 	mkdir -p build/lavender
-	gcc -c $< $(LIB_CFLAGS) -o $@
+	$(CC) -c $< $(LIB_CFLAGS) -o $@
 
 build/yaml/%.o: src/yaml/%.c
 	mkdir -p build/yaml
-	gcc -c $< $(LIB_CFLAGS) -o $@
+	$(CC) -c $< $(LIB_CFLAGS) -o $@
 
 build/%.o: src/%.c
 	mkdir -p build
-	gcc -fPIC -c $< $(LIB_CFLAGS) -o $@
+	$(CC) -fPIC -c $< $(LIB_CFLAGS) -o $@
 
 lib: static shared
 
