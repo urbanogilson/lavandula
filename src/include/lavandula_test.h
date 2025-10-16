@@ -37,6 +37,7 @@ void testFailed();
     testsRan++; \
 } while(0)
 
+// just makes it prettier
 #define toBe(x) x
 
 #endif

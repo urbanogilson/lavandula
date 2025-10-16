@@ -51,9 +51,6 @@ See `/examples` for more.
 ## In Progress
 
 - PostgreSL, MySQL integrations, etc
-
-## Future
-
 - CORS policy configuration
 - TLS
 - Multithreading
@@ -96,7 +93,7 @@ Documentation:
 
 3. Finish
 
-You should now be able to run the Lavu CLI tool and begin writing your application. Refer to `api.md` for how to use Lavu.
+You should now be able to run the Lavu CLI tool and begin writing your application. Refer to [this document](doc/api/cli.md) for how to use Lavu.
 
 
 ## Getting Started
@@ -135,9 +132,9 @@ lavu run
 Your application will run on http://localhost:3000/.
 
 3. Read the docs
-
-   - [Developing with Lavandula](doc/tutorial.md)
-   - [API Documentation](doc/api.md)
+  
+   - [Getting Started](doc/getting_started/1_installing.md)
+   - [Project Tutorial](doc/tutorial/tutorial.md)
 
 
 ## Contributing

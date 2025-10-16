@@ -22,7 +22,7 @@ Json todoToJson(Todo todo) {
 }
 
 HttpResponse getTodos(RequestContext ctx) {
-    DbResult *result = dbQueryRows(ctx.db, "select * from Todos", NULL, 0);
+    DbResult *result = dbQueryRows(ctx.db, "select * from Todoss", NULL, 0);
     if (!result) {
         return internalServerError("Failed to query database", TEXT_PLAIN);
     }

@@ -1,4 +1,4 @@
-# Lavandula Tutorial
+# Lavandula Sample App Tutorial
 
 This document will walk you through creating a sample application with Lavandula, following conventions and best practices. We will create a simple web application that connects to a Sqlite3 database and serves JSON content.
 
