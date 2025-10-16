@@ -1,8 +1,8 @@
 #include "lavandula.h" 
 
 // define a route for your app
-appRoute(home) {
-    return ok("Hello, World");
+appRoute(home, ctx) {
+    return ok("Hello, World", TEXT_PLAIN);
 }
 
 int main() {

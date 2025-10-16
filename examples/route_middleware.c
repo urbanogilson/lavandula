@@ -6,7 +6,7 @@ HttpResponse globalMiddleware(RequestContext ctx, MiddlewareHandler *middleware)
     return next(ctx, middleware);
 }
 
-appRoute(home) {
+appRoute(home, ctx) {
     return ok("Hello, World", TEXT_PLAIN);
 }
 

@@ -1,6 +1,6 @@
 #include "include/lavandula.h"
 
-appRoute(home) {
+appRoute(home, ctx) {
     if (!ctx.app) exit(1);
 
     char *html = readFile("home.html");

@@ -2,7 +2,7 @@
 
 #include "include/lavandula.h"
 
-appRoute(home) {
+appRoute(home, ctx) {
     return ok("Hello, World!", TEXT_PLAIN);
 }
 

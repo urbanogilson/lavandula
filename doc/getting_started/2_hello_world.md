@@ -5,7 +5,7 @@ This example starts a simple web server with a root endpoint defined. The web se
 ```c
 #include "lavandula.h"
 
-appRoute(home) {
+appRoute(home, ctx) {
     return ok("Hello, World", TEXT_PLAIN);
 }
 

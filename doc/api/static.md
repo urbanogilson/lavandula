@@ -3,7 +3,7 @@
 Static files are non-changing files that you are able to serve to the user. You can serve static files with the following setup:
 
 ```c
-appRoute(home) {
+appRoute(home, ctx) {
     char *html = readFile("home.html");
     return html ? ok(html, TEXT_HTML) : notFound("Content not found...", TEXT_HTML);
 }

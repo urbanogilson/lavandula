@@ -106,7 +106,7 @@ A controller is a method that will be called when a specific endpoint in our app
 To start, we will just have one endpoint, which will be to retrieve all todos in the database. However, we will eventually have a controller to handle creating, editing, and deleting a todo item.
 
 ```
-appRoute(getTodos) {
+appRoute(getTodos, ctx) {
     return ok("ok");
 }
 ```

@@ -5,7 +5,7 @@ Routing is how you can control the way your application responds to client reque
 To define a route, use the `appRoute` macro and put the name of the controller as an argument.
 
 ```c
-appRoute(home) {
+appRoute(home, ctx) {
     return ok("", TEXT_PLAIN);
 }
 ```

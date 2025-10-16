@@ -1,10 +1,10 @@
 #include "lavandula.h"
 
-appRoute(homePage) {
+appRoute(homePage, ctx) {
     return ok("Hello, World!", TEXT_PLAIN);
 }
 
-appRoute(notFoundPage) {
+appRoute(notFoundPage, ctx) {
     return notFound("Oops, this resource was not found...", TEXT_PLAIN);
 }
 

@@ -72,7 +72,7 @@ Lavandula also provides a more minimal interface for creating web applications w
 ```c
 #include "lavandula.h"
 
-appRoute(home) {
+appRoute(home, ctx) {
     return ok("Hello, World");
 }
 
@@ -87,5 +87,5 @@ int main(void) {
 To make life easier when defining routes in your application, you can use the `appRoute` macro. The example above generates the following signature. The variable for accessing the `RequestContext` will be by convention named `ctx` when using the `appRoute` macro.
 
 ```c
-appRoute(home) -> HttpResponse home(RequestContext ctx)
+appRoute(home, ctx) -> HttpResponse home(RequestContext ctx)
 ```
