@@ -25,4 +25,4 @@ get(&app, "/home", home);
 
 Now, when you go to `/home`, you will see the content inside of `home.html`.
 
-Next: [API Documentation](../api.md)
+Next: [Project Tutorial](../tutorial/tutorial.md)
