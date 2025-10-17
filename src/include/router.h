@@ -2,7 +2,7 @@
 #define router_h
 
 #include "http.h"
-#include "context.h"
+#include "request_context.h"
 
 // forward declaration
 typedef struct MiddlewareHandler MiddlewareHandler;

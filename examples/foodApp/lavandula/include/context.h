@@ -7,10 +7,10 @@
 typedef struct App App; 
 
 typedef struct {
-    App *app;
+    App         *app;
 
-    DbContext *db;
-    HttpRequest request;
+    DbContext   *db;
+    HttpRequest  request;
 } RequestContext;
 
 RequestContext requestContext(App *app, HttpRequest request);

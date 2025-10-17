@@ -1,10 +1,10 @@
 #include "lavandula.h"
 
-appRoute(homePage, ctx) {
+appRoute(homePage) {
     return ok("Hello, World!", TEXT_PLAIN);
 }
 
-appRoute(notFoundPage, ctx) {
+appRoute(notFoundPage) {
     return notFound("Oops, this resource was not found...", TEXT_PLAIN);
 }
 
@@ -22,7 +22,7 @@ Json todoToJson(Todo todo) {
 }
 
 HttpResponse getTodos(RequestContext ctx) {
-    DbResult *result = dbQueryRows(ctx.db, "select * from Todoss", NULL, 0);
+    DbResult *result = dbQueryRows(ctx.db, "select * from Todos", NULL, 0);
     if (!result) {
         return internalServerError("Failed to query database", TEXT_PLAIN);
     }

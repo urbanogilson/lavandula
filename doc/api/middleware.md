@@ -61,3 +61,6 @@ HttpResponse myMiddleware(RequestContext ctx, MiddlewareHandler *middleware) {
     return next(ctx, middleware);
 }
 ```
+
+## Library Middleware
+

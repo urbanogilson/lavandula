@@ -1,7 +1,7 @@
 #include "../../lavandula/include/lavandula.h"
 #include "middleware.h"
 
-HttpResponse successOrFailureResponse(bool success, char *message) {
+char *apiResponse(char *message, bool success) {
     JsonBuilder *builder = jsonBuilder();
     jsonPutBool(builder, "success", success);
     jsonPutString(builder, "message", message);
@@ -9,27 +9,33 @@ HttpResponse successOrFailureResponse(bool success, char *message) {
     char *json = jsonStringify(builder);
     freeJsonBuilder(builder);
 
-    return response(json, HTTP_BAD_REQUEST, APPLICATION_JSON);
+    return json;
 }
 
-HttpResponse success(char *message) {
-    return successOrFailureResponse(true, message);
+HttpResponse badJsonResponse(char *message) {
+    char *json = apiResponse(message, false);
+    return badRequest(json, APPLICATION_JSON);
 }
 
-HttpResponse failure(char *message) {
-    return successOrFailureResponse(false, message);
+middleware(validateJsonBody, ctx, m) {
+    JsonBuilder *body = jsonParse(ctx.request.body);
+    if (!body) {
+        return badJsonResponse("Error: no JSON body provided.");
+    }
+    freeJsonBuilder(body);
 
+    return next(ctx, m);
 }
 
 middleware(registerUserValidator, ctx, m) {
     JsonBuilder *body = jsonParse(ctx.request.body);
     if (!body) {
-        return failure("Error: no JSON body provided.");
+        return badJsonResponse("Error: no JSON body provided.");
     }
 
     if (!jsonHasKey(body, "username") || !jsonHasKey(body, "password")) {
         freeJsonBuilder(body);
-        return failure("Missing 'username' or 'password' in request body");
+        return badJsonResponse("Missing 'username' or 'password' in request body");
     }
     freeJsonBuilder(body);
 
@@ -39,12 +45,12 @@ middleware(registerUserValidator, ctx, m) {
 middleware(loginUserValidator, ctx, m) {
     JsonBuilder *body = jsonParse(ctx.request.body);
     if (!body) {
-        return failure("Error: no JSON body provided.");
+        return badJsonResponse("Error: no JSON body provided.");
     }
 
     if (!jsonHasKey(body, "username") || !jsonHasKey(body, "password")) {
         freeJsonBuilder(body);
-        return failure("Missing 'username' or 'password' in request body");
+        return badJsonResponse("Missing 'username' or 'password' in request body");
     }
     freeJsonBuilder(body);
 

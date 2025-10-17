@@ -1,17 +1,17 @@
 #include "../../lavandula/include/lavandula.h"
 
-appRoute(getDonations, ctx) {
+appRoute(getFoodBankNeeds, ctx) {
     return notImplementedYet();
 }
 
-appRoute(getDonation, ctx) {
+appRoute(createFoodBankNeed, ctx) {
     return notImplementedYet();
 }
 
-appRoute(createDonation , ctx) {
+appRoute(updateFoodBankNeed, ctx) {
     return notImplementedYet();
 }
 
-appRoute(deleteDonation , ctx) {
+appRoute(deleteFoodBankNeed, ctx) {
     return notImplementedYet();
 }
