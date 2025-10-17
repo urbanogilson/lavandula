@@ -1,3 +1,4 @@
+<img src="lavandula.png" alt="drawing" width="400"/>
 
 <br/>
 
