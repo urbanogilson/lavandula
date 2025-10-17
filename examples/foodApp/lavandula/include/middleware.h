@@ -1,5 +1,8 @@
-#ifndef middleware_h
-#define middleware_h
+
+// the prefix 'lavandula_' is used to avoid name clashes with header guards
+// the user likely will have a file named middleware.h in their project
+#ifndef lavandula_middleware_h
+#define lavandula_middleware_h
 
 #include "http.h"
 #include "router.h"

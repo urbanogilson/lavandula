@@ -64,3 +64,22 @@ HttpResponse myMiddleware(RequestContext ctx, MiddlewareHandler *middleware) {
 
 ## Library Middleware
 
+Lavandula provides some common middleware functions to use in your application.
+
+### Console Logger
+
+The logger middleware logs the method and route every time the web server is hit. This is useful for debugging purposes.
+
+```c
+AppBuilder builder = createBuilder();
+useGlobalMiddleware(&builder, consoleLogger);
+```
+
+### JSON Body Validator
+
+The JSON body middleware validates the presence of a JSON body. A bad request will be returned otherwise.
+
+```c
+Route rootRoute = root(&app, home);
+useLocalMiddleware(&rootRoute, validateJsonBody);
+```

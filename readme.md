@@ -1,5 +1,3 @@
-<!-- ![Express Logo](lavandula.png) -->
-<img src="lavandula.png" alt="drawing" width="400"/>
 
 <br/>
 
@@ -47,14 +45,14 @@ See `/examples` for more.
 - SQLite integration
 - Built-in JSON library
 - Static file serving
+- Request validator library 
 
 ## In Progress
 
-- Auto parse request body JSON (removes need for user to parse and free)
-- PostgreSL, MySQL integrations, etc
 - CORS policy configuration
-- TLS
 - Multithreading
+- TLS
+- PostgreSL, MySQL integrations, etc
 - Rate Limiting
 - Session cookies
 

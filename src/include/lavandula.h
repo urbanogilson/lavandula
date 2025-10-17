@@ -20,6 +20,7 @@
 #include "lavender.h"
 #include "utils.h"
 #include "auth.h"
+#include "api_response.h"
 
 #include "version.h"
 #include "app.h"
@@ -33,8 +34,6 @@
     char *content = readFile(path); \
     return ok(content ? content : "Not Found", TEXT_HTML); \
 } \
-
-#define middleware(name, ctx, m) HttpResponse name(RequestContext ctx, MiddlewareHandler *m)
 
 typedef struct {
     App app;

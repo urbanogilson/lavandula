@@ -5,7 +5,8 @@
 #include "router.h"
 #include "middleware.h"
 
-HttpResponse logger(RequestContext context, MiddlewareHandler *n);
-HttpResponse fileLogger(RequestContext context, MiddlewareHandler *n);
+#define middleware(name, ctx, m) HttpResponse name(RequestContext ctx, MiddlewareHandler *m)
+
+middleware(consoleLogger, ctx, m);
 
 #endif

@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-#include "include/lavandula.h"
+#include "../include/lavandula.h"
 
 char *apiResponse(char *message, bool success) {
     JsonBuilder *builder = jsonBuilder();
@@ -13,17 +13,20 @@ char *apiResponse(char *message, bool success) {
     return json;
 }
 
-HttpResponse badJsonResponse(char *message) {
+HttpResponse apiSuccess() {
+    char *json = apiResponse("Request was successful.", true);
+    return ok(json, APPLICATION_JSON);
+}
+
+HttpResponse apiFailure(char *message) {
     char *json = apiResponse(message, false);
-    return badRequest(json, APPLICATION_JSON);
+    return internalServerError(json, APPLICATION_JSON);
 }
 
 middleware(validateJsonBody, ctx, m) {
-    JsonBuilder *body = jsonParse(ctx.request.body);
-    if (!body) {
-        return badJsonResponse("Error: no JSON body provided.");
+    if (!ctx.hasBody) {
+        return apiFailure("Error: no JSON body provided.");
     }
-    freeJsonBuilder(body);
 
     return next(ctx, m);
 }

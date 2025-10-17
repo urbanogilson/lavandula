@@ -9,7 +9,7 @@
 #include "include/server.h"
 #include "include/http.h"
 #include "include/middleware.h"
-#include "include/context.h"
+#include "include/request_context.h"
 #include "include/sql.h"
 #include "include/app.h"
 
@@ -99,7 +99,7 @@ void runServer(App *app) {
             continue;
         }
 
-        char buffer[BUFFER_SIZE] = {0};
+        char buffer[BUFFER_SIZE] = {0}; // oops
         ssize_t bytesRead = read(clientSocket, buffer, sizeof(buffer) - 1);
         if (bytesRead < 0) {
             perror("read failed");
@@ -129,7 +129,11 @@ void runServer(App *app) {
 
         free(pathOnly);
 
+
         RequestContext context = requestContext(app, request);
+
+        context.hasBody = parser.isValid && request.bodyLength > 0;
+        context.body = context.hasBody ? jsonParse(request.body) : NULL;
 
         HttpResponse response;
         if (route) {
@@ -143,6 +147,12 @@ void runServer(App *app) {
             app->middleware.current = 0;
             app->middleware.finalHandler = routeOfAnyMethodExists ? defaultMethodNotAllowedController : defaultNotFoundController;
             response = next(context, &app->middleware);
+        }
+
+        freeJsonBuilder(context.body);
+
+        if (!response.content) {
+            response.content = strdup("");
         }
 
         int contentLength = strlen(response.content);

@@ -2,6 +2,7 @@
 #define json_h
 
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef struct JsonBuilder JsonBuilder;
 typedef struct JsonArray JsonArray;

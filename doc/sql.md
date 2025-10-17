@@ -1,7 +1,5 @@
 # Lavandula with SQL
 
-This file assumes you have a linux-based environment.
-
 
 
 ## Setting up SqlLite3

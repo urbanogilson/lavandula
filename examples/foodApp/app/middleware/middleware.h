@@ -5,6 +5,5 @@
 
 middleware(registerUserValidator, ctx, m);
 middleware(loginUserValidator, ctx, m);
-middleware(logoutUserValidator, ctx, m);
 
 #endif

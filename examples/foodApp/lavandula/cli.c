@@ -7,7 +7,6 @@
 #include "include/cli.h"
 #include "include/version.h"
 #include "include/utils.h"
-#include "cli.h"
 
 #define GREEN "\x1b[32m"
 #define YELLOW "\x1b[33m"
@@ -22,12 +21,17 @@ typedef struct {
 } Project;
 
 int runProject() {
-    system("make");
+    int hasBuilt = !buildProject();
+    if (!hasBuilt) return 1;
 
     system("./a");
     system("rm ./a");
 
-    return 1;
+    return 0;
+}
+
+int buildProject() {
+    return system("make");
 }
 
 // migrations are being deferred because that sounds like a PAIN IN THE ASS
@@ -156,7 +160,7 @@ int createMakefile(Project *project) {
     snprintf(filepath, sizeof(filepath), "%s/makefile", project->path);
     const char *content =
         "SRCS_LAVANDULA = $(filter-out lavandula/main.c, $(shell find lavandula -name \"*.c\"))\n\n"
-        "SRCS = app/app.c app/routes.c $(wildcard app/controllers/*.c)\n"
+        "SRCS = app/app.c app/routes.c $(wildcard app/controllers/*.c) $(wildcard app/middleware/*.c)\n"
         "CFLAGS = -Wall -Wextra -lsqlite3 -Isrc -Ilavandula/include\n\n"
         "all:\n"
         "\tgcc $(SRCS) $(SRCS_LAVANDULA) $(CFLAGS) -o a\n";
@@ -222,13 +226,15 @@ int newProject(char *name) {
 
     if (!createDir(project.path)) return 1;
 
-    char appDir[1024], controllersDir[1024], testsDir[1024];
+    char appDir[1024], controllersDir[1024], middlewareDir[1024], testsDir[1024];
     snprintf(appDir, sizeof(appDir), "%s/app", project.path);
     snprintf(controllersDir, sizeof(controllersDir), "%s/app/controllers", project.path);
+    snprintf(middlewareDir, sizeof(middlewareDir), "%s/app/middleware", project.path);
     snprintf(testsDir, sizeof(testsDir), "%s/tests", project.path);
 
     if (!createDir(appDir)) return 1;
     if (!createDir(controllersDir)) return 1;
+    if (!createDir(middlewareDir)) return 1;
     if (!createDir(testsDir)) return 1;
 
     if (!createYamlFile(&project)) return 1;
@@ -251,8 +257,4 @@ int newProject(char *name) {
     printf("  2. lavu run\n\n");
 
     return 0;
-}
-
-int buildProject() {
-    system("make");
 }

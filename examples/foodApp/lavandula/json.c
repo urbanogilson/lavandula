@@ -49,8 +49,9 @@ void freeJsonArray(JsonArray *jsonArray) {
     free(jsonArray->items);
 }
 
-void freeJsonBuilder(JsonBuilder *builder)
-{
+void freeJsonBuilder(JsonBuilder *builder) {
+    if (!builder) return;
+
     for (int i = 0; i < builder->jsonCount; i++) {
         Json json = builder->json[i];
         freeJson(json);
@@ -185,6 +186,8 @@ void jsonArrayAppend(JsonArray *array, Json value) {
 }
 
 char *jsonStringify(JsonBuilder *builder) {
+    if (!builder) return NULL;
+    
     int capacity = 16;
     int length = 0;
     char *json = malloc(capacity);
@@ -441,7 +444,6 @@ static JsonBuilder *parseJsonObject(char **str) {
         char *key = parseJsonString(str);
         if (!key) {
             freeJsonBuilder(builder);
-            free(builder);
             return NULL;
         }
         
@@ -449,7 +451,6 @@ static JsonBuilder *parseJsonObject(char **str) {
         if (**str != ':') {
             free(key);
             freeJsonBuilder(builder);
-            free(builder);
             return NULL;
         }
         (*str)++;
@@ -468,7 +469,6 @@ static JsonBuilder *parseJsonObject(char **str) {
             (*str)++;
         } else {
             freeJsonBuilder(builder);
-            free(builder);
             return NULL;
         }
     }
