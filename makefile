@@ -2,8 +2,8 @@ SRCS = $(shell find src -name "*.c")
 
 TEST_SRCS = $(wildcard test/*.c)
 CC = gcc
-COMMON_FLAGS = -Wall -Wextra -Werror -fstack-protector-strong -lsqlite3 -Isrc
-CFLAGS = $(COMMON_FLAGS)
+COMMON_FLAGS = -Wall -Wextra -Werror -fstack-protector-strong -lsqlite3 -Isrc -Wstrict-overflow -Wformat-security -Wno-unused-parameter
+CFLAGS = $(COMMON_FLAGS) -D_FORTIFY_SOURCE=2
 TEST_CFLAGS = $(COMMON_FLAGS) -g3 -O0 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
 
 all:
