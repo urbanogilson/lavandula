@@ -123,6 +123,7 @@ int createHomeFile(Project *project) {
     const char *content =
         "#include \"../../lavandula/include/lavandula.h\"\n\n"
         "appRoute(home, ctx) {\n"
+        "    (void)ctx\n"
         "    return ok(\"Hello, World!\", \"text/plain\");\n"
         "}\n";
 
