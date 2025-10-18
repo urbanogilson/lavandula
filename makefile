@@ -2,7 +2,9 @@ SRCS = $(shell find src -name "*.c")
 
 TEST_SRCS = $(wildcard test/*.c)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -lsqlite3 -Isrc
+COMMON_FLAGS = -Wall -Wextra -Werror -fstack-protector-strong -lsqlite3 -Isrc
+CFLAGS = $(COMMON_FLAGS)
+TEST_CFLAGS = $(COMMON_FLAGS) -g3 -O0 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
 
 all:
 	mkdir -p build
@@ -10,7 +12,7 @@ all:
 
 test:
 	mkdir -p build
-	$(CC) $(filter-out src/main.c, $(SRCS)) $(TEST_SRCS) $(CFLAGS) -o build/test_runner
+	$(CC) $(filter-out src/main.c, $(SRCS)) $(TEST_SRCS) $(TEST_CFLAGS) -o build/test_runner
 	./build/test_runner
 
 install:
